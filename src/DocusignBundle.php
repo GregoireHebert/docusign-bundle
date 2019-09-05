@@ -14,6 +14,5 @@ class DocusignBundle extends Bundle
     public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new EnvelopeBuilderPass());
-        $container->addCompilerPass(new DocusignStoragePass());
     }
 }

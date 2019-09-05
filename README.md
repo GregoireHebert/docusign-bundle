@@ -7,7 +7,7 @@ Feel free to contribute :)
 This bundle can be coupled with [FlySystem bundle](league/flysystem-bundle) to handle the files.
 this bundle uses the same API/structure as the bundle offers. 
 
-## install
+## Install
 
 ### register the bundle
 
@@ -17,14 +17,14 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = [
-         // ...
-         new \DocusignBundle\DocusignBundle(),
+            // ...
+            new \DocusignBundle\DocusignBundle(),
         ];
     }
 }
 ```
 
-### Add routing
+### Import routing
 
 ```yml
 # app/config/routing.yml
@@ -33,7 +33,7 @@ docusign:
     resource: '@DocusignBundle/Resources/config/routing.yml'
 ```
 
-### Add configuration
+### Configure the bundle
 
 Check the [official documentation](https://github.com/docusign/qs-php) to get your access token and account Id.
 
@@ -51,28 +51,9 @@ docusign:
 
 ```
 
-## Basic usage
-
-```php
-use DocusignBundle\EnvelopeBuilder;
-
-$signatureBuilder = new EnvelopeBuilder($accessToken, $accountId, $defaultSignerName, $defaultSignerEmail, $apiURI);
-
-$urlToRedirect = $enveloperBuilder
-        ->setFile('myFile')
-        ->addSignatureZone(1, 200, 200)
-        ->createEnvelope();
-```
-
-## Symfony Usage
-
-Import the `DocusignBundle\ESignatureBuilder` service thanks to the dependency injection.
-Grab the url and return a `new RedirectResponse($urlToRedirect, 307)`.
-
-## Using FlySystem Bundle
+### Configure FlySystem
 
 ```yaml
-
 flysystem:
     storages:
         docusign.storage:
@@ -80,3 +61,14 @@ flysystem:
             options:
                 directory: '%kernel.project_dir%/var/storage/default'
 ```
+
+
+## Basic usage
+
+*GET* `docusign` : `/docusign?path={document_path}`
+
+You'll get redirected to docusign website.
+Docusign will redirect you to `docusign_callback` : `/docusign/callback`
+Docusign will also send the result to `docusign_webhook` : `/docusign/webhook`
+
+If you need to override one, it's the callback one. :)

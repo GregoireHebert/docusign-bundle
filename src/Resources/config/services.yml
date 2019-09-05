@@ -1,6 +1,6 @@
 services:
     DocusignBundle\Controller\:
-        resource: '../../../DocusignBundle/Controller'
+        resource: '../../Controller'
         public: true
         tags: ['controller.service_arguments']   
         
