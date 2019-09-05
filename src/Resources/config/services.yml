@@ -1,0 +1,10 @@
+services:
+    DocusignBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']   
+        
+    DocusignBundle\EnvelopeBuilder:
+        arguments: ~
+        autowire: false
+        shared: false
