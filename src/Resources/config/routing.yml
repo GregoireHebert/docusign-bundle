@@ -1,0 +1,3 @@
+controllers:
+    resource: '../../../DocusignBundle/Controller/'
+    type: annotation
