@@ -14,7 +14,7 @@
         "symfony/http-kernel": "^3.4",
         "symfony/options-resolver": "^3.4",
         "symfony/routing": "^3.4",
-        "symfony/yaml": "^4.3",
+        "symfony/yaml": "^3.4",
         "vgrem/php-spo": "^2.2",
         "webmozart/assert": "^1.5"
     },
