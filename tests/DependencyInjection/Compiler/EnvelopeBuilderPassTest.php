@@ -25,9 +25,6 @@ class EnvelopeBuilderPassTest extends TestCase
         $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
 
         $clientDefinitionProphecy = $this->prophesize(Definition::class);
-        $clientDefinitionProphecy->setArgument('$logger', Argument::type(Reference::class))->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$router', Argument::type(Reference::class))->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$docusignStorage', Argument::type(Reference::class))->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_accessToken')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$accountId', 'docusign_accountId')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_signerName')->shouldBeCalled();
@@ -36,12 +33,10 @@ class EnvelopeBuilderPassTest extends TestCase
         $clientDefinitionProphecy->setArgument('$callBackRouteName', 'docusign_callbackRouteName')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$webHookRouteName', 'docusign_webHookRouteName')->shouldBeCalled();
 
-        $clientDefinitionProphecy->getArgument('$docusignStorage')->shouldBeCalled();
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
         $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
 
-        $containerBuilderProphecy->findTaggedServiceIds('flysystem.storage')->shouldBeCalled()->willReturn(['docusign.storage'=>'flysystem.storage']);
 
         $containerBuilderProphecy->getParameter('docusign.accessToken')->shouldBeCalled()->willReturn('docusign_accessToken');
         $containerBuilderProphecy->getParameter('docusign.accountId')->shouldBeCalled()->willReturn('docusign_accountId');
@@ -61,9 +56,6 @@ class EnvelopeBuilderPassTest extends TestCase
         $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
 
         $clientDefinitionProphecy = $this->prophesize(Definition::class);
-        $clientDefinitionProphecy->setArgument('$logger', Argument::type(Reference::class))->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$router', Argument::type(Reference::class))->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$docusignStorage', Argument::type(Reference::class))->shouldNotBeCalled();
         $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_accessToken')->shouldNotBeCalled();
         $clientDefinitionProphecy->setArgument('$accountId', 'docusign_accountId')->shouldNotBeCalled();
         $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_signerName')->shouldNotBeCalled();
@@ -72,12 +64,9 @@ class EnvelopeBuilderPassTest extends TestCase
         $clientDefinitionProphecy->setArgument('$callBackRouteName', 'docusign_callbackRouteName')->shouldNotBeCalled();
         $clientDefinitionProphecy->setArgument('$webHookRouteName', 'docusign_webHookRouteName')->shouldNotBeCalled();
 
-        $clientDefinitionProphecy->getArgument('$docusignStorage')->willThrow(OutOfBoundsException::class)->shouldBeCalled();
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
         $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
-
-        $containerBuilderProphecy->findTaggedServiceIds('flysystem.storage')->shouldBeCalled()->willReturn([]);
 
         $containerBuilderProphecy->getParameter('docusign.accessToken')->shouldNotBeCalled();
         $containerBuilderProphecy->getParameter('docusign.accountId')->shouldNotBeCalled();
@@ -87,7 +76,6 @@ class EnvelopeBuilderPassTest extends TestCase
         $containerBuilderProphecy->getParameter('docusign.callbackRouteName')->shouldNotBeCalled();
         $containerBuilderProphecy->getParameter('docusign.webHookRouteName')->shouldNotBeCalled();
 
-        $this->expectException(MissingStorageException::class);
         $envelopeBuilderPass->process($containerBuilderProphecy->reveal());
     }
 }

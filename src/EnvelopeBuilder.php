@@ -71,7 +71,6 @@ class EnvelopeBuilder
     {
         $this->logger = $logger;
         $this->router = $router;
-        $this->fileSystem = $docusignStorage;
         $this->accessToken = $accessToken;
         $this->accountId = $accountId;
 
@@ -205,7 +204,7 @@ class EnvelopeBuilder
     private function createDocument(): void
     {
         ['extension' => $extension, 'filename' => $filename] = pathinfo($this->filePath);
-        $contentBytes = $this->fileSystem->read($this->filePath);
+        $contentBytes = file_get_contents($this->filePath);
         $base64FileContent = base64_encode($contentBytes);
 
         $this->document = new Model\Document([
@@ -291,11 +290,39 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callBackRouteName, [], Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callBackRouteName, ['envelopId' => $this->envelopeId], Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
 
         return $this->envelopesApi->createRecipientView($this->accountId, $this->envelopeId, $recipientViewRequest);
+    }
+
+    /**
+     * Get list of documents for an envelop
+     *
+     * @param string $envelopId
+     * @return array
+     * @throws ApiException
+     */
+
+    public function getDocuments(string  $envelopId): array
+    {
+        $documents = [];
+        $this->config = new Configuration();
+        $this->config->setHost($this->apiURI);
+        $this->config->addDefaultHeader('Authorization', "Bearer {$this->accessToken}");
+
+        $this->apiClient = new ApiClient($this->config);
+        $this->envelopesApi = new EnvelopesApi($this->apiClient);
+
+        $docsList =  $this->envelopesApi->listDocuments($this->accountId, $envelopId);
+
+        foreach ($docsList->getEnvelopeDocuments() as $document) {
+            $documents[] = $this->envelopesApi->getDocument($this->accountId, $document->getDocumentId(), $envelopId) ;
+        }
+
+        return $documents;
+
     }
 }
