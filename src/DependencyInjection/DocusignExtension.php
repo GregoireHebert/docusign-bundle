@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
-use League\Flysystem\Filesystem;
-use League\Flysystem\PluginInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

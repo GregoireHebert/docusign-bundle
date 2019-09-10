@@ -10,8 +10,6 @@ use DocuSign\eSign\ApiException;
 use DocuSign\eSign\Configuration;
 use DocuSign\eSign\Model;
 use DocusignBundle\Exception\UnableToSignException;
-use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
@@ -42,8 +40,7 @@ class EnvelopeBuilder
     private $docReference;
     /** @var int */
     private $signatureNo = 1;
-    /** @var FilesystemInterface */
-    private $fileSystem;
+
     /** @var Model\Document|null */
     private $document;
     /** @var Model\EnvelopeDefinition|null */
@@ -67,7 +64,7 @@ class EnvelopeBuilder
     /** @var Model\CarbonCopy[]|array */
     private $carbonCopies = [];
 
-    public function __construct(LoggerInterface $logger, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webHookRouteName)
+    public function __construct(LoggerInterface $logger, RouterInterface $router, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webHookRouteName)
     {
         $this->logger = $logger;
         $this->router = $router;
