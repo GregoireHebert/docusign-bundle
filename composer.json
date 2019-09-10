@@ -7,7 +7,7 @@
         "docusign/esign-client": "^3.0",
         "league/flysystem": "^1.0",
         "psr/log": "^1.1",
-        "symfony/config": "^4.4",
+        "symfony/config": "^4.2",
         "symfony/dependency-injection": "^4.4",
         "symfony/event-dispatcher": "^4.4",
         "symfony/http-foundation": "^4.4",
