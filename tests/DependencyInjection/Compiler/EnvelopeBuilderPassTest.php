@@ -23,8 +23,8 @@ class EnvelopeBuilderPassTest extends TestCase
         $envelopeBuilderPass = new EnvelopeBuilderPass();
 
         $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
-
         $clientDefinitionProphecy = $this->prophesize(Definition::class);
+        $clientDefinitionProphecy->setAutowired(true)->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_accessToken')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$accountId', 'docusign_accountId')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_signerName')->shouldBeCalled();
@@ -49,33 +49,4 @@ class EnvelopeBuilderPassTest extends TestCase
         $envelopeBuilderPass->process($containerBuilderProphecy->reveal());
     }
 
-    public function testMissingStorageProcess(): void
-    {
-        $envelopeBuilderPass = new EnvelopeBuilderPass();
-
-        $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
-
-        $clientDefinitionProphecy = $this->prophesize(Definition::class);
-        $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_accessToken')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$accountId', 'docusign_accountId')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_signerName')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$defaultSignerEmail', 'docusign_signerEmail')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$apiURI', 'docusign_apiURI')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$callBackRouteName', 'docusign_callbackRouteName')->shouldNotBeCalled();
-        $clientDefinitionProphecy->setArgument('$webHookRouteName', 'docusign_webHookRouteName')->shouldNotBeCalled();
-
-
-        $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
-        $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
-
-        $containerBuilderProphecy->getParameter('docusign.accessToken')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.accountId')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.defaultSignerName')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.defaultSignerEmail')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.apiURI')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.callbackRouteName')->shouldNotBeCalled();
-        $containerBuilderProphecy->getParameter('docusign.webHookRouteName')->shouldNotBeCalled();
-
-        $envelopeBuilderPass->process($containerBuilderProphecy->reveal());
-    }
 }

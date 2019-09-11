@@ -10,6 +10,7 @@ use DocuSign\eSign\ApiException;
 use DocuSign\eSign\Configuration;
 use DocuSign\eSign\Model;
 use DocusignBundle\Exception\UnableToSignException;
+use PHPStan\File\PathNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
@@ -201,8 +202,15 @@ class EnvelopeBuilder
     private function createDocument(): void
     {
         ['extension' => $extension, 'filename' => $filename] = pathinfo($this->filePath);
-        $contentBytes = file_get_contents($this->filePath);
-        $base64FileContent = base64_encode($contentBytes);
+        $base64FileContent = null;
+        try {
+            $contentBytes = file_get_contents($this->filePath);
+            $base64FileContent = base64_encode($contentBytes);
+        }
+        catch (\Exception $exception) {
+            $this->logger->error($exception);
+        }
+
 
         $this->document = new Model\Document([
             'document_base64' => $base64FileContent,
