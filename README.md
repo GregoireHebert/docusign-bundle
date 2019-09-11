@@ -7,7 +7,8 @@ This Bundle is used to create electronic signature with DocuSign.
 At the moment it only does handle implicit authentication with embedded signature.
 Feel free to contribute :)
 
-This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) to handle the files.
+This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
+
 This bundle copy the same API/structure as the related bundle offers.
 I did a copy because of the 3.4 limitation.
 
@@ -21,25 +22,11 @@ following the best practices of software architecture (SOLID principles).
 $ composer require gheb/docusign-bundle
 ```
 
-### register the bundle
-
-```php
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        $bundles = [
-            // ...
-            new \DocusignBundle\DocusignBundle(),
-        ];
-    }
-}
-```
 
 ### Import routing
 
 ```yml
-# app/config/routing.yml
+# config/routes.yml
 
 docusign:
     resource: '@DocusignBundle/Resources/config/routing.yml'
@@ -52,7 +39,7 @@ Check the [official documentation](https://github.com/docusign/qs-php).
 Your account id is visible on the top right level of your demo.docusign account right below your profile picture in the little drop-down.
 
 ```yml
-# app/config/config.yml
+# config/packages/docusign.yml
 
 docusign:
     accessToken: "YourAccessToken"
@@ -60,9 +47,14 @@ docusign:
     signerName: "Grégoire Hébert"
     signerEmail: "gregoire@les-tilleuls.coop"
     apiURI: "docusign.com/API/URI"
-    callBackRouteName: "docusign_callback"
+    callbackRouteName: "docusign_callback"
     webHookRouteName: "docusign_webhook"
-    storages:
+```
+
+### Configure the storage
+```yml
+# config/packages/flysystem.yml
+   storages:
         docusign.storage:
             adapter: 'local'
             options:
@@ -77,8 +69,7 @@ Create a class that implements the `League\Flysystem\FilesystemInterface` interf
 Now you can specify as adapter your class.
 
 ```yml
-# app/config/config.yml
-
+# config/packages/flysystem.yml
 docusign:
     # ...
     storages:
