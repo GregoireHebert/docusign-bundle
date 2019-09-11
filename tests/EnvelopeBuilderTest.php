@@ -18,9 +18,8 @@ class EnvelopeBuilderTest extends TestCase
     {
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
         $routerProphecy = $this->prophesize(RouterInterface::class);
-
-        $envelopeBuilder = new EnvelopeBuilder($loggerProphecy->reveal(), $routerProphecy->reveal(), 'dummyToken', 'dummyId', 'dummyName', 'dummyemail@domain.tld', 'dummyURI', 'dummyCallbackRoute', 'dummyWebHookRoute');
-
+        $fileSystemProphecy = $this->prophesize(FilesystemInterface::class);
+        $envelopeBuilder = new EnvelopeBuilder($loggerProphecy->reveal(), $routerProphecy->reveal(), $fileSystemProphecy->reveal(), 'dummyToken', 'dummyId', 'dummyName', 'dummyemail@domain.tld', 'dummyURI', 'dummyCallbackRoute', 'dummyWebHookRoute');
         $this->expectException(InvalidArgumentException::class);
         $envelopeBuilder->createEnvelope();
     }
@@ -36,7 +35,7 @@ class EnvelopeBuilderTest extends TestCase
         $fileSystemProphecy = $this->prophesize(FilesystemInterface::class);
         $fileSystemProphecy->read('dummyFilePath.pdf')->willReturn('dummyFileContent');
 
-        $envelopeBuilder = new EnvelopeBuilder($loggerProphecy->reveal(), $routerProphecy->reveal(), 'dummyToken', 'dummyId', 'dummyName', 'dummyemail@domain.tld', 'dummyURI', 'dummyCallbackRoute', 'dummyWebHookRoute');
+        $envelopeBuilder = new EnvelopeBuilder($loggerProphecy->reveal(), $routerProphecy->reveal(), $fileSystemProphecy->reveal(), 'dummyToken', 'dummyId', 'dummyName', 'dummyemail@domain.tld', 'dummyURI', 'dummyCallbackRoute', 'dummyWebHookRoute');
 
         $this->expectException(UnableToSignException::class);
         $envelopeBuilder
