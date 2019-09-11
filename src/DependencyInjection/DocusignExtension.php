@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace DocusignBundle\DependencyInjection;
 
-use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 
 class DocusignExtension extends Extension
 {
-
     /**
      * {@inheritdoc}
      */
@@ -39,5 +35,4 @@ class DocusignExtension extends Extension
         $container->setParameter('docusign.callBackRouteName', $config['callbackRouteName']);
         $container->setParameter('docusign.webHookRouteName', $config['webHookRouteName']);
     }
-
 }
