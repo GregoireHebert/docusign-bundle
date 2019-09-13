@@ -22,6 +22,14 @@ following the best practices of software architecture (SOLID principles).
 $ composer require gheb/docusign-bundle
 ```
 
+### register the bundle
+
+```php
+//config/bundles.php
+return [
+    DocusignBundle\DocusignBundle::class => ['all' => true],
+]
+```
 
 ### Import routing
 
@@ -54,6 +62,7 @@ docusign:
 ### Configure the storage
 ```yml
 # config/packages/flysystem.yml
+flysystem:
    storages:
         docusign.storage:
             adapter: 'local'
@@ -76,12 +85,6 @@ docusign:
         docusign.storage:
             adapter: 'App\Your\Class'
 ```
-
-### Add a missing storage but already supported by the flysystem bundle 
-
-At the moment only the `local` has been ported. If you need to import one of the adapter existing in [here](https://github.com/thephpleague/flysystem-bundle/tree/master/src/Adapter/Builder).
-You can either ask me, or open a PR with just a copy of the one from the bundle, paste it in the `src/Adapter/Builder` directory, and add it in the `Docusign\Adapter\AdapterDefinitionFactory::__construct`.
-I'll be glad to merge it :)
 
 
 ## Basic usage
