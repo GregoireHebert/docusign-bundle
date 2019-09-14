@@ -19,9 +19,7 @@ class EnvelopeBuilderTest extends TestCase
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
         $routerProphecy = $this->prophesize(RouterInterface::class);
         $fileSystemProphecy = $this->prophesize(FilesystemInterface::class);
-
         $envelopeBuilder = new EnvelopeBuilder($loggerProphecy->reveal(), $routerProphecy->reveal(), $fileSystemProphecy->reveal(), 'dummyToken', 'dummyId', 'dummyName', 'dummyemail@domain.tld', 'dummyURI', 'dummyCallbackRoute', 'dummyWebHookRoute');
-
         $this->expectException(InvalidArgumentException::class);
         $envelopeBuilder->createEnvelope();
     }

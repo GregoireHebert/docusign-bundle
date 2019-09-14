@@ -37,7 +37,6 @@ class ConfigurationTest extends TestCase
                 'accountId' => 'ID',
                 'defaultSignerName' => 'Grégoire Hébert',
                 'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
-                'storages' => [],
             ],
         ]);
 
@@ -51,7 +50,6 @@ class ConfigurationTest extends TestCase
             'apiURI' => 'https://demo.docusign.net/restapi',
             'callbackRouteName' => 'docusign_callback',
             'webHookRouteName' => 'docusign_webhook',
-            'storages' => [],
         ], $config);
     }
 }

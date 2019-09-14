@@ -207,7 +207,6 @@ class EnvelopeBuilder
         ['extension' => $extension, 'filename' => $filename] = pathinfo($this->filePath);
         $contentBytes = $this->fileSystem->read($this->filePath);
         $base64FileContent = base64_encode($contentBytes);
-
         $this->document = new Model\Document([
             'document_base64' => $base64FileContent,
             'name' => $filename,
@@ -257,12 +256,7 @@ class EnvelopeBuilder
      */
     private function sendEnvelope(): void
     {
-        $this->config = new Configuration();
-        $this->config->setHost($this->apiURI);
-        $this->config->addDefaultHeader('Authorization', "Bearer {$this->accessToken}");
-
-        $this->apiClient = new ApiClient($this->config);
-        $this->envelopesApi = new EnvelopesApi($this->apiClient);
+        $this->setUpConfiguration();
         $result = $this->envelopesApi->createEnvelope($this->accountId, $this->envelopeDefinition);
 
         $this->envelopeId = $result['envelope_id'];
@@ -291,11 +285,35 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callBackRouteName, [], Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callBackRouteName, ['envelopeId' => $this->envelopeId], Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
 
         return $this->envelopesApi->createRecipientView($this->accountId, $this->envelopeId, $recipientViewRequest);
+    }
+
+    /**
+     * @throws ApiException
+     */
+    public function getEnvelopeDocuments(string $envelopeId): array
+    {
+        $documents = [];
+        $this->setUpConfiguration();
+        $docsList = $this->envelopesApi->listDocuments($this->accountId, $envelopeId);
+        foreach ($docsList->getEnvelopeDocuments() as $document) {
+            $documents[] = $this->envelopesApi->getDocument($this->accountId, $document->getDocumentId(), $envelopeId);
+        }
+
+        return $documents;
+    }
+
+    private function setUpConfiguration(): void
+    {
+        $this->config = new Configuration();
+        $this->config->setHost($this->apiURI);
+        $this->config->addDefaultHeader('Authorization', "Bearer {$this->accessToken}");
+        $this->apiClient = new ApiClient($this->config);
+        $this->envelopesApi = new EnvelopesApi($this->apiClient);
     }
 }

@@ -43,11 +43,6 @@ class DocusignExtensionTest extends TestCase
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
 
-        $childDefinitionProphecy = $this->prophesize(ChildDefinition::class);
-        $childDefinitionProphecy->addTag('flysystem.plugin')->shouldBeCalled();
-
-        $containerBuilderProphecy->registerForAutoconfiguration('League\Flysystem\PluginInterface')->shouldBeCalled()->willReturn($childDefinitionProphecy->reveal());
-
         $containerBuilderProphecy->getReflectionClass(Argument::type('string'))->will(function ($args) {
             return new \ReflectionClass($args[0]);
         })->shouldBeCalled();
