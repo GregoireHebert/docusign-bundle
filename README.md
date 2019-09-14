@@ -79,7 +79,7 @@ Now you can specify as adapter your class.
 
 ```yml
 # config/packages/flysystem.yml
-docusign:
+flysystem:
     # ...
     storages:
         docusign.storage:
