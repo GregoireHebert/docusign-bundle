@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebHookTest extends TestCase
 {
-    public function testSign(): void
+    public function testWebHook(): void
     {
         $requestProphecy = $this->prophesize(Request::class);
         $requestProphecy->getContent()->shouldBeCalled();
