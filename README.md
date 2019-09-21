@@ -12,9 +12,9 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 This bundle copy the same API/structure as the related bundle offers.
 I did a copy because of the 3.4 limitation.
 
-Indeed the flysystem-bundle relies on [named aliases](https://symfony.com/doc/current/service_container/autowiring.html#dealing-with-multiple-implementations-of-the-same-type) 
-(introduced in Symfony 4.2) in order to create and configure multiple filesystems while still 
-following the best practices of software architecture (SOLID principles). 
+Indeed the flysystem-bundle relies on [named aliases](https://symfony.com/doc/current/service_container/autowiring.html#dealing-with-multiple-implementations-of-the-same-type)
+(introduced in Symfony 4.2) in order to create and configure multiple filesystems while still
+following the best practices of software architecture (SOLID principles).
 
 ## Install
 
@@ -42,7 +42,7 @@ docusign:
 
 ### Configure the bundle
 
-Check the [official documentation](https://github.com/docusign/qs-php). 
+Check the [official documentation](https://github.com/docusign/qs-php).
 [Get your testing access token](https://developers.docusign.com/oauth-token-generator).
 Your account id is visible on the top right level of your demo.docusign account right below your profile picture in the little drop-down.
 
