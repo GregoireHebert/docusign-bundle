@@ -291,7 +291,7 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callBackRouteName, [], Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callBackRouteName, ['envelopeId' => $this->envelopeId], Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
