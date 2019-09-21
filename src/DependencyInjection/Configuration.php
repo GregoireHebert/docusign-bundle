@@ -12,8 +12,8 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('docusign');
+        $treeBuilder = new TreeBuilder('docusign');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()

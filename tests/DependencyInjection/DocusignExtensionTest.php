@@ -58,6 +58,7 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setDefinition('DocusignBundle\Controller\Sign', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('DocusignBundle\Controller\WebHook', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('DocusignBundle\EnvelopeBuilder', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('League\Flysystem\FilesystemInterface', Argument::type(Definition::class))->shouldBeCalled();
 
         $containerBuilderProphecy->setParameter('docusign.accessToken', 'token')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.accountId', 'ID')->shouldBeCalled();

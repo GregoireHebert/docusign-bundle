@@ -21,7 +21,7 @@ class WebHookTest extends TestCase
         $requestProphecy->getContent()->shouldBeCalled();
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(WebHookEvent::DOCUMENT_SIGNED, Argument::type(DocumentSigned::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::type(DocumentSigned::class))->shouldBeCalled();
 
         $response = (new WebHook())($requestProphecy->reveal(), $eventDispatcherProphecy->reveal());
         $this->assertInstanceOf(Response::class, $response);

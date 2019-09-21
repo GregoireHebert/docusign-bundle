@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DocusignBundle\Controller;
 
 use DocusignBundle\Events\DocumentSignatureCompleted;
-use DocusignBundle\Events\WebHookEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +23,7 @@ final class Callback
             return new Response("The document signature ended with an unexpected $status status.");
         }
 
-        $eventDispatcher->dispatch(WebHookEvent::DOCUMENT_SIGNATURE_COMPLETED, new DocumentSignatureCompleted($request->get('envelopeId')));
+        $eventDispatcher->dispatch(new DocumentSignatureCompleted($request->get('envelopeId')));
 
         return new Response('Congratulation! Document signed.');
     }
