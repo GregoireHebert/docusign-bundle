@@ -88,7 +88,7 @@ class SignTest extends TestCase
         (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $loggerProphecy->reveal());
     }
 
-    public function testSignNooSignature(): void
+    public function testSignNoSignature(): void
     {
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
         $signatureExtractorProphecy->getSignatures()->willReturn([]);
