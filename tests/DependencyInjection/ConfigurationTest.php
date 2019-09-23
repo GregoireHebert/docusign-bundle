@@ -37,7 +37,6 @@ class ConfigurationTest extends TestCase
                 'accountId' => 'ID',
                 'defaultSignerName' => 'Grégoire Hébert',
                 'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
-                'storages' => [],
             ],
         ]);
 
@@ -51,7 +50,76 @@ class ConfigurationTest extends TestCase
             'apiURI' => 'https://demo.docusign.net/restapi',
             'callbackRouteName' => 'docusign_callback',
             'webHookRouteName' => 'docusign_webhook',
+            'signatures_overridable' => false,
+            'signatures' => [],
             'storages' => [],
+        ], $config);
+    }
+
+    public function testConfig(): void
+    {
+        $treeBuilder = $this->configuration->getConfigTreeBuilder();
+        $config = $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'accessToken' => 'token',
+                'accountId' => 'ID',
+                'defaultSignerName' => 'Grégoire Hébert',
+                'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
+                'signatures_overridable' => true,
+                'signatures' => [
+                    'MyDocument' => [
+                        'signatures' => [
+                            [
+                                'page' => 1,
+                                'xPosition' => 200,
+                                'yPosition' => 300,
+                            ]
+                        ],
+                    ],
+                ],
+                'storages' => [
+                    'MyStorage' => [
+                        'adapter' => 'MyAdapter',
+                        'options' => ['options' => 'MyOption'],
+                        'visibility' => 'MyVisibility',
+                        'case_sensitive' => false,
+                        'disable_asserts' => false,
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
+        $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
+        $this->assertEquals([
+            'accessToken' => 'token',
+            'accountId' => 'ID',
+            'defaultSignerName' => 'Grégoire Hébert',
+            'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
+            'apiURI' => 'https://demo.docusign.net/restapi',
+            'callbackRouteName' => 'docusign_callback',
+            'webHookRouteName' => 'docusign_webhook',
+            'signatures_overridable' => true,
+            'signatures' => [
+                'MyDocument' => [
+                    'signatures' => [
+                        [
+                            'page' => 1,
+                            'xPosition' => 200,
+                            'yPosition' => 300,
+                        ]
+                    ],
+                ],
+            ],
+            'storages' => [
+                'MyStorage' => [
+                    'adapter' => 'MyAdapter',
+                    'options' => ['options' => 'MyOption'],
+                    'visibility' => 'MyVisibility',
+                    'case_sensitive' => false,
+                    'disable_asserts' => false,
+                ],
+            ],
         ], $config);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Controller;
 
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,19 +20,25 @@ use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
  */
 final class Sign
 {
-    public function __invoke(EnvelopeBuilder $envelopeBuilder, Request $request, LoggerInterface $logger): Response
+    public function __invoke(EnvelopeBuilder $envelopeBuilder, SignatureExtractor $signatureExtractor, Request $request, LoggerInterface $logger): Response
     {
         if (null === $path = $request->get('path')) {
-            throw new MissingMandatoryParametersException('You must define a `path` parameter.');
+            throw new MissingMandatoryParametersException('You must define a `path` query parameter.');
         }
 
         try {
-            $url = $envelopeBuilder
-                ->setFile($path)
-                ->addSignatureZone(1, 350, 675)
-                ->createEnvelope();
+            $envelopeBuilder = $envelopeBuilder->setFile($path);
+            $signatures = $signatureExtractor->getSignatures();
 
-            return new RedirectResponse($url, 307);
+            if (empty($signatures)) {
+                throw new \LogicException('No signatures defined. Check your `signatures` configuration and query parameter.');
+            }
+
+            foreach ($signatures as $signature) {
+                $envelopeBuilder->addSignatureZone($signature['page'], $signature['xPosition'], $signature['yPosition']);
+            }
+
+            return new RedirectResponse($envelopeBuilder->createEnvelope(), 307);
         } catch (FileNotFoundException $exception) {
             $logger->notice('document to sign not found', ['message' => $exception->getMessage()]);
 
