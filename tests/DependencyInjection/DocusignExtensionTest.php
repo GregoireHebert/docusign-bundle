@@ -67,6 +67,8 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setParameter('docusign.apiURI', 'https://demo.docusign.net/restapi')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.callBackRouteName', 'docusign_callback')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.webHookRouteName', 'docusign_webhook')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.signatures_overridable', false)->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.signatures', [])->shouldBeCalled();
         $containerBuilder = $containerBuilderProphecy->reveal();
 
         $this->extension->load(self::DEFAULT_CONFIG, $containerBuilder);
