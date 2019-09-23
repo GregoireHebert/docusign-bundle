@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Tests\DependencyInjection\Compiler;
 
-use DocusignBundle\DependencyInjection\Compiler\SignatureExtratorPass;
+use DocusignBundle\DependencyInjection\Compiler\SignatureExtractorPass;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -16,7 +16,7 @@ class SignatureExtractorPassTest extends TestCase
 {
     public function testProcess(): void
     {
-        $signatureExtractorPass = new SignatureExtratorPass();
+        $signatureExtractorPass = new SignatureExtractorPass();
 
         $this->assertInstanceOf(CompilerPassInterface::class, $signatureExtractorPass);
 
