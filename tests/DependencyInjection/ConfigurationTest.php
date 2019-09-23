@@ -89,6 +89,18 @@ class ConfigurationTest extends TestCase
             'apiURI' => 'https://demo.docusign.net/restapi',
             'callbackRouteName' => 'docusign_callback',
             'webHookRouteName' => 'docusign_webhook',
+            'signatures_overridable' => true,
+            'signatures' => [
+                'MyDocument' => [
+                    'signatures' => [
+                        [
+                            'page' => 1,
+                            'xPosition' => 200,
+                            'yPosition' => 300,
+                        ]
+                    ],
+                ],
+            ],
         ], $config);
     }
 }
