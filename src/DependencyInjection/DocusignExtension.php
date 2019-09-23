@@ -34,5 +34,7 @@ class DocusignExtension extends Extension
         $container->setParameter('docusign.apiURI', $config['apiURI']);
         $container->setParameter('docusign.callBackRouteName', $config['callbackRouteName']);
         $container->setParameter('docusign.webHookRouteName', $config['webHookRouteName']);
+        $container->setParameter('docusign.signatures_overridable', $config['signatures_overridable']);
+        $container->setParameter('docusign.signatures', $config['signatures']);
     }
 }
