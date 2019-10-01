@@ -35,7 +35,7 @@ return [
 # config/routes.yml
 
 docusign:
-    resource: '@DocusignBundle/Resources/config/routing.yml'
+    resource: '@DocusignBundle/Resources/config/routing.xml'
 ```
 
 ### Configure the bundle
@@ -48,21 +48,21 @@ Your account id is visible on the top right level of your demo.docusign account 
 # config/packages/docusign.yml
 
 docusign:
-    accessToken: "YourAccessToken"
-    accountId: "yourAccountId"
-    defaultSignerName: "Grégoire Hébert"
-    defaultSignerName: "gregoire@les-tilleuls.coop"
-    apiURI: "https://demo.docusign.net/restapi" # default
-    callbackRouteName: "docusign_callback"
-    webHookRouteName: "docusign_webhook"
-    signature_overridable: false # default
+    access_token: "YourAccessToken"
+    account_id: "yourAccountId"
+    default_signer_name: "Grégoire Hébert"
+    default_signer_email: "gregoire@les-tilleuls.coop"
+    api_uri: "https://demo.docusign.net/restapi" # default
+    callback_route_name: "docusign_callback"
+    webhook_route_name: "docusign_webhook"
+    signatures_overridable: false # default
     signatures:
-        defaultDocumentType:
+        default_document_type:
             signatures:
                 -
                     page: 1 # default
-                    xPosition: 200 # top left corner in pixels
-                    yPosition: 400 # top left corner in pixels
+                    x_position: 200 # top left corner in pixels
+                    y_position: 400 # top left corner in pixels
 ```
 
 ### Configure the storage
@@ -98,7 +98,7 @@ flysystem:
 *GET* `docusign` : `/docusign?path={document_path}`
 
 You'll get redirected to DocuSign website.
-DocuSign will redirect you to `docusign_callback` : `/docusign/callback/{envelopeId}`
+DocuSign will redirect you to `docusign_callback` : `/docusign/callback`
 DocuSign will also send the result to `docusign_webhook` : `/docusign/webhook`
 
 ## Document type
@@ -113,18 +113,18 @@ But from the moment you've got two, there is an ambiguity. You need to select wh
 docusign:
     # ...
     signatures:
-        defaultDocumentType:
+        default_document_type:
             signatures:
                 -
                     page: 1 # default
-                    xPosition: 200 # top left corner in pixels
-                    yPosition: 400 # top left corner in pixels
-        otherDocumentType:
+                    x_position: 200 # top left corner in pixels
+                    y_position: 400 # top left corner in pixels
+        other_document_type:
             signatures:
                 -
                     page: 2
-                    xPosition: 500 # top left corner in pixels
-                    yPosition: 800 # top left corner in pixels
+                    x_position: 500 # top left corner in pixels
+                    y_position: 800 # top left corner in pixels
     # ...
 ```
 

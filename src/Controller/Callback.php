@@ -8,11 +8,7 @@ use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(name="docusign_callback", methods={"get"}, path="docusign/callback")
- */
 final class Callback
 {
     public const EVENT_COMPLETE = 'signing_complete';

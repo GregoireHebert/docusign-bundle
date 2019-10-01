@@ -25,26 +25,26 @@ class EnvelopeBuilderPassTest extends TestCase
         $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
         $clientDefinitionProphecy = $this->prophesize(Definition::class);
         $clientDefinitionProphecy->setAutowired(true)->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_accessToken')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$accountId', 'docusign_accountId')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_signerName')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$defaultSignerEmail', 'docusign_signerEmail')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$apiURI', 'docusign_apiURI')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$callBackRouteName', 'docusign_callbackRouteName')->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$webHookRouteName', 'docusign_webHookRouteName')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_access_token')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$accountId', 'docusign_account_id')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_default_signer_name')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$defaultSignerEmail', 'docusign_default_signer_email')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$apiURI', 'docusign_api_uri')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$callBackRouteName', 'docusign_callback_route_name')->shouldBeCalled();
+        $clientDefinitionProphecy->setArgument('$webhookRouteName', 'docusign_webhook_route_name')->shouldBeCalled();
 
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
         $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
 
 
-        $containerBuilderProphecy->getParameter('docusign.accessToken')->shouldBeCalled()->willReturn('docusign_accessToken');
-        $containerBuilderProphecy->getParameter('docusign.accountId')->shouldBeCalled()->willReturn('docusign_accountId');
-        $containerBuilderProphecy->getParameter('docusign.defaultSignerName')->shouldBeCalled()->willReturn('docusign_signerName');
-        $containerBuilderProphecy->getParameter('docusign.defaultSignerEmail')->shouldBeCalled()->willReturn('docusign_signerEmail');
-        $containerBuilderProphecy->getParameter('docusign.apiURI')->shouldBeCalled()->willReturn('docusign_apiURI');
-        $containerBuilderProphecy->getParameter('docusign.callbackRouteName')->shouldBeCalled()->willReturn('docusign_callbackRouteName');
-        $containerBuilderProphecy->getParameter('docusign.webHookRouteName')->shouldBeCalled()->willReturn('docusign_webHookRouteName');
+        $containerBuilderProphecy->getParameter('docusign.access_token')->shouldBeCalled()->willReturn('docusign_access_token');
+        $containerBuilderProphecy->getParameter('docusign.account_id')->shouldBeCalled()->willReturn('docusign_account_id');
+        $containerBuilderProphecy->getParameter('docusign.default_signer_name')->shouldBeCalled()->willReturn('docusign_default_signer_name');
+        $containerBuilderProphecy->getParameter('docusign.default_signer_email')->shouldBeCalled()->willReturn('docusign_default_signer_email');
+        $containerBuilderProphecy->getParameter('docusign.api_uri')->shouldBeCalled()->willReturn('docusign_api_uri');
+        $containerBuilderProphecy->getParameter('docusign.callback_route_name')->shouldBeCalled()->willReturn('docusign_callback_route_name');
+        $containerBuilderProphecy->getParameter('docusign.webhook_route_name')->shouldBeCalled()->willReturn('docusign_webhook_route_name');
 
         $envelopeBuilderPass->process($containerBuilderProphecy->reveal());
     }
