@@ -1,4 +1,4 @@
-# Docusign
+# DocuSign Bundle
 
 [![Actions Status](https://github.com/gregoirehebert/docusign-bundle/workflows/CI/badge.svg)](https://github.com/gregoirehebert/docusign-bundle/actions)
 [![Packagist Version](https://img.shields.io/packagist/v/gheb/docusign-bundle.svg?style=flat-square)](https://packagist.org/packages/gheb/docusign-bundle)
@@ -6,9 +6,9 @@
 
 This Bundle is used to create electronic signature with DocuSign.
 At the moment it only does handle implicit authentication with embedded signature.
-That means, that you need an account on docusign, and you'll be redirected to sign the document.
+That means, that you need an account on DocuSign, and you'll be redirected to sign the document.
 
-Docusign also offers the possibility to sign remotely, or to trigger a simple agreement click.
+DocuSign also offers the possibility to sign remotely, or to trigger a simple agreement click.
 But these options are not available yet.
 Feel free to contribute :)
 
@@ -50,18 +50,19 @@ Your account id is visible on the top right level of your demo.docusign account 
 docusign:
     accessToken: "YourAccessToken"
     accountId: "yourAccountId"
-    signerName: "Grégoire Hébert"
-    signerEmail: "gregoire@les-tilleuls.coop"
+    defaultSignerName: "Grégoire Hébert"
+    defaultSignerName: "gregoire@les-tilleuls.coop"
     apiURI: "https://demo.docusign.net/restapi" # default
-    callBackRouteName: "docusign_callback"
+    callbackRouteName: "docusign_callback"
     webHookRouteName: "docusign_webhook"
     signature_overridable: false # default
     signatures:
         defaultDocumentType:
             signatures:
-                page: 1 # default
-                xPosition: 200 # top left corner in pixels
-                yPosition: 400 # top left corner in pixels
+                -
+                    page: 1 # default
+                    xPosition: 200 # top left corner in pixels
+                    yPosition: 400 # top left corner in pixels
 ```
 
 ### Configure the storage
@@ -96,9 +97,9 @@ flysystem:
 
 *GET* `docusign` : `/docusign?path={document_path}`
 
-You'll get redirected to docusign website.
-Docusign will redirect you to `docusign_callback` : `/docusign/callback/{envelopeId}`
-Docusign will also send the result to `docusign_webhook` : `/docusign/webhook`
+You'll get redirected to DocuSign website.
+DocuSign will redirect you to `docusign_callback` : `/docusign/callback/{envelopeId}`
+DocuSign will also send the result to `docusign_webhook` : `/docusign/webhook`
 
 ## Document type
 
@@ -114,14 +115,16 @@ docusign:
     signatures:
         defaultDocumentType:
             signatures:
-                page: 1 # default
-                xPosition: 200 # top left corner in pixels
-                yPosition: 400 # top left corner in pixels
+                -
+                    page: 1 # default
+                    xPosition: 200 # top left corner in pixels
+                    yPosition: 400 # top left corner in pixels
         otherDocumentType:
             signatures:
-                page: 2
-                xPosition: 500 # top left corner in pixels
-                yPosition: 800 # top left corner in pixels
+                -
+                    page: 2
+                    xPosition: 500 # top left corner in pixels
+                    yPosition: 800 # top left corner in pixels
     # ...
 ```
 
@@ -151,6 +154,59 @@ $parameters = url_decode(http_build_query($a)); // signatures[0][page]=1&signatu
 *GET* `docusign` : `/docusign?path={document_path}&signatures[0][page]=1&signatures[0][xPosition]=200&signatures[0][yPosition]=400`
 
 It will override the signatures configured.
+
+## Events
+
+### Sign events
+
+When signing a document, DocuSign sends the user back to your application to the callback route.
+But usually you need to send custom data to that route. To do that you can subscribe to the `PreSignEvent`.
+
+Even more useful, when DocuSign redirect the user to the callback route, you might need to grab some data from the Request and modify the Response sent. You could even replace the Response object.
+To do that you can subscribe to the `DocumentSignatureCompletedEvent`.
+
+
+```php
+// src/EventSubscriber/PreSignSubscriber.php
+namespace App\EventSubscriber;
+
+use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\Events\PreSignEvent;
+use DocusignBundle\Events\DocumentSignatureCompletedEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+class PreSignSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents()
+    {
+        // return the subscribed events, their methods and priorities
+        return [
+            PreSignEvent::class => 'preSign'
+            DocumentSignatureCompletedEvent::class => 'onDocumentSignatureCompleted'
+        ];
+    }
+
+    public function preSign(PreSignEvent $preSign)
+    {
+        // Here you can add the parameters you want to be sent back to you by DocuSign in the callback.
+        $envelopeBuilder = $preSign->getEnvelopeBuilder();
+
+        // $envelopeBuilder->addCallbackParameter([]);
+        // $envelopeBuilder->setCallbackParameters();
+        // ...
+    }
+
+    public function onDocumentSignatureCompleted(DocumentSignatureCompletedEvent $documentSignatureCompleted)
+    {
+        $request = $documentSignatureCompleted->getRequest();
+        $response = $documentSignatureCompleted->getResponse();
+
+        // ... do whatever you want with the response.
+    }
+}
+```
 
 ## Backward Compatibility promise
 

@@ -66,6 +66,8 @@ class EnvelopeBuilder
     private $router;
     /** @var Model\CarbonCopy[]|array */
     private $carbonCopies = [];
+    /** @var array */
+    private $callbackParameters = [];
 
     public function __construct(LoggerInterface $logger, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webHookRouteName)
     {
@@ -157,6 +159,20 @@ class EnvelopeBuilder
             'x_position' => $xPosition,
             'y_position' => $yPosition,
         ]);
+
+        return $this;
+    }
+
+    public function addCallbackParameter($parameter): self
+    {
+        $this->callbackParameters[] = $parameter;
+
+        return $this;
+    }
+
+    public function setCallbackParameters(array $parameters): self
+    {
+        $this->callbackParameters = $parameters;
 
         return $this;
     }
@@ -285,7 +301,7 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callBackRouteName, ['envelopeId' => $this->envelopeId], Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callBackRouteName, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
