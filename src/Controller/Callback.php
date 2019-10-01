@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Controller;
 
-use DocusignBundle\Events\DocumentSignatureCompleted;
+use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use DocusignBundle\Events\WebHookEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route(name="docusign_callback", methods={"get"}, path="docusign/callback/{envelopeId}")
+ * @Route(name="docusign_callback", methods={"get"}, path="docusign/callback")
  */
 final class Callback
 {
@@ -24,8 +24,10 @@ final class Callback
             return new Response("The document signature ended with an unexpected $status status.");
         }
 
-        $eventDispatcher->dispatch(WebHookEvent::DOCUMENT_SIGNATURE_COMPLETED, new DocumentSignatureCompleted($request->get('envelopeId')));
+        $event = new DocumentSignatureCompletedEvent($request, new Response('Congratulation! Document signed.'));
 
-        return new Response('Congratulation! Document signed.');
+        $eventDispatcher->dispatch(WebHookEvent::DOCUMENT_SIGNATURE_COMPLETED, $event);
+
+        return $event->getResponse();
     }
 }

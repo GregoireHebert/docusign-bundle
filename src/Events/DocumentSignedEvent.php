@@ -6,7 +6,7 @@ namespace DocusignBundle\Events;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class DocumentSigned extends Event
+final class DocumentSignedEvent extends Event
 {
     /**
      * @var string

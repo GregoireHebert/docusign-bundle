@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests\Bridge\FlySystem;
 
 use DocusignBundle\Controller\WebHook;
-use DocusignBundle\Events\DocumentSigned;
+use DocusignBundle\Events\DocumentSignedEvent;
 use DocusignBundle\Events\WebHookEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -18,10 +18,9 @@ class WebHookTest extends TestCase
     public function testWebHook(): void
     {
         $requestProphecy = $this->prophesize(Request::class);
-        $requestProphecy->getContent()->shouldBeCalled();
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(WebHookEvent::DOCUMENT_SIGNED, Argument::type(DocumentSigned::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(WebHookEvent::DOCUMENT_SIGNED, Argument::type(DocumentSignedEvent::class))->shouldBeCalled();
 
         $response = (new WebHook())($requestProphecy->reveal(), $eventDispatcherProphecy->reveal());
         $this->assertInstanceOf(Response::class, $response);
