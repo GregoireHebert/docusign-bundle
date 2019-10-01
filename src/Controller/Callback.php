@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Controller;
 
-use DocusignBundle\Events\DocumentSignatureCompleted;
+use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(name="docusign_callback", methods={"get"}, path="docusign/callback/{envelopeId}")
- */
 final class Callback
 {
     public const EVENT_COMPLETE = 'signing_complete';
@@ -23,8 +19,10 @@ final class Callback
             return new Response("The document signature ended with an unexpected $status status.");
         }
 
-        $eventDispatcher->dispatch(new DocumentSignatureCompleted($request->get('envelopeId')));
+        $event = new DocumentSignatureCompletedEvent($request, new Response('Congratulation! Document signed.'));
 
-        return new Response('Congratulation! Document signed.');
+        $eventDispatcher->dispatch($event);
+
+        return $event->getResponse();
     }
 }

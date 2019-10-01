@@ -33,23 +33,23 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
-                'accessToken' => 'token',
-                'accountId' => 'ID',
-                'defaultSignerName' => 'Grégoire Hébert',
-                'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
+                'access_token' => 'token',
+                'account_id' => 'ID',
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
             ],
         ]);
 
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
-            'accessToken' => 'token',
-            'accountId' => 'ID',
-            'defaultSignerName' => 'Grégoire Hébert',
-            'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
-            'apiURI' => 'https://demo.docusign.net/restapi',
-            'callbackRouteName' => 'docusign_callback',
-            'webHookRouteName' => 'docusign_webhook',
+            'access_token' => 'token',
+            'account_id' => 'ID',
+            'default_signer_name' => 'Grégoire Hébert',
+            'default_signer_email' => 'gregoire@les-tilleuls.coop',
+            'api_uri' => 'https://demo.docusign.net/restapi',
+            'callback_route_name' => 'docusign_callback',
+            'webhook_route_name' => 'docusign_webhook',
             'signatures_overridable' => false,
             'signatures' => [],
         ], $config);
@@ -60,18 +60,18 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
-                'accessToken' => 'token',
-                'accountId' => 'ID',
-                'defaultSignerName' => 'Grégoire Hébert',
-                'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
+                'access_token' => 'token',
+                'account_id' => 'ID',
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'signatures_overridable' => true,
                 'signatures' => [
-                    'MyDocument' => [
+                    'my_document' => [
                         'signatures' => [
                             [
                                 'page' => 1,
-                                'xPosition' => 200,
-                                'yPosition' => 300,
+                                'x_position' => 200,
+                                'y_position' => 300,
                             ]
                         ],
                     ],
@@ -82,21 +82,21 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
-            'accessToken' => 'token',
-            'accountId' => 'ID',
-            'defaultSignerName' => 'Grégoire Hébert',
-            'defaultSignerEmail' => 'gregoire@les-tilleuls.coop',
-            'apiURI' => 'https://demo.docusign.net/restapi',
-            'callbackRouteName' => 'docusign_callback',
-            'webHookRouteName' => 'docusign_webhook',
+            'access_token' => 'token',
+            'account_id' => 'ID',
+            'default_signer_name' => 'Grégoire Hébert',
+            'default_signer_email' => 'gregoire@les-tilleuls.coop',
+            'api_uri' => 'https://demo.docusign.net/restapi',
+            'callback_route_name' => 'docusign_callback',
+            'webhook_route_name' => 'docusign_webhook',
             'signatures_overridable' => true,
             'signatures' => [
-                'MyDocument' => [
+                'my_document' => [
                     'signatures' => [
                         [
                             'page' => 1,
-                            'xPosition' => 200,
-                            'yPosition' => 300,
+                            'x_position' => 200,
+                            'y_position' => 300,
                         ]
                     ],
                 ],

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests\Bridge\FlySystem;
 
 use DocusignBundle\Controller\Callback;
-use DocusignBundle\Events\DocumentSignatureCompleted;
-use DocusignBundle\Events\WebHookEvent;
+use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -22,7 +21,7 @@ class CallbackTest extends TestCase
         $requestProphecy->get('envelopeId')->willReturn('dummyEnvelopeId');
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(DocumentSignatureCompleted::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::type(DocumentSignatureCompletedEvent::class))->shouldBeCalled();
 
         $response = (new Callback())($requestProphecy->reveal(), $eventDispatcherProphecy->reveal());
         $this->assertInstanceOf(Response::class, $response);

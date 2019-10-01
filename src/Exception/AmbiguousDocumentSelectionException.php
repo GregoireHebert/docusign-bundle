@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Exception;
 
-class AmbiguousDocumentSelectionException extends \RuntimeException
+final class AmbiguousDocumentSelectionException extends \RuntimeException
 {
 }
