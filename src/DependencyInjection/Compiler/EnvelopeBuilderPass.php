@@ -14,12 +14,12 @@ final class EnvelopeBuilderPass implements CompilerPassInterface
     {
         $definition = $container->findDefinition(EnvelopeBuilder::class);
         $definition->setAutowired(true);
-        $definition->setArgument('$accessToken', $container->getParameter('docusign.accessToken'));
-        $definition->setArgument('$accountId', $container->getParameter('docusign.accountId'));
-        $definition->setArgument('$defaultSignerName', $container->getParameter('docusign.defaultSignerName'));
-        $definition->setArgument('$defaultSignerEmail', $container->getParameter('docusign.defaultSignerEmail'));
-        $definition->setArgument('$apiURI', $container->getParameter('docusign.apiURI'));
-        $definition->setArgument('$callBackRouteName', $container->getParameter('docusign.callbackRouteName'));
-        $definition->setArgument('$webHookRouteName', $container->getParameter('docusign.webHookRouteName'));
+        $definition->setArgument('$accessToken', $container->getParameter('docusign.access_token'));
+        $definition->setArgument('$accountId', $container->getParameter('docusign.account_id'));
+        $definition->setArgument('$defaultSignerName', $container->getParameter('docusign.default_signer_name'));
+        $definition->setArgument('$defaultSignerEmail', $container->getParameter('docusign.default_signer_email'));
+        $definition->setArgument('$apiURI', $container->getParameter('docusign.api_uri'));
+        $definition->setArgument('$callBackRouteName', $container->getParameter('docusign.callback_route_name'));
+        $definition->setArgument('$webhookRouteName', $container->getParameter('docusign.webhook_route_name'));
     }
 }

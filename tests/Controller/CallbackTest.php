@@ -6,7 +6,6 @@ namespace DocusignBundle\Tests\Bridge\FlySystem;
 
 use DocusignBundle\Controller\Callback;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
-use DocusignBundle\Events\WebHookEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
