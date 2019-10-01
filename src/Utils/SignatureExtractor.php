@@ -34,7 +34,7 @@ class SignatureExtractor
         return $this->extractSignatureFromRequest() ?? $this->getDefaultSignature();
     }
 
-    protected function getDefaultSignature(): ?array
+    private function getDefaultSignature(): ?array
     {
         $documentType = $this->request->get('documentType');
         $signaturesDefined = \count($this->defaultSignatures);
@@ -60,7 +60,7 @@ class SignatureExtractor
         return null;
     }
 
-    protected function extractSignatureFromRequest(): ?array
+    private function extractSignatureFromRequest(): ?array
     {
         if (false === $this->signaturesOverridable) {
             return null;
@@ -86,7 +86,7 @@ class SignatureExtractor
         return $signatures;
     }
 
-    protected function configureSignatureOptions(OptionsResolver $resolver): void
+    private function configureSignatureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['page', 'xPosition', 'yPosition']);
 

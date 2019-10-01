@@ -9,12 +9,8 @@ use DocusignBundle\Events\WebHookEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(name="docusign_webhook", methods={"post"}, path="docusign/webhook")
- */
-final class WebHook
+final class Webhook
 {
     public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher): Response
     {

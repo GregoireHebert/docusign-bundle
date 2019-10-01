@@ -14,14 +14,14 @@
         "symfony/http-kernel": "^3.4",
         "symfony/options-resolver": "^3.4",
         "symfony/routing": "^3.4",
-        "symfony/yaml": "^3.4",
         "vgrem/php-spo": "^2.2",
         "webmozart/assert": "^1.5"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.15",
+        "nyholm/symfony-bundle-test": "^1.4",
         "phpstan/phpstan": "^0.11.15",
-        "phpunit/phpunit": "^8.1"
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "psr-4": {

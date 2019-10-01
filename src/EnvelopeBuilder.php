@@ -61,7 +61,7 @@ class EnvelopeBuilder
     /** @var string */
     private $callBackRouteName;
     /** @var string */
-    private $webHookRouteName;
+    private $webhookRouteName;
     /** @var RouterInterface */
     private $router;
     /** @var Model\CarbonCopy[]|array */
@@ -69,7 +69,7 @@ class EnvelopeBuilder
     /** @var array */
     private $callbackParameters = [];
 
-    public function __construct(LoggerInterface $logger, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webHookRouteName)
+    public function __construct(LoggerInterface $logger, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
     {
         $this->logger = $logger;
         $this->router = $router;
@@ -82,7 +82,7 @@ class EnvelopeBuilder
 
         $this->apiURI = $apiURI;
         $this->callBackRouteName = $callBackRouteName;
-        $this->webHookRouteName = $webHookRouteName;
+        $this->webhookRouteName = $webhookRouteName;
 
         $this->docReference = time();
     }
@@ -94,7 +94,7 @@ class EnvelopeBuilder
         return $this;
     }
 
-    protected function getEventsNotifications(): Model\EventNotification
+    private function getEventsNotifications(): Model\EventNotification
     {
         $envelopeEvents = [
             (new Model\EnvelopeEvent())->setEnvelopeEventStatusCode('sent'),
@@ -114,7 +114,7 @@ class EnvelopeBuilder
         ];
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate($this->webHookRouteName, [], Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, [], Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');

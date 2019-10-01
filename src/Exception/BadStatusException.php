@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Exception;
 
-class BadStatusException extends \Exception
+final class BadStatusException extends \Exception
 {
 }

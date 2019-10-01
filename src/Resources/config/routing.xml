@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing
+        https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="docusign.sign" path="docusign" methods="POST|GET">
+        <default key="_controller">DocusignBundle\Controller\Sign</default>
+    </route>
+
+    <route id="docusign_callback" path="docusign/callback" methods="GET">
+        <default key="_controller">DocusignBundle\Controller\Callback</default>
+    </route>
+
+    <route id="docusign_webhook" path="docusign/webhook" methods="POST">
+        <default key="_controller">DocusignBundle\Controller\Webhook</default>
+    </route>
+
+</routes>

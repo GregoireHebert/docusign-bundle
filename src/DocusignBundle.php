@@ -9,7 +9,7 @@ use DocusignBundle\DependencyInjection\Compiler\PluginPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DocusignBundle extends Bundle
+final class DocusignBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {

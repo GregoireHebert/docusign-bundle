@@ -16,11 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(name="docusign", methods={"post", "get"}, path="docusign")
- */
 final class Sign
 {
     public function __invoke(EnvelopeBuilder $envelopeBuilder, SignatureExtractor $signatureExtractor, Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
