@@ -1,0 +1,20 @@
+docusign:
+  access_token: 'YourAccessToken'
+  account_id: 'yourAccountId'
+  default_signer_name: 'Grégoire Hébert'
+  default_signer_email: 'gregoire@les-tilleuls.coop'
+  api_uri: 'https://demo.docusign.net/restapi'
+  callback_route_name: 'docusign_callback'
+  webhook_route_name: 'docusign_webhook'
+  signatures_overridable: false
+  signatures:
+    default_document_type:
+      signatures:
+        - page: 1
+          x_position: 200
+          y_position: 400
+  storages:
+    docusign.storage:
+      adapter: 'local'
+      options:
+        directory: '%kernel.project_dir%/var/storage/default'
