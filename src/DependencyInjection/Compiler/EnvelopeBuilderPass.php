@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 final class EnvelopeBuilderPass implements CompilerPassInterface
 {
@@ -36,6 +37,7 @@ final class EnvelopeBuilderPass implements CompilerPassInterface
             }
 
             $definition->setArgument('$logger', new Reference(LoggerInterface::class));
+            $definition->setArgument('$stopwatch', new Reference(Stopwatch::class));
             $definition->setArgument('$router', new Reference(RouterInterface::class));
         }
 

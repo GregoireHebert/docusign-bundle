@@ -4,6 +4,7 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^7.2",
+        "ext-simplexml": "*",
         "docusign/esign-client": "^3.0",
         "league/flysystem": "^1",
         "psr/log": "^1.1",
@@ -14,6 +15,7 @@
         "symfony/http-kernel": "^3.4 || ^4.2",
         "symfony/options-resolver": "^3.4 || ^4.2",
         "symfony/routing": "^3.4 || ^4.2",
+        "symfony/stopwatch": "^3.4 || ^4.2",
         "vgrem/php-spo": "^2.2",
         "webmozart/assert": "^1.5"
     },

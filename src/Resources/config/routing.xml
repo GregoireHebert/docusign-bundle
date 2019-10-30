@@ -4,16 +4,16 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="docusign.sign" path="docusign" methods="POST|GET">
-        <default key="_controller">DocusignBundle\Controller\Sign</default>
+    <route id="docusign_sign" path="docusign" methods="POST|GET">
+        <default key="_controller">docusign_sign</default>
     </route>
 
     <route id="docusign_callback" path="docusign/callback" methods="GET">
-        <default key="_controller">DocusignBundle\Controller\Callback</default>
+        <default key="_controller">docusign_callback</default>
     </route>
 
     <route id="docusign_webhook" path="docusign/webhook" methods="POST">
-        <default key="_controller">DocusignBundle\Controller\Webhook</default>
+        <default key="_controller">docusign_webhook</default>
     </route>
 
 </routes>

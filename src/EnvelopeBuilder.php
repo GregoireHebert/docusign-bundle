@@ -15,6 +15,7 @@ use League\Flysystem\FilesystemInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 use Webmozart\Assert\Assert;
 
 class EnvelopeBuilder
@@ -68,10 +69,13 @@ class EnvelopeBuilder
     private $carbonCopies = [];
     /** @var array */
     private $callbackParameters = [];
+    /** @var Stopwatch */
+    private $stopwatch;
 
-    public function __construct(LoggerInterface $logger, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
+    public function __construct(LoggerInterface $logger, Stopwatch $stopwatch, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
     {
         $this->logger = $logger;
+        $this->stopwatch = $stopwatch;
         $this->router = $router;
         $this->fileSystem = $docusignStorage;
         $this->accessToken = $accessToken;
@@ -188,20 +192,36 @@ class EnvelopeBuilder
     {
         try {
             $this->validate();
+
+            $key = '[Docusign] Create document';
+            $this->stopwatch->start($key);
             $this->createDocument();
+            $this->stopwatch->stop($key);
+
             $this->addSigner($this->signerName, $this->signerEmail);
             $this->defineEnvelope();
+
+            $key = '[Docusign] Send envelope';
+            $this->stopwatch->start($key);
             $this->sendEnvelope();
+            $this->stopwatch->stop($key);
+
+            $key = '[Docusign] Create recipient';
+            $this->stopwatch->start($key);
             $viewUrl = $this->createRecipient();
+            $this->stopwatch->stop($key);
 
             return $viewUrl->getUrl();
         } catch (ApiException $exception) {
-            $this->logger->critical('Impossible to send a document to docusign', [
+            $this->logger->critical('Unable to send a document to DocuSign.', [
                 'document' => $this->document,
                 'signers' => $this->signers,
                 'envelope' => $this->envelopeDefinition,
                 'request' => $exception->getResponseBody(),
             ]);
+            if (!empty($key)) {
+                $this->stopwatch->stop($key);
+            }
 
             throw new UnableToSignException($exception->getMessage());
         } finally {
