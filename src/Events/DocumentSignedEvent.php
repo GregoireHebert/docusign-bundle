@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Events;
 
-use Symfony\Contracts\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
 
 final class DocumentSignedEvent extends Event
 {

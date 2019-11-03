@@ -5,15 +5,15 @@
     "require": {
         "php": "^7.2",
         "docusign/esign-client": "^3.0",
-        "league/flysystem-bundle": "^1.2",
+        "league/flysystem": "^1",
         "psr/log": "^1.1",
-        "symfony/config": "^4.2",
-        "symfony/dependency-injection": "^4.2",
-        "symfony/event-dispatcher": "^4.2",
-        "symfony/http-foundation": "^4.2",
-        "symfony/http-kernel": "^4.2",
-        "symfony/options-resolver": "^4.2",
-        "symfony/routing": "^4.2",
+        "symfony/config": "^3.4 || ^4.2",
+        "symfony/dependency-injection": "^3.4 || ^4.2",
+        "symfony/event-dispatcher": "^3.4 || ^4.2",
+        "symfony/http-foundation": "^3.4 || ^4.2",
+        "symfony/http-kernel": "^3.4 || ^4.2",
+        "symfony/options-resolver": "^3.4 || ^4.2",
+        "symfony/routing": "^3.4 || ^4.2",
         "vgrem/php-spo": "^2.2",
         "webmozart/assert": "^1.5"
     },
@@ -21,7 +21,10 @@
         "friendsofphp/php-cs-fixer": "^2.15",
         "nyholm/symfony-bundle-test": "^1.4",
         "phpstan/phpstan": "^0.11.15",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.5.2 || ^8.0"
+    },
+    "suggest": {
+        "league/flysystem-bundle": "For Symfony >4.2 - Allow the use of the official adapter system instead of the compat layer."
     },
     "autoload": {
         "psr-4": {

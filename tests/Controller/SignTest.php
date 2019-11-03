@@ -24,7 +24,7 @@ class SignTest extends TestCase
     public function testSign(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();
 
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
         $signatureExtractorProphecy->getSignatures()->willReturn([
@@ -58,7 +58,7 @@ class SignTest extends TestCase
     public function testSignWithoutParam(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldNotBeCalled();
 
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
 
@@ -80,7 +80,7 @@ class SignTest extends TestCase
     public function testSignFileNotFound(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();
 
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
         $signatureExtractorProphecy->getSignatures()->willReturn([
@@ -112,7 +112,7 @@ class SignTest extends TestCase
     public function testSignNoSignature(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();
 
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
         $signatureExtractorProphecy->getSignatures()->willReturn([]);

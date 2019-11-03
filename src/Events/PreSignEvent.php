@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Events;
 
 use DocusignBundle\EnvelopeBuilder;
-use Symfony\Contracts\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
 
 final class PreSignEvent extends Event
 {

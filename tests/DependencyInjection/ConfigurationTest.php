@@ -52,6 +52,7 @@ class ConfigurationTest extends TestCase
             'webhook_route_name' => 'docusign_webhook',
             'signatures_overridable' => false,
             'signatures' => [],
+            'storages' => [],
         ], $config);
     }
 
@@ -76,7 +77,17 @@ class ConfigurationTest extends TestCase
                         ],
                     ],
                 ],
+                'storages' => [
+                    'MyStorage' => [
+                        'adapter' => 'MyAdapter',
+                        'options' => ['options' => 'MyOption'],
+                        'visibility' => 'MyVisibility',
+                        'case_sensitive' => false,
+                        'disable_asserts' => false,
+                    ],
+                ],
             ],
+            'storages' => [],
         ]);
 
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
@@ -99,6 +110,15 @@ class ConfigurationTest extends TestCase
                             'y_position' => 300,
                         ]
                     ],
+                ],
+            ],
+            'storages' => [
+                'MyStorage' => [
+                    'adapter' => 'MyAdapter',
+                    'options' => ['options' => 'MyOption'],
+                    'visibility' => 'MyVisibility',
+                    'case_sensitive' => false,
+                    'disable_asserts' => false,
                 ],
             ],
         ], $config);

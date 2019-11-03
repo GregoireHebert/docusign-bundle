@@ -21,7 +21,7 @@ class CallbackTest extends TestCase
         $requestProphecy->get('envelopeId')->willReturn('dummyEnvelopeId');
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(DocumentSignatureCompletedEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(DocumentSignatureCompletedEvent::class, Argument::type(DocumentSignatureCompletedEvent::class))->shouldBeCalled();
 
         $response = (new Callback())($requestProphecy->reveal(), $eventDispatcherProphecy->reveal());
         $this->assertInstanceOf(Response::class, $response);

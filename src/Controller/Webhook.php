@@ -13,7 +13,7 @@ final class Webhook
 {
     public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher): Response
     {
-        $eventDispatcher->dispatch(new DocumentSignedEvent($request));
+        $eventDispatcher->dispatch(DocumentSignedEvent::class, new DocumentSignedEvent($request));
 
         return new Response('', 202);
     }

@@ -4,7 +4,7 @@
 [![Packagist Version](https://img.shields.io/packagist/v/gheb/docusign-bundle.svg?style=flat-square)](https://packagist.org/packages/gheb/docusign-bundle)
 [![Software license](https://img.shields.io/github/license/gregoirehebert/docusign-bundle.svg?style=flat-square)](https://github.com/gregoirehebert/docusign-bundle/blob/master/LICENSE)
 
-This Bundle is used to create electronic signature with DocuSign.
+This Bundle is used to create electronic signature with Do  cuSign.
 At the moment it only does handle implicit authentication with embedded signature.
 That means, that you need an account on DocuSign, and you'll be redirected to sign the document.
 
@@ -20,7 +20,30 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 $ composer require gheb/docusign-bundle
 ```
 
+### Optional
+
+```shell
+$ composer require league/flysystem-bundle
+```
+
 ### register the bundle
+
+Symfony 3.4
+
+```php
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = [
+            // ...
+            new \DocusignBundle\DocusignBundle(),
+        ];
+    }
+}
+```
+
+Symfony 4+
 
 ```php
 //config/bundles.php
@@ -63,9 +86,16 @@ docusign:
                     page: 1 # default
                     x_position: 200 # top left corner in pixels
                     y_position: 400 # top left corner in pixels
+
+    # if you do not use league/flysystem-bundle
+    storages:
+        docusign.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/var/storage/default'
 ```
 
-### Configure the storage
+### Configure the storage with leaguee/flysystem-bundle
 ```yml
 # config/packages/flysystem.yml
 flysystem:
@@ -75,6 +105,29 @@ flysystem:
             options:
                 directory: '%kernel.project_dir%/var/storage/default'
 ```
+
+### Configure a custom storage without league/flysystem-bundle
+
+To access the document, we use the [`league/flysystem`](https://flysystem.thephpleague.com) library.
+
+Create a class that implements the `League\Flysystem\FilesystemInterface` interface.
+Now you can specify as adapter your class.
+
+```yml
+# app/config/config.yml
+
+docusign:
+    # ...
+    storages:
+        docusign.storage:
+            adapter: 'App\Your\Class'
+```
+
+### Add a missing storage without league/flysystem-bundle but already supported by the league/flysystem-bundle
+
+At the moment only the `local` has been ported. If you need to import one of the adapter existing in [here](https://github.com/thephpleague/flysystem-bundle/tree/master/src/Adapter/Builder).
+You can either ask me, or open a PR with just a copy of the one from the bundle, paste it in the `src/Adapter/Builder` directory, and add it in the `Docusign\Adapter\AdapterDefinitionFactory::__construct`.
+I'll be glad to merge it :)
 
 ### Configure a custom storage
 

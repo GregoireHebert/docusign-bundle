@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Webmozart\Assert\Assert;
@@ -12,8 +13,13 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('docusign');
-        $rootNode = $treeBuilder->getRootNode();
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('docusign');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('docusign');
+        }
 
         $rootNode
             ->children()
@@ -87,6 +93,35 @@ final class Configuration implements ConfigurationInterface
                 ->end()
             ->end();
 
+        $this->addStorageCompat($rootNode);
+
         return $treeBuilder;
+    }
+
+    /*
+     * Add compatibility for flysystem in symfony 3.4
+     */
+    private function addStorageCompat(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('storages')
+                    ->useAttributeAsKey('name')
+                    ->arrayPrototype()
+                        ->performNoDeepMerging()
+                        ->children()
+                            ->scalarNode('adapter')->isRequired()->end()
+                            ->arrayNode('options')
+                                ->variablePrototype()
+                            ->end()
+                            ->defaultValue([])
+                        ->end()
+                        ->scalarNode('visibility')->defaultNull()->end()
+                        ->booleanNode('case_sensitive')->defaultTrue()->end()
+                        ->booleanNode('disable_asserts')->defaultFalse()->end()
+                    ->end()
+                ->end()
+                ->defaultValue([])
+            ->end();
     }
 }

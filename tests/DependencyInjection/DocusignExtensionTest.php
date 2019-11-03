@@ -54,7 +54,9 @@ class DocusignExtensionTest extends TestCase
             return file_exists($args[0]);
         })->shouldBeCalled();
 
-        $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        if (method_exists(ContainerBuilder::class, 'removeBindings')) {
+            $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        }
 
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();

@@ -21,7 +21,7 @@ final class Callback
 
         $event = new DocumentSignatureCompletedEvent($request, new Response('Congratulation! Document signed.'));
 
-        $eventDispatcher->dispatch($event);
+        $eventDispatcher->dispatch(DocumentSignatureCompletedEvent::class, $event);
 
         return $event->getResponse();
     }
