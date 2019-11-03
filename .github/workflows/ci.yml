@@ -67,8 +67,8 @@ jobs:
       - name: Update project dependencies
         run: composer update --no-progress --no-suggest --ansi
       - name: Remove flysystem-bundle
-          run: |
-            composer remove --dev --no-progress --no-update --ansi \
-              league/flysystem-bundle
+        run: |
+          composer remove --dev --no-progress --no-update --ansi \
+            league/flysystem-bundle
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --colors=always
