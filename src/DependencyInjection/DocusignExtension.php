@@ -46,8 +46,8 @@ final class DocusignExtension extends Extension
     }
 
     /*
- * This method is here for the compatibility.
- */
+     * This method is here for the compatibility.
+     */
     private function flySystemCompatibility(ContainerBuilder $container, array $config): void
     {
         $adapterFactory = new AdapterDefinitionFactory();

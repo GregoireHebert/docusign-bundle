@@ -4,7 +4,7 @@
 [![Packagist Version](https://img.shields.io/packagist/v/gheb/docusign-bundle.svg?style=flat-square)](https://packagist.org/packages/gheb/docusign-bundle)
 [![Software license](https://img.shields.io/github/license/gregoirehebert/docusign-bundle.svg?style=flat-square)](https://github.com/gregoirehebert/docusign-bundle/blob/master/LICENSE)
 
-This Bundle is used to create electronic signature with Do  cuSign.
+This Bundle is used to create electronic signature with DocuSign.
 At the moment it only does handle implicit authentication with embedded signature.
 That means, that you need an account on DocuSign, and you'll be redirected to sign the document.
 
@@ -95,7 +95,7 @@ docusign:
                 directory: '%kernel.project_dir%/var/storage/default'
 ```
 
-### Configure the storage with leaguee/flysystem-bundle
+### Configure the storage with league/flysystem-bundle
 ```yml
 # config/packages/flysystem.yml
 flysystem:
@@ -111,7 +111,7 @@ flysystem:
 To access the document, we use the [`league/flysystem`](https://flysystem.thephpleague.com) library.
 
 Create a class that implements the `League\Flysystem\FilesystemInterface` interface.
-Now you can specify as adapter your class.
+Now you can specify your class as adapter.
 
 ```yml
 # app/config/config.yml

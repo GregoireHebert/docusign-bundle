@@ -220,13 +220,13 @@ class EnvelopeBuilder
      */
     private function createDocument(): void
     {
-        ['extension' => $extension, 'filename' => $filename] = pathinfo($this->filePath);
-
         if (false === $contentBytes = $this->fileSystem->read($this->filePath)) {
             throw new FileNotFoundException($this->filePath ?? 'null');
         }
 
         $base64FileContent = base64_encode($contentBytes);
+        ['extension' => $extension, 'filename' => $filename] = pathinfo($this->filePath);
+
         $this->document = new Model\Document([
             'document_base64' => $base64FileContent,
             'name' => $filename,

@@ -5,33 +5,29 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 
 /*
  * FlySystem symfony 3.4 compatibility
  */
 final class PluginPass implements CompilerPassInterface
 {
+    use PriorityTaggedServiceTrait;
+
     public function process(ContainerBuilder $container): void
     {
-        $plugins = array_map(function ($id) {
-            return new Reference($id);
-        }, array_keys($container->findTaggedServiceIds('flysystem.plugin')));
+        $plugins = $this->findAndSortTaggedServices('flysystem.plugin', $container);
+        $storages = $container->findTaggedServiceIds('flysystem.storage');
 
-        if (0 === \count($plugins)) {
+        if (0 === \count($plugins) || 0 === \count($storages)) {
             return;
         }
 
-        /** @var Definition[] $storages */
-        $storages = array_map(function ($id) use ($container) {
-            return $container->findDefinition($id);
-        }, array_keys($container->findTaggedServiceIds('flysystem.storage')));
-
-        foreach ($storages as $storage) {
-            foreach ($plugins as $plugin) {
-                $storage->addMethodCall('addPlugin', [$plugin]);
+        foreach ($storages as $storageId => $attributes) {
+            $storageDefinition = $container->findDefinition($storageId);
+            foreach ($plugins as $pluginId => $plugin) {
+                $storageDefinition->addMethodCall('addPlugin', [$pluginId]);
             }
         }
     }
