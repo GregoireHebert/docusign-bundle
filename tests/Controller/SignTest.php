@@ -30,9 +30,9 @@ class SignTest extends TestCase
         $signatureExtractorProphecy->getSignatures()->willReturn([
             [
                 'page' => 1,
-                'xPosition' => 200,
-                'yPosition' => 300,
-            ]
+                'x_position' => 200,
+                'y_position' => 300,
+            ],
         ]);
 
         $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
@@ -47,7 +47,7 @@ class SignTest extends TestCase
         $requestProphecy->query = $parameterBagProphecy->reveal();
 
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
-        $loggerProphecy->notice(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
+        $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
         $response = (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -71,7 +71,7 @@ class SignTest extends TestCase
         $requestProphecy->query = $parameterBagProphecy->reveal();
 
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
-        $loggerProphecy->notice(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
+        $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
         $this->expectException(MissingMandatoryParameterHttpException::class);
         (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
@@ -86,9 +86,9 @@ class SignTest extends TestCase
         $signatureExtractorProphecy->getSignatures()->willReturn([
             [
                 'page' => 1,
-                'xPosition' => 200,
-                'yPosition' => 300,
-            ]
+                'x_position' => 200,
+                'y_position' => 300,
+            ],
         ]);
 
         $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
@@ -103,7 +103,7 @@ class SignTest extends TestCase
         $requestProphecy->query = $parameterBagProphecy->reveal();
 
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
-        $loggerProphecy->notice(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
+        $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
         $this->expectException(NotFoundHttpException::class);
         (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());

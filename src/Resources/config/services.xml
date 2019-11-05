@@ -22,7 +22,7 @@
         <service id="docusign_envelope_builder" class="DocusignBundle\EnvelopeBuilder" public="false" shared="false" autowire="false" />
         <service id="DocusignBundle\EnvelopeBuilder" alias="docusign_envelope_builder" public="false" />
 
-        <service id="docusign_signature_extractor" class="DocusignBundle\Utils\SignatureExtractor" public="false" />
+        <service id="docusign_signature_extractor" class="DocusignBundle\Utils\SignatureExtractor" public="false" autowire="true" />
         <service id="DocusignBundle\Utils\SignatureExtractor" alias="docusign_signature_extractor" public="false" />
     </services>
 </container>

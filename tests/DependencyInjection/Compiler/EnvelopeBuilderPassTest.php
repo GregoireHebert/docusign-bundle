@@ -14,7 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EnvelopeBuilderPassTest extends TestCase
 {
@@ -36,7 +35,6 @@ class EnvelopeBuilderPassTest extends TestCase
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
         $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
-
 
         $containerBuilderProphecy->getParameter('docusign.access_token')->shouldBeCalled()->willReturn('docusign_access_token');
         $containerBuilderProphecy->getParameter('docusign.account_id')->shouldBeCalled()->willReturn('docusign_account_id');

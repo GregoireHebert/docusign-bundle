@@ -73,7 +73,7 @@ class ConfigurationTest extends TestCase
                                 'page' => 1,
                                 'x_position' => 200,
                                 'y_position' => 300,
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -108,7 +108,7 @@ class ConfigurationTest extends TestCase
                             'page' => 1,
                             'x_position' => 200,
                             'y_position' => 300,
-                        ]
+                        ],
                     ],
                 ],
             ],

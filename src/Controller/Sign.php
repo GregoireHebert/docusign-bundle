@@ -25,7 +25,7 @@ final class Sign
         }
 
         try {
-            $eventDispatcher->dispatch(PreSignEvent::class, new PreSignEvent($envelopeBuilder));
+            $eventDispatcher->dispatch(PreSignEvent::class, new PreSignEvent($envelopeBuilder, $request));
 
             $envelopeBuilder->setFile($path);
             $signatures = $signatureExtractor->getSignatures();
@@ -35,12 +35,12 @@ final class Sign
             }
 
             foreach ($signatures as $signature) {
-                $envelopeBuilder->addSignatureZone($signature['page'], $signature['xPosition'], $signature['yPosition']);
+                $envelopeBuilder->addSignatureZone($signature['page'], $signature['x_position'], $signature['y_position']);
             }
 
             return new RedirectResponse($envelopeBuilder->createEnvelope(), 307);
         } catch (FileNotFoundException $exception) {
-            $logger->notice('document to sign not found', ['message' => $exception->getMessage()]);
+            $logger->error('Document to sign not found.', ['message' => $exception->getMessage()]);
 
             throw new NotFoundHttpException();
         }

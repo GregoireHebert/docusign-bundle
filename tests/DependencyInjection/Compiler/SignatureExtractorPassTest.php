@@ -7,7 +7,6 @@ namespace DocusignBundle\Tests\DependencyInjection\Compiler;
 use DocusignBundle\DependencyInjection\Compiler\SignatureExtractorPass;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -26,8 +25,8 @@ class SignatureExtractorPassTest extends TestCase
             'MyDocument' => [
                 'signatures' => [
                     'page' => 1,
-                    'xPosition' => 200,
-                    'yPosition' => 300,
+                    'x_position' => 200,
+                    'y_position' => 300,
                 ],
             ],
         ]])->shouldBeCalled();
@@ -39,8 +38,8 @@ class SignatureExtractorPassTest extends TestCase
             'MyDocument' => [
                 'signatures' => [
                     'page' => 1,
-                    'xPosition' => 200,
-                    'yPosition' => 300,
+                    'x_position' => 200,
+                    'y_position' => 300,
                 ],
             ],
         ]);

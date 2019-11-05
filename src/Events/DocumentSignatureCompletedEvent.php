@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 final class DocumentSignatureCompletedEvent extends Event
 {
     private $request;
-
     private $response;
 
     public function __construct(Request $request, Response $response)
@@ -28,5 +27,10 @@ final class DocumentSignatureCompletedEvent extends Event
     public function getResponse(): Response
     {
         return $this->response;
+    }
+
+    public function setResponse(Response $response): void
+    {
+        $this->response = $response;
     }
 }

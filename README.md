@@ -200,11 +200,11 @@ docusign:
 Then add a signature array to your query.
 
 ```php
-$signatures = ['signatures'=>[['page'=>1,'xPosition'=>200,'yPosition'=>400]]]
-$parameters = url_decode(http_build_query($a)); // signatures[0][page]=1&signatures[0][xPosition]=200&signatures[0][yPosition]=400`
+$signatures = ['signatures'=>[['page'=>1,'x_position'=>200,'y_position'=>400]]]
+$parameters = url_decode(http_build_query($a)); // signatures[0][page]=1&signatures[0][x_position]=200&signatures[0][y_position]=400`
 ```
 
-*GET* `docusign` : `/docusign?path={document_path}&signatures[0][page]=1&signatures[0][xPosition]=200&signatures[0][yPosition]=400`
+*GET* `docusign` : `/docusign?path={document_path}&signatures[0][page]=1&signatures[0][x_position]=200&signatures[0][y_position]=400`
 
 It will override the signatures configured.
 
@@ -227,8 +227,6 @@ use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 class PreSignSubscriber implements EventSubscriberInterface
 {
@@ -236,7 +234,7 @@ class PreSignSubscriber implements EventSubscriberInterface
     {
         // return the subscribed events, their methods and priorities
         return [
-            PreSignEvent::class => 'preSign'
+            PreSignEvent::class => 'preSign',
             DocumentSignatureCompletedEvent::class => 'onDocumentSignatureCompleted'
         ];
     }
@@ -245,6 +243,7 @@ class PreSignSubscriber implements EventSubscriberInterface
     {
         // Here you can add the parameters you want to be sent back to you by DocuSign in the callback.
         $envelopeBuilder = $preSign->getEnvelopeBuilder();
+        $request = $preSign->getRequest();
 
         // $envelopeBuilder->addCallbackParameter([]);
         // $envelopeBuilder->setCallbackParameters();
@@ -258,6 +257,46 @@ class PreSignSubscriber implements EventSubscriberInterface
 
         // ... do whatever you want with the response.
     }
+}
+```
+
+### Webhook events
+
+DocuSign calls a Webhook on your project, allowing you to handle the signed document, its status, etc.
+
+**Your Webhook url MUST BE in HTTPS.**
+
+Depending on the document status, several events are available, giving you access to the DocuSign request (as a
+\SimpleXMLElement) and the request.
+
+```php
+// src/EventSubscriber/WebhookSubscriber.php
+namespace App\EventSubscriber;
+
+use DocusignBundle\Events\AuthenticationFailedEvent;
+use DocusignBundle\Events\AutoRespondedEvent;
+use DocusignBundle\Events\CompletedEvent;
+use DocusignBundle\Events\DeclinedEvent;
+use DocusignBundle\Events\DeliveredEvent;
+use DocusignBundle\Events\SentEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class WebhookSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents()
+    {
+        // return the subscribed events, their methods and priorities
+        return [
+            AuthenticationFailedEvent::class => 'onAuthenticationFailed',
+            AutoRespondedEvent::class => 'onAutoResponded',
+            CompletedEvent::class => 'onCompleted',
+            DeclinedEvent::class => 'onDeclined',
+            DeliveredEvent::class => 'onDelivered',
+            SentEvent::class => 'onSent',
+        ];
+    }
+
+    // ...
 }
 ```
 

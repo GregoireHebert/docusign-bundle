@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace DocusignBundle\Utils;
 
 use DocusignBundle\Exception\AmbiguousDocumentSelectionException;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SignatureExtractor
 {
     private $defaultSignatures = [];
     private $signaturesOverridable = false;
-    private $request;
+    private $requestStack;
 
-    public function __construct(Request $request)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->request = $request;
+        $this->requestStack = $requestStack;
     }
 
     public function setSignaturesOverridable(bool $isOverridable): void
@@ -36,7 +36,7 @@ class SignatureExtractor
 
     private function getDefaultSignature(): ?array
     {
-        $documentType = $this->request->get('documentType');
+        $documentType = $this->requestStack->getCurrentRequest()->query->get('document_type');
         $signaturesDefined = \count($this->defaultSignatures);
 
         if (0 === $signaturesDefined) {
@@ -64,14 +64,14 @@ class SignatureExtractor
             return null;
         }
 
-        $signatures = $this->request->get('signatures');
+        $signatures = $this->requestStack->getCurrentRequest()->query->get('signatures');
 
         if (null === $signatures) {
             return null;
         }
 
         if (!\is_array($signatures)) {
-            throw new \InvalidArgumentException('The parameter `signatures` must be an array of signatures, with the `page` (optional, default is 1), the `xPosition` and the `yPosition` values.');
+            throw new \InvalidArgumentException('The parameter `signatures` must be an array of signatures, with the `page` (optional, default is 1), the `x_position` and the `y_position` values.');
         }
 
         $resolver = new OptionsResolver();
@@ -86,12 +86,12 @@ class SignatureExtractor
 
     private function configureSignatureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired(['page', 'xPosition', 'yPosition']);
+        $resolver->setRequired(['page', 'x_position', 'y_position']);
 
         $resolver->setDefault('page', 1);
 
         $resolver->setAllowedTypes('page', 'int');
-        $resolver->setAllowedTypes('xPosition', 'int');
-        $resolver->setAllowedTypes('yPosition', 'int');
+        $resolver->setAllowedTypes('x_position', 'int');
+        $resolver->setAllowedTypes('y_position', 'int');
     }
 }
