@@ -69,6 +69,8 @@ class EnvelopeBuilder
     private $carbonCopies = [];
     /** @var array */
     private $callbackParameters = [];
+    /** @var array */
+    private $webhookParameters = [];
     /** @var Stopwatch */
     private $stopwatch;
 
@@ -118,7 +120,7 @@ class EnvelopeBuilder
         ];
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, [], Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, $this->webhookParameters, Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');
@@ -177,6 +179,20 @@ class EnvelopeBuilder
     public function setCallbackParameters(array $parameters): self
     {
         $this->callbackParameters = $parameters;
+
+        return $this;
+    }
+
+    public function addWebhookParameter($parameter): self
+    {
+        $this->webhookParameters[] = $parameter;
+
+        return $this;
+    }
+
+    public function setWebhookParameters(array $parameters): self
+    {
+        $this->webhookParameters = $parameters;
 
         return $this;
     }
