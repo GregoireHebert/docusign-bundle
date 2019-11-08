@@ -24,7 +24,6 @@ class EnvelopeBuilderPassTest extends TestCase
         $this->assertInstanceOf(CompilerPassInterface::class, $envelopeBuilderPass);
         $clientDefinitionProphecy = $this->prophesize(Definition::class);
         $clientDefinitionProphecy->setAutowired(true)->shouldBeCalled();
-        $clientDefinitionProphecy->setArgument('$accessToken', 'docusign_access_token')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$accountId', 'docusign_account_id')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$defaultSignerName', 'docusign_default_signer_name')->shouldBeCalled();
         $clientDefinitionProphecy->setArgument('$defaultSignerEmail', 'docusign_default_signer_email')->shouldBeCalled();
@@ -36,7 +35,6 @@ class EnvelopeBuilderPassTest extends TestCase
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
         $containerBuilderProphecy->findDefinition(EnvelopeBuilder::class)->shouldBeCalled()->willReturn($clientDefinitionProphecy->reveal());
 
-        $containerBuilderProphecy->getParameter('docusign.access_token')->shouldBeCalled()->willReturn('docusign_access_token');
         $containerBuilderProphecy->getParameter('docusign.account_id')->shouldBeCalled()->willReturn('docusign_account_id');
         $containerBuilderProphecy->getParameter('docusign.default_signer_name')->shouldBeCalled()->willReturn('docusign_default_signer_name');
         $containerBuilderProphecy->getParameter('docusign.default_signer_email')->shouldBeCalled()->willReturn('docusign_default_signer_email');

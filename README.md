@@ -64,18 +64,22 @@ docusign:
 ### Configure the bundle
 
 Check the [official documentation](https://github.com/docusign/qs-php).
-[Get your testing access token](https://developers.docusign.com/oauth-token-generator).
+[Configure JWT Grant](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken).
 Your account id is visible on the top right level of your demo.docusign account right below your profile picture in the little drop-down.
 
 ```yml
 # config/packages/docusign.yml
 
 docusign:
-    access_token: "YourAccessToken"
+    demo: "%kernel.debug"
+    jwt:
+        private_key: "%kernel.project_dir%/var/jwt/docusign.pem"
+        integration_key: "yourIntegrationKey"
+        user_guid: "yourUserGuid"
     account_id: "yourAccountId"
     default_signer_name: "Grégoire Hébert"
     default_signer_email: "gregoire@les-tilleuls.coop"
-    api_uri: "https://demo.docusign.net/restapi" # default
+    api_uri: "https://www.docusign.net/restapi" # default
     callback_route_name: "docusign_callback"
     webhook_route_name: "docusign_webhook"
     signatures_overridable: false # default

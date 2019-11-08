@@ -6,6 +6,7 @@ namespace DocusignBundle\Tests\Bridge\FlySystem;
 
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Exception\UnableToSignException;
+use DocusignBundle\Grant\GrantInterface;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,7 @@ class EnvelopeBuilderTest extends TestCase
     private $routerProphecyMock;
     private $fileSystemProphecyMock;
     private $stopwatchMock;
+    private $grantProphecyMock;
     private $envelopeBuilder;
 
     protected function setUp(): void
@@ -27,13 +29,14 @@ class EnvelopeBuilderTest extends TestCase
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);
         $this->stopwatchMock = $this->prophesize(Stopwatch::class);
+        $this->grantProphecyMock = $this->prophesize(GrantInterface::class);
 
         $this->envelopeBuilder = new EnvelopeBuilder(
             $this->loggerProphecyMock->reveal(),
             $this->stopwatchMock->reveal(),
             $this->routerProphecyMock->reveal(),
             $this->fileSystemProphecyMock->reveal(),
-            'dummyToken',
+            $this->grantProphecyMock->reveal(),
             'dummyId',
             'dummyName',
             'dummyemail@domain.tld',
@@ -55,6 +58,7 @@ class EnvelopeBuilderTest extends TestCase
         $this->routerProphecyMock->generate('dummyWebHoookRoute');
 
         $this->fileSystemProphecyMock->read('dummyFilePath.pdf')->willReturn('dummyFileContent');
+        $this->grantProphecyMock->__invoke()->willReturn('encoded_access_token');
 
         $this->expectException(UnableToSignException::class);
         $this->envelopeBuilder

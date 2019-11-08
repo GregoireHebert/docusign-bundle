@@ -24,5 +24,15 @@
 
         <service id="docusign_signature_extractor" class="DocusignBundle\Utils\SignatureExtractor" public="false" autowire="true" />
         <service id="DocusignBundle\Utils\SignatureExtractor" alias="docusign_signature_extractor" public="false" />
+
+        <service id="docusign_grant_jwt" class="DocusignBundle\Grant\JwtGrant" public="false">
+            <argument>%docusign.jwt.private_key%</argument>
+            <argument>%docusign.jwt.integration_key%</argument>
+            <argument>%docusign.jwt.user_guid%</argument>
+            <argument>%docusign.api_uri%</argument>
+            <argument>%docusign.account_api_uri%</argument>
+        </service>
+        <service id="DocusignBundle\Grant\JwtGrant" alias="docusign_grant_jwt" public="false" />
+        <service id="DocusignBundle\Grant\GrantInterface" alias="docusign_grant_jwt" public="false" />
     </services>
 </container>
