@@ -1,0 +1,8 @@
+parameters:
+    level: 5
+    paths:
+        - src
+    inferPrivatePropertyTypeFromConstructor: true
+    ignoreErrors:
+        - "#Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component.+' and 'getRootNode' will always evaluate to false\\.#"
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'

@@ -38,6 +38,10 @@ jobs:
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --colors=always
       - name: Run phpstan tests
+        if: matrix.dependency == ''
         run: vendor/bin/phpstan analyze
+      - name: Run phpstan tests lowest
+        if: matrix.dependency != ''
+        run: vendor/bin/phpstan analyze -c phpstan.neon.dist
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
