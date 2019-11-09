@@ -6,7 +6,7 @@
         "php": "^7.2",
         "ext-simplexml": "*",
         "docusign/esign-client": "^3.0",
-        "lcobucci/jwt": "^3.3",
+        "lcobucci/jwt": "^3.3.1",
         "league/flysystem": "^1",
         "psr/log": "^1.1",
         "symfony/config": "^3.4 || ^4.2",
