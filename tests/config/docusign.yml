@@ -2,18 +2,16 @@ docusign:
   demo: true
   auth_jwt:
     private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
-    integration_key: 'yourIntegrationKey'
-    user_guid: 'yourUserGuid'
-  account_id: 'yourAccountId'
+    integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
+    user_guid: '8fa60e09-0cb8-40ca-af5d-3e25f62e262b'
+  account_id: '92778b25-e59c-4631-91a3-744f5a098e55'
   default_signer_name: 'Grégoire Hébert'
   default_signer_email: 'gregoire@les-tilleuls.coop'
   api_uri: 'https://eu.docusign.net/restapi'
   callback_route_name: 'docusign_callback'
-  webhook_route_name: 'docusign_webhook'
   signatures_overridable: false
   signatures:
     default_document_type:
-      signatures:
-        - page: 1
-          x_position: 200
-          y_position: 400
+      - page: 1
+        x_position: 200
+        y_position: 400
