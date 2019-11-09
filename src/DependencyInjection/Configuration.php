@@ -22,8 +22,8 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->beforeNormalization()
-                ->ifTrue(static function ($v) {return true; })
-                ->then(function ($v) { return ['default' => $v]; })
+                ->ifTrue(static function ($v) { return is_string($v['mode'] ?? null); })
+                ->then(static function ($v) { return ['default' => $v]; })
             ->end()
             ->useAttributeAsKey('name')
             ->arrayPrototype()
