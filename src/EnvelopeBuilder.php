@@ -10,6 +10,7 @@ use DocuSign\eSign\ApiException;
 use DocuSign\eSign\Configuration;
 use DocuSign\eSign\Model;
 use DocusignBundle\Exception\UnableToSignException;
+use DocusignBundle\Grant\GrantInterface;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use Psr\Log\LoggerInterface;
@@ -23,8 +24,8 @@ class EnvelopeBuilder
     public const EMBEDDED_AUTHENTICATION_METHOD = 'NONE';
     public const EMAIL_SUBJECT = 'Please sign this document';
 
-    /** @var string */
-    private $accessToken;
+    /** @var GrantInterface */
+    private $grant;
     /** @var string */
     private $accountId;
     /** @var string */
@@ -74,13 +75,13 @@ class EnvelopeBuilder
     /** @var Stopwatch */
     private $stopwatch;
 
-    public function __construct(LoggerInterface $logger, Stopwatch $stopwatch, RouterInterface $router, FilesystemInterface $docusignStorage, string $accessToken, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
+    public function __construct(LoggerInterface $logger, Stopwatch $stopwatch, RouterInterface $router, FilesystemInterface $docusignStorage, GrantInterface $grant, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
     {
         $this->logger = $logger;
         $this->stopwatch = $stopwatch;
         $this->router = $router;
         $this->fileSystem = $docusignStorage;
-        $this->accessToken = $accessToken;
+        $this->grant = $grant;
         $this->accountId = $accountId;
 
         $this->signerName = $defaultSignerName;
@@ -368,7 +369,7 @@ class EnvelopeBuilder
     {
         $this->config = new Configuration();
         $this->config->setHost($this->apiURI);
-        $this->config->addDefaultHeader('Authorization', "Bearer {$this->accessToken}");
+        $this->config->addDefaultHeader('Authorization', 'Bearer '.($this->grant)());
         $this->apiClient = new ApiClient($this->config);
         $this->envelopesApi = new EnvelopesApi($this->apiClient);
     }

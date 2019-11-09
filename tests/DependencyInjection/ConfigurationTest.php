@@ -33,7 +33,13 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
-                'access_token' => 'token',
+                'demo' => false,
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => 'yourIntegrationKey',
+                    'user_guid' => 'yourUserGuid',
+                    'ttl' => 1600,
+                ],
                 'account_id' => 'ID',
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
@@ -43,11 +49,17 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
-            'access_token' => 'token',
+            'demo' => false,
+            'auth_jwt' => [
+                'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                'integration_key' => 'yourIntegrationKey',
+                'user_guid' => 'yourUserGuid',
+                'ttl' => 1600,
+            ],
             'account_id' => 'ID',
             'default_signer_name' => 'Grégoire Hébert',
             'default_signer_email' => 'gregoire@les-tilleuls.coop',
-            'api_uri' => 'https://demo.docusign.net/restapi',
+            'api_uri' => 'https://www.docusign.net/restapi',
             'callback_route_name' => 'docusign_callback',
             'webhook_route_name' => 'docusign_webhook',
             'signatures_overridable' => false,
@@ -61,7 +73,13 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
-                'access_token' => 'token',
+                'demo' => false,
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => 'yourIntegrationKey',
+                    'user_guid' => 'yourUserGuid',
+                    'ttl' => 2400,
+                ],
                 'account_id' => 'ID',
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
@@ -93,11 +111,17 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
-            'access_token' => 'token',
+            'demo' => false,
+            'auth_jwt' => [
+                'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                'integration_key' => 'yourIntegrationKey',
+                'user_guid' => 'yourUserGuid',
+                'ttl' => 2400,
+            ],
             'account_id' => 'ID',
             'default_signer_name' => 'Grégoire Hébert',
             'default_signer_email' => 'gregoire@les-tilleuls.coop',
-            'api_uri' => 'https://demo.docusign.net/restapi',
+            'api_uri' => 'https://www.docusign.net/restapi',
             'callback_route_name' => 'docusign_callback',
             'webhook_route_name' => 'docusign_webhook',
             'signatures_overridable' => true,

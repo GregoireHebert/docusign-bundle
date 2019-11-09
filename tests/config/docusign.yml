@@ -1,9 +1,13 @@
 docusign:
-  access_token: 'YourAccessToken'
+  demo: true
+  auth_jwt:
+    private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
+    integration_key: 'yourIntegrationKey'
+    user_guid: 'yourUserGuid'
   account_id: 'yourAccountId'
   default_signer_name: 'Grégoire Hébert'
   default_signer_email: 'gregoire@les-tilleuls.coop'
-  api_uri: 'https://demo.docusign.net/restapi'
+  api_uri: 'https://eu.docusign.net/restapi'
   callback_route_name: 'docusign_callback'
   webhook_route_name: 'docusign_webhook'
   signatures_overridable: false

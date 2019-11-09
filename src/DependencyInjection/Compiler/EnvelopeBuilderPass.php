@@ -42,7 +42,6 @@ final class EnvelopeBuilderPass implements CompilerPassInterface
         }
 
         $definition->setAutowired(true);
-        $definition->setArgument('$accessToken', $container->getParameter('docusign.access_token'));
         $definition->setArgument('$accountId', $container->getParameter('docusign.account_id'));
         $definition->setArgument('$defaultSignerName', $container->getParameter('docusign.default_signer_name'));
         $definition->setArgument('$defaultSignerEmail', $container->getParameter('docusign.default_signer_email'));
