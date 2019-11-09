@@ -67,8 +67,11 @@ class ConfigurationTest extends TestCase
                 'signatures_overridable' => false,
                 'signatures' => [],
                 'storage' => [
-                    'adapter' => 'flysystem.adapter.name',
+                    'storage' => 'flysystem.adapter.name',
                     'options' => [],
+                    'visibility' => null,
+                    'case_sensitive' => true,
+                    'disable_asserts' => false,
                 ]
             ],
         ], $config);
@@ -92,12 +95,10 @@ class ConfigurationTest extends TestCase
                 'signatures_overridable' => true,
                 'signatures' => [
                     'my_document' => [
-                        'signatures' => [
-                            [
-                                'page' => 1,
-                                'x_position' => 200,
-                                'y_position' => 300,
-                            ],
+                        [
+                            'page' => 1,
+                            'x_position' => 200,
+                            'y_position' => 300,
                         ],
                     ],
                 ],
@@ -130,12 +131,10 @@ class ConfigurationTest extends TestCase
                 'signatures_overridable' => true,
                 'signatures' => [
                     'my_document' => [
-                        'signatures' => [
-                            [
-                                'page' => 1,
-                                'x_position' => 200,
-                                'y_position' => 300,
-                            ],
+                        [
+                            'page' => 1,
+                            'x_position' => 200,
+                            'y_position' => 300,
                         ],
                     ],
                 ],

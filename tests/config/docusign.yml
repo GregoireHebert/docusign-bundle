@@ -1,3 +1,7 @@
+services:
+  docusign.storage:
+    class: \stdClass
+
 docusign:
   demo: true
   auth_jwt:
@@ -15,3 +19,4 @@ docusign:
       - page: 1
         x_position: 200
         y_position: 400
+  storage: 'docusign.storage'

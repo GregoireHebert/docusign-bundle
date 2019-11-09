@@ -32,6 +32,10 @@ class DocusignExtensionTest extends TestCase
         'account_id' => '5625922',
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
+        'storage' => [
+            'storage' => 'dummy.default.storage',
+            'options' => []
+        ]
     ]];
     public const DEMO_CONFIG = ['docusign' => [
         'demo' => true,
@@ -43,6 +47,10 @@ class DocusignExtensionTest extends TestCase
         'account_id' => '5625922',
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
+        'storage' => [
+            'adapter' => 'dummy.demo.storage',
+            'options' => []
+        ]
     ]];
 
     private $extension;
@@ -76,6 +84,11 @@ class DocusignExtensionTest extends TestCase
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
         }
 
+        $definitionProphecy = $this->prophesize(Definition::class);
+        $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
+
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('docusign_sign', Argument::type(Definition::class))->shouldBeCalled();
@@ -83,11 +96,11 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setDefinition('docusign_webhook', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
 
-        $containerBuilderProphecy->setDefinition('docusign.envelope_builder.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.envelope_builder.default', EnvelopeBuilder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.signature_extractor.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.signature_extractor.default', SignatureExtractor::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(SignatureExtractor::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.grant.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.grant.default', JwtGrant::class)->willReturn($definitionProphecy->reveal())->shouldBeCalled();
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
 
@@ -113,20 +126,30 @@ class DocusignExtensionTest extends TestCase
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
         }
 
+        $aliasDefinition = $this->prophesize(Alias::class);
+        $aliasDefinition->setPublic(false)->shouldBeCalled();
+
+        $definitionProphecy = $this->prophesize(Definition::class);
+        $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
+
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('docusign_sign', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('docusign_webhook', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias('flysystem.adapter.default', Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
 
-        $containerBuilderProphecy->setDefinition('docusign.envelope_builder.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.envelope_builder.default', EnvelopeBuilder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.signature_extractor.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.signature_extractor.default', SignatureExtractor::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(SignatureExtractor::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.grant.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.grant.default', JwtGrant::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('flysystem.storage.default', Argument::type(Definition::class))->shouldBeCalled();
 
         $containerBuilder = $containerBuilderProphecy->reveal();
 

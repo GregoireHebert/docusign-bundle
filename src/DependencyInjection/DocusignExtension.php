@@ -39,8 +39,8 @@ final class DocusignExtension extends Extension
 
         foreach ($config as $name => $value) {
             // Storage (FlySystem compatibility)
-            if (\is_array($value['storage'])) {
-                $value['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
+            if (!isset($value['storage']['storage'])) {
+                $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
             }
 
             // Grant
@@ -61,14 +61,14 @@ final class DocusignExtension extends Extension
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
-                    '$storage' => new Reference($value['storage']),
-                    '$grant' => new Reference('grant'),
+                    '$storage' => new Reference($value['storage']['storage']),
+                    '$grant' => new Reference("docusign.grant.$name"),
                     '$accountId' => $value['account_id'],
                     '$defaultSignerName' => $value['default_signer_name'],
                     '$defaultSignerEmail' => $value['default_signer_email'],
-                    '$apiURI' => $value['api_uri'],
+                    '$apiUri' => $value['api_uri'],
                     '$callbackRouteName' => $value['callback_route_name'],
-                    '$webhookRouteName' => $value['webhook_route_name'],
+                    '$webhookRouteName' => 'docusign_webhook',
                 ]);
 
             // Signature extractor
@@ -81,10 +81,10 @@ final class DocusignExtension extends Extension
                 ]);
 
             if (null === $default) {
-                $container->setAlias("docusign.envelope_builder.$name", new Alias(EnvelopeBuilder::class));
-                $container->setAlias("docusign.signature_extractor.$name", new Alias(SignatureExtractor::class));
-                $container->setAlias("docusign.grant.$name", new Alias(JwtGrant::class));
-                $container->setAlias("docusign.grant.$name", new Alias(GrantInterface::class));
+                $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
+                $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
+                $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
+                $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
                 $default = $name;
             }
         }
@@ -108,7 +108,7 @@ final class DocusignExtension extends Extension
             $container->setDefinition($adapterId, $adapter)->setPublic(false);
         } else {
             // Custom adapter
-            $container->setAlias($adapterId, $config['adapter'])->setPublic(false);
+            $container->setAlias($adapterId, new Alias($config['adapter']))->setPublic(false);
         }
         // Create storage service definition
         $definition = $this->createStorageDefinition(new Reference($adapterId), $config);
