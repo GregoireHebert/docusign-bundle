@@ -42,6 +42,6 @@ jobs:
         run: vendor/bin/phpstan analyze
       - name: Run phpstan tests lowest
         if: matrix.dependency != ''
-        run: vendor/bin/phpstan analyze -c phpstan.neon.dist
+        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
