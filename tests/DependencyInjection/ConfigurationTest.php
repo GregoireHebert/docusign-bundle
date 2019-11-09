@@ -36,8 +36,8 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 1600,
                 ],
                 'account_id' => 'ID',
@@ -55,8 +55,8 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 1600,
                 ],
                 'account_id' => 'ID',
@@ -85,8 +85,8 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 2400,
                 ],
                 'account_id' => 'ID',
@@ -119,8 +119,8 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 2400,
                 ],
                 'account_id' => 'ID',
