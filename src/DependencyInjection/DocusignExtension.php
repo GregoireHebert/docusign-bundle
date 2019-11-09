@@ -17,6 +17,7 @@ use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
+use DocusignBundle\Routing\SignLoader;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
@@ -97,6 +98,10 @@ final class DocusignExtension extends Extension
                 $default = $name;
             }
         }
+
+        $container->register('docusign.route_loader', SignLoader::class)
+            ->setArgument('$config', $config)
+            ->setPublic(false);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('controllers.xml');

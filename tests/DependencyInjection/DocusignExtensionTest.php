@@ -20,9 +20,11 @@ use DocusignBundle\DependencyInjection\DocusignExtension;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
+use DocusignBundle\Routing\SignLoader;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -98,6 +100,21 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
 
+        /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
+        $loaderDefinitionProphecy = $this->prophesize(Definition::class);
+        $containerBuilderProphecy
+            ->register('docusign.route_loader', SignLoader::class)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setArgument('$config', Argument::type('array'))
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setPublic(false)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('docusign_sign', Argument::type(Definition::class))->shouldBeCalled();
@@ -142,6 +159,21 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
+
+        /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
+        $loaderDefinitionProphecy = $this->prophesize(Definition::class);
+        $containerBuilderProphecy
+            ->register('docusign.route_loader', SignLoader::class)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setArgument('$config', Argument::type('array'))
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setPublic(false)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
 
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();

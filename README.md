@@ -58,7 +58,8 @@ return [
 # config/routes.yml
 
 docusign:
-    resource: '@DocusignBundle/Resources/config/routing.xml'
+    resource: .
+    type: docusign
 ```
 
 ### Configure the bundle
