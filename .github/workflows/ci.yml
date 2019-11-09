@@ -34,7 +34,7 @@ jobs:
       - name: Install Composer
         run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
       - name: Update project dependencies
-        run: composer update --no-progress --no-suggest --ansi {{ matrix.dependency }}
+        run: composer update --no-progress --no-suggest --ansi ${{ matrix.dependency }}
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --colors=always
       - name: Run phpstan tests
