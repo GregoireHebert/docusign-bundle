@@ -36,35 +36,44 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 1600,
                 ],
-                'account_id' => 'ID',
+                'account_id' => 1234567,
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'storage' => 'flysystem.adapter.name'
             ],
         ]);
 
         $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
+
         $this->assertEquals([
-            'demo' => false,
-            'auth_jwt' => [
-                'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                'integration_key' => 'yourIntegrationKey',
-                'user_guid' => 'yourUserGuid',
-                'ttl' => 1600,
+            'default' => [
+                'demo' => false,
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
+                    'ttl' => 1600,
+                ],
+                'account_id' => 1234567,
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'api_uri' => 'https://www.docusign.net/restapi',
+                'callback_route_name' => 'docusign_callback',
+                'signatures_overridable' => false,
+                'signatures' => [],
+                'storage' => [
+                    'storage' => 'flysystem.adapter.name',
+                    'options' => [],
+                    'visibility' => null,
+                    'case_sensitive' => true,
+                    'disable_asserts' => false,
+                ]
             ],
-            'account_id' => 'ID',
-            'default_signer_name' => 'Grégoire Hébert',
-            'default_signer_email' => 'gregoire@les-tilleuls.coop',
-            'api_uri' => 'https://www.docusign.net/restapi',
-            'callback_route_name' => 'docusign_callback',
-            'webhook_route_name' => 'docusign_webhook',
-            'signatures_overridable' => false,
-            'signatures' => [],
-            'storages' => [],
         ], $config);
     }
 
@@ -76,58 +85,16 @@ class ConfigurationTest extends TestCase
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                    'integration_key' => 'yourIntegrationKey',
-                    'user_guid' => 'yourUserGuid',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
                     'ttl' => 2400,
                 ],
-                'account_id' => 'ID',
+                'account_id' => 1234567,
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'signatures_overridable' => true,
                 'signatures' => [
                     'my_document' => [
-                        'signatures' => [
-                            [
-                                'page' => 1,
-                                'x_position' => 200,
-                                'y_position' => 300,
-                            ],
-                        ],
-                    ],
-                ],
-                'storages' => [
-                    'MyStorage' => [
-                        'adapter' => 'MyAdapter',
-                        'options' => ['options' => 'MyOption'],
-                        'visibility' => 'MyVisibility',
-                        'case_sensitive' => false,
-                        'disable_asserts' => false,
-                    ],
-                ],
-            ],
-            'storages' => [],
-        ]);
-
-        $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
-        $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
-        $this->assertEquals([
-            'demo' => false,
-            'auth_jwt' => [
-                'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                'integration_key' => 'yourIntegrationKey',
-                'user_guid' => 'yourUserGuid',
-                'ttl' => 2400,
-            ],
-            'account_id' => 'ID',
-            'default_signer_name' => 'Grégoire Hébert',
-            'default_signer_email' => 'gregoire@les-tilleuls.coop',
-            'api_uri' => 'https://www.docusign.net/restapi',
-            'callback_route_name' => 'docusign_callback',
-            'webhook_route_name' => 'docusign_webhook',
-            'signatures_overridable' => true,
-            'signatures' => [
-                'my_document' => [
-                    'signatures' => [
                         [
                             'page' => 1,
                             'x_position' => 200,
@@ -135,9 +102,43 @@ class ConfigurationTest extends TestCase
                         ],
                     ],
                 ],
+                'storage' => [
+                    'adapter' => 'MyAdapter',
+                    'options' => ['options' => 'MyOption'],
+                    'visibility' => 'MyVisibility',
+                    'case_sensitive' => false,
+                    'disable_asserts' => false,
+                ],
             ],
-            'storages' => [
-                'MyStorage' => [
+        ]);
+
+        $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
+        $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
+        $this->assertEquals([
+            'default' => [
+                'demo' => false,
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'user_guid' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
+                    'ttl' => 2400,
+                ],
+                'account_id' => 1234567,
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'api_uri' => 'https://www.docusign.net/restapi',
+                'callback_route_name' => 'docusign_callback',
+                'signatures_overridable' => true,
+                'signatures' => [
+                    'my_document' => [
+                        [
+                            'page' => 1,
+                            'x_position' => 200,
+                            'y_position' => 300,
+                        ],
+                    ],
+                ],
+                'storage' => [
                     'adapter' => 'MyAdapter',
                     'options' => ['options' => 'MyOption'],
                     'visibility' => 'MyVisibility',

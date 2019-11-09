@@ -9,11 +9,13 @@ use DocusignBundle\Controller\Sign;
 use DocusignBundle\Controller\Webhook;
 use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\Grant\GrantInterface;
+use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Utils\SignatureExtractor;
 use Nyholm\BundleTest\BaseBundleTestCase;
 
 /**
- * @author Vincent Chalamon <vincent@les-tilleuls.coop>
+ * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
 final class BundleInitializationTest extends BaseBundleTestCase
 {
@@ -29,15 +31,13 @@ final class BundleInitializationTest extends BaseBundleTestCase
         $this->bootKernel();
 
         $container = $this->getContainer();
-        $this->assertTrue($container->has(Callback::class));
-        $this->assertTrue($container->has('docusign_callback'));
-        $this->assertTrue($container->has(Sign::class));
-        $this->assertTrue($container->has('docusign_sign'));
-        $this->assertTrue($container->has(Webhook::class));
-        $this->assertTrue($container->has('docusign_webhook'));
+
+        $this->assertFalse($container->has('docusign.grant.default'));
+        $this->assertFalse($container->has(JwtGrant::class));
+        $this->assertFalse($container->has(GrantInterface::class));
+        $this->assertFalse($container->has('docusign.signature_extractor.default'));
         $this->assertFalse($container->has(SignatureExtractor::class));
-        $this->assertFalse($container->has('docusign_signature_extractor'));
+        $this->assertFalse($container->has('docusign.envelope_builder.default'));
         $this->assertFalse($container->has(EnvelopeBuilder::class));
-        $this->assertFalse($container->has('docusign_envelope_builder'));
     }
 }

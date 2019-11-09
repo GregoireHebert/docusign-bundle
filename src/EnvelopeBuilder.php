@@ -35,7 +35,7 @@ class EnvelopeBuilder
     /** @var Model\Signer[]|array */
     private $signers = [];
     /** @var string */
-    private $apiURI;
+    private $apiUri;
     /** @var string|null */
     private $filePath;
     /** @var Model\SignHere[]|array */
@@ -61,7 +61,7 @@ class EnvelopeBuilder
     /** @var string|null */
     private $envelopeId;
     /** @var string */
-    private $callBackRouteName;
+    private $callbackRouteName;
     /** @var string */
     private $webhookRouteName;
     /** @var RouterInterface */
@@ -75,20 +75,31 @@ class EnvelopeBuilder
     /** @var Stopwatch */
     private $stopwatch;
 
-    public function __construct(LoggerInterface $logger, Stopwatch $stopwatch, RouterInterface $router, FilesystemInterface $docusignStorage, GrantInterface $grant, string $accountId, string $defaultSignerName, string $defaultSignerEmail, string $apiURI, string $callBackRouteName, string $webhookRouteName)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        Stopwatch $stopwatch,
+        RouterInterface $router,
+        FilesystemInterface $storage,
+        GrantInterface $grant,
+        string $accountId,
+        string $defaultSignerName,
+        string $defaultSignerEmail,
+        string $apiUri,
+        string $callbackRouteName,
+        string $webhookRouteName
+    ) {
         $this->logger = $logger;
         $this->stopwatch = $stopwatch;
         $this->router = $router;
-        $this->fileSystem = $docusignStorage;
+        $this->fileSystem = $storage;
         $this->grant = $grant;
         $this->accountId = $accountId;
 
         $this->signerName = $defaultSignerName;
         $this->signerEmail = $defaultSignerEmail;
 
-        $this->apiURI = $apiURI;
-        $this->callBackRouteName = $callBackRouteName;
+        $this->apiUri = $apiUri;
+        $this->callbackRouteName = $callbackRouteName;
         $this->webhookRouteName = $webhookRouteName;
 
         $this->docReference = time();
@@ -342,7 +353,7 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callBackRouteName, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callbackRouteName, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
@@ -368,7 +379,7 @@ class EnvelopeBuilder
     private function setUpConfiguration(): void
     {
         $this->config = new Configuration();
-        $this->config->setHost($this->apiURI);
+        $this->config->setHost($this->apiUri);
         $this->config->addDefaultHeader('Authorization', 'Bearer '.($this->grant)());
         $this->apiClient = new ApiClient($this->config);
         $this->envelopesApi = new EnvelopesApi($this->apiClient);

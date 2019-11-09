@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
+use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
+use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -18,8 +22,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DocusignExtension extends Extension
 {
-    public const STORAGE_NAME = 'docusign.storage';
-
     /**
      * {@inheritdoc}
      */
@@ -28,51 +30,92 @@ final class DocusignExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('docusign.account_id', $config['account_id']);
-        $container->setParameter('docusign.default_signer_name', $config['default_signer_name']);
-        $container->setParameter('docusign.default_signer_email', $config['default_signer_email']);
-        $container->setParameter('docusign.api_uri', $config['demo'] ? JwtGrant::DEMO_API_URI : $config['api_uri']);
-        $container->setParameter('docusign.account_api_uri', $config['demo'] ? JwtGrant::DEMO_ACCOUNT_API_URI : JwtGrant::ACCOUNT_API_URI);
-        $container->setParameter('docusign.callback_route_name', $config['callback_route_name']);
-        $container->setParameter('docusign.webhook_route_name', $config['webhook_route_name']);
-        $container->setParameter('docusign.signatures_overridable', $config['signatures_overridable']);
-        $container->setParameter('docusign.signatures', $config['signatures']);
-        $container->setParameter('docusign.auth_jwt.private_key', $config['auth_jwt']['private_key']);
-        $container->setParameter('docusign.auth_jwt.integration_key', $config['auth_jwt']['integration_key']);
-        $container->setParameter('docusign.auth_jwt.user_guid', $config['auth_jwt']['user_guid']);
-        $container->setParameter('docusign.auth_jwt.ttl', $config['auth_jwt']['ttl']);
-
         if (!class_exists(FlysystemBundle::class)) {
-            $this->flySystemCompatibility($container, $config);
+            $container
+                ->registerForAutoconfiguration(PluginInterface::class)
+                ->addTag('flysystem.plugin');
+        }
+        $default = null;
+
+        foreach ($config as $name => $value) {
+            // Storage (FlySystem compatibility)
+            if (!isset($value['storage']['storage'])) {
+                $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
+            }
+
+            // Grant
+            $container->register("docusign.grant.$name", JwtGrant::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$privateKey' => $value['auth_jwt']['private_key'],
+                    '$integrationKey' => $value['auth_jwt']['integration_key'],
+                    '$userGuid' => $value['auth_jwt']['user_guid'],
+                    '$apiUri' => $value['demo'] ? JwtGrant::DEMO_API_URI : $value['api_uri'],
+                    '$accountApiUri' => $value['demo'] ? JwtGrant::DEMO_ACCOUNT_API_URI : JwtGrant::ACCOUNT_API_URI,
+                    '$ttl' => $value['auth_jwt']['ttl'],
+                ]);
+
+            // Envelope builder
+            $container->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$storage' => new Reference($value['storage']['storage']),
+                    '$grant' => new Reference("docusign.grant.$name"),
+                    '$accountId' => $value['account_id'],
+                    '$defaultSignerName' => $value['default_signer_name'],
+                    '$defaultSignerEmail' => $value['default_signer_email'],
+                    '$apiUri' => $value['api_uri'],
+                    '$callbackRouteName' => $value['callback_route_name'],
+                    '$webhookRouteName' => 'docusign_webhook',
+                ]);
+
+            // Signature extractor
+            $container->register("docusign.signature_extractor.$name", SignatureExtractor::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$isOverridable' => $value['signatures_overridable'],
+                    '$signatures' => $value['signatures'],
+                ]);
+
+            if (null === $default) {
+                $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
+                $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
+                $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
+                $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
+                $default = $name;
+            }
         }
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader->load('controllers.xml');
     }
 
     /*
-     * This method is here for the compatibility.
+     * This method is here for the FlySystem compatibility.
      */
-    private function flySystemCompatibility(ContainerBuilder $container, array $config): void
+    private function flySystemCompatibility(ContainerBuilder $container, string $name, array $config): string
     {
         $adapterFactory = new AdapterDefinitionFactory();
-        $container
-            ->registerForAutoconfiguration(PluginInterface::class)
-            ->addTag('flysystem.plugin')
-        ;
-        foreach ($config['storages'] as $storageName => $storageConfig) {
-            // Create adapter service definition
-            if ($adapter = $adapterFactory->createDefinition($storageConfig['adapter'], $storageConfig['options'])) {
-                // Native adapter
-                $container->setDefinition('flysystem.adapter.'.$storageName, $adapter)->setPublic(false);
-            } else {
-                // Custom adapter
-                $container->setAlias('flysystem.adapter.'.$storageName, $storageConfig['adapter'])->setPublic(false);
-            }
-            // Create storage service definition
-            $definition = $this->createStorageDefinition(new Reference('flysystem.adapter.'.$storageName), $storageConfig);
-            $container->setDefinition($storageName, $definition);
+        $storageId = "flysystem.storage.$name";
+        $adapterId = "flysystem.adapter.$name";
+
+        // Create adapter service definition
+        if ($adapter = $adapterFactory->createDefinition($config['adapter'], $config['options'])) {
+            // Native adapter
+            $container->setDefinition($adapterId, $adapter)->setPublic(false);
+        } else {
+            // Custom adapter
+            $container->setAlias($adapterId, new Alias($config['adapter']))->setPublic(false);
         }
+        // Create storage service definition
+        $definition = $this->createStorageDefinition(new Reference($adapterId), $config);
+
+        $container->setDefinition($storageId, $definition);
+
+        return $storageId;
     }
 
     /*

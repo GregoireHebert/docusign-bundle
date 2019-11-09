@@ -14,18 +14,10 @@ class SignatureExtractor
     private $signaturesOverridable = false;
     private $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, bool $isOverridable, array $signatures)
     {
         $this->requestStack = $requestStack;
-    }
-
-    public function setSignaturesOverridable(bool $isOverridable): void
-    {
         $this->signaturesOverridable = $isOverridable;
-    }
-
-    public function setDefaultSignatures(array $signatures): void
-    {
         $this->defaultSignatures = $signatures;
     }
 
