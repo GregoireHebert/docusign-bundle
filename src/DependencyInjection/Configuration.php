@@ -23,7 +23,7 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->beforeNormalization()
-                ->ifTrue(static function ($v) { return is_bool($v['demo'] ?? null);  })
+                ->ifTrue(static function ($v) { return \is_bool($v['demo'] ?? null); })
                 ->then(static function ($v) { return ['default' => $v]; })
             ->end()
             ->useAttributeAsKey('name')
@@ -36,6 +36,24 @@ final class Configuration implements ConfigurationInterface
                     ->scalarNode('account_id')
                         ->info('Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture')
                         ->cannotBeEmpty()
+                        ->validate()
+                            ->ifTrue(static function ($v) {
+                                // BC compat for symfony < 4.1
+                                if (!class_exists(ValidateEnvPlaceholdersPass::class)) {
+                                    return true;
+                                }
+
+                                try {
+                                    Assert::integer($v);
+                                    Assert::true(7 === \strlen((string) $v));
+
+                                    return false;
+                                } catch (\Exception $e) {
+                                    return true;
+                                }
+                            })
+                            ->thenInvalid('Invalid account id %s')
+                        ->end()
                     ->end()
                     ->scalarNode('default_signer_name')
                         ->info('Recipient Information as the signer full name')

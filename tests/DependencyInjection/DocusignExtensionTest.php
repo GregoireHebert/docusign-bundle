@@ -29,7 +29,7 @@ class DocusignExtensionTest extends TestCase
             'integration_key' => 'f19cf430-4a00-491a-9dfe-af1a24323513',
             'user_guid' => 'c4ba97f8-a3a9-4c1e-b4a8-ee529763bada',
         ],
-        'account_id' => '5625922',
+        'account_id' => 5625922,
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
         'storage' => [
@@ -44,7 +44,7 @@ class DocusignExtensionTest extends TestCase
             'integration_key' => '2b616b94-f56a-4221-95cb-a915fe427e5d',
             'user_guid' => '5ea2b503-51af-4059-8b16-21efc6a0577b',
         ],
-        'account_id' => '5625922',
+        'account_id' => 5625922,
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
         'storage' => [
