@@ -31,7 +31,7 @@
             <argument>%docusign.auth_jwt.user_guid%</argument>
             <argument>%docusign.api_uri%</argument>
             <argument>%docusign.account_api_uri%</argument>
-            <argument>%docusign.ttl%</argument>
+            <argument>%docusign.auth_jwt.ttl%</argument>
         </service>
         <service id="DocusignBundle\Grant\JwtGrant" alias="docusign_grant_jwt" public="false" />
         <service id="DocusignBundle\Grant\GrantInterface" alias="docusign_grant_jwt" public="false" />

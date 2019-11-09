@@ -24,7 +24,18 @@ class DocusignExtensionTest extends TestCase
 {
     public const DEFAULT_CONFIG = ['docusign' => [
         'demo' => false,
-        'jwt' => [
+        'auth_jwt' => [
+            'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+            'integration_key' => 'yourIntegrationKey',
+            'user_guid' => 'yourUserGuid',
+        ],
+        'account_id' => 'ID',
+        'default_signer_name' => 'Grégoire Hébert',
+        'default_signer_email' => 'gregoire@les-tilleuls.coop',
+    ]];
+    public const DEMO_CONFIG = ['docusign' => [
+        'demo' => true,
+        'auth_jwt' => [
             'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
             'integration_key' => 'yourIntegrationKey',
             'user_guid' => 'yourUserGuid',
@@ -79,14 +90,15 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
 
-        $containerBuilderProphecy->setParameter('docusign.jwt.private_key', '%kernel.project_dir%/var/jwt/docusign.pem')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.jwt.integration_key', 'yourIntegrationKey')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.jwt.user_guid', 'yourUserGuid')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.private_key', '%kernel.project_dir%/var/jwt/docusign.pem')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'yourIntegrationKey')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', 'yourUserGuid')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.ttl', 3600)->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.account_id', 'ID')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_name', 'Grégoire Hébert')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_email', 'gregoire@les-tilleuls.coop')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.api_uri', 'https://www.docusign.net/restapi')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.account_api_uri', 'https://account.docusign.net/oauth/token')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.account_api_uri', 'https://account.docusign.com/oauth/token')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.callback_route_name', 'docusign_callback')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.webhook_route_name', 'docusign_webhook')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.signatures_overridable', false)->shouldBeCalled();
@@ -94,5 +106,54 @@ class DocusignExtensionTest extends TestCase
         $containerBuilder = $containerBuilderProphecy->reveal();
 
         $this->extension->load(self::DEFAULT_CONFIG, $containerBuilder);
+    }
+
+    public function testLoadDemoConfig(): void
+    {
+        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+
+        $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
+
+        $parameterBag = new EnvPlaceholderParameterBag();
+        $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
+
+        $containerBuilderProphecy->fileExists(Argument::type('string'))->will(function ($args) {
+            return file_exists($args[0]);
+        })->shouldBeCalled();
+
+        if (method_exists(ContainerBuilder::class, 'removeBindings')) {
+            $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        }
+
+        $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign_sign', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign_webhook', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign_envelope_builder', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign_signature_extractor', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(SignatureExtractor::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign_grant_jwt', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
+
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.private_key', '%kernel.project_dir%/var/jwt/docusign.pem')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'yourIntegrationKey')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', 'yourUserGuid')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.ttl', 3600)->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.account_id', 'ID')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.default_signer_name', 'Grégoire Hébert')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.default_signer_email', 'gregoire@les-tilleuls.coop')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.api_uri', 'https://demo.docusign.net/restapi')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.account_api_uri', 'https://account-d.docusign.com/oauth/token')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.callback_route_name', 'docusign_callback')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.webhook_route_name', 'docusign_webhook')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.signatures_overridable', false)->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.signatures', [])->shouldBeCalled();
+        $containerBuilder = $containerBuilderProphecy->reveal();
+
+        $this->extension->load(self::DEMO_CONFIG, $containerBuilder);
     }
 }

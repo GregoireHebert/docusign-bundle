@@ -1,6 +1,6 @@
 docusign:
   demo: true
-  jwt:
+  auth_jwt:
     private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
     integration_key: 'yourIntegrationKey'
     user_guid: 'yourUserGuid'

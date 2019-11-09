@@ -34,10 +34,11 @@ class ConfigurationTest extends TestCase
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'demo' => false,
-                'jwt' => [
+                'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
                     'integration_key' => 'yourIntegrationKey',
                     'user_guid' => 'yourUserGuid',
+                    'ttl' => 1600,
                 ],
                 'account_id' => 'ID',
                 'default_signer_name' => 'Grégoire Hébert',
@@ -49,10 +50,11 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
             'demo' => false,
-            'jwt' => [
+            'auth_jwt' => [
                 'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
                 'integration_key' => 'yourIntegrationKey',
                 'user_guid' => 'yourUserGuid',
+                'ttl' => 1600,
             ],
             'account_id' => 'ID',
             'default_signer_name' => 'Grégoire Hébert',
@@ -72,10 +74,11 @@ class ConfigurationTest extends TestCase
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'demo' => false,
-                'jwt' => [
+                'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
                     'integration_key' => 'yourIntegrationKey',
                     'user_guid' => 'yourUserGuid',
+                    'ttl' => 2400,
                 ],
                 'account_id' => 'ID',
                 'default_signer_name' => 'Grégoire Hébert',
@@ -109,10 +112,11 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
             'demo' => false,
-            'jwt' => [
+            'auth_jwt' => [
                 'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
                 'integration_key' => 'yourIntegrationKey',
                 'user_guid' => 'yourUserGuid',
+                'ttl' => 2400,
             ],
             'account_id' => 'ID',
             'default_signer_name' => 'Grégoire Hébert',
