@@ -64,8 +64,12 @@ docusign:
 ### Configure the bundle
 
 Check the [official documentation](https://github.com/docusign/qs-php).
-[Configure JWT Grant](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken).
-Your account id is visible on the top right level of your demo.docusign account right below your profile picture in the little drop-down.
+
+Your account id is visible on the top right level of your DocuSign account right below your profile picture in the
+little drop-down.
+
+[Configure JWT Grant](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken) and set
+your private key into `%kernel.project_dir%/var/jwt/docusign.pem`. This path is configurable as following:
 
 ```yml
 # config/packages/docusign.yml

@@ -16,12 +16,17 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final class JwtGrant implements GrantInterface
 {
+    public const DEMO_ACCOUNT_API_URI = 'https://account-d.docusign.com/oauth/token';
+    public const ACCOUNT_API_URI = 'https://account.docusign.com/oauth/token';
+    public const DEMO_API_URI = 'https://demo.docusign.net/restapi';
+
     private $client;
     private $privateKey;
     private $integrationKey;
     private $userGuid;
     private $apiUri;
     private $accountApiUri;
+    private $ttl;
 
     public function __construct(
         string $privateKey,
@@ -29,6 +34,7 @@ final class JwtGrant implements GrantInterface
         string $userGuid,
         string $apiURI,
         string $accountApiUri,
+        int $ttl,
         HttpClientInterface $client = null
     ) {
         $this->client = $client ?: HttpClient::create();
@@ -37,6 +43,7 @@ final class JwtGrant implements GrantInterface
         $this->userGuid = $userGuid;
         $this->apiUri = $apiURI;
         $this->accountApiUri = $accountApiUri;
+        $this->ttl = $ttl;
     }
 
     public function __invoke(): string
@@ -45,8 +52,8 @@ final class JwtGrant implements GrantInterface
         $token = (new Builder())->issuedBy($this->integrationKey) // iss
             ->relatedTo($this->userGuid) // sub
             ->issuedAt($time) // iat
-            ->expiresAt($time + 3600) // exp
-            ->permittedFor('account-d.docusign.com') // aud
+            ->expiresAt($time + $this->ttl) // exp
+            ->permittedFor(parse_url($this->accountApiUri, PHP_URL_HOST)) // aud
             ->withClaim('scope', 'signature impersonation') // scope
             ->getToken(new Sha256(), new Key("file://$this->privateKey"));
 
