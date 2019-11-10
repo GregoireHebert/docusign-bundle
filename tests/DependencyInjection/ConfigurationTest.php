@@ -43,7 +43,7 @@ class ConfigurationTest extends TestCase
                 'account_id' => 1234567,
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
-                'storage' => 'flysystem.adapter.name'
+                'storage' => 'flysystem.adapter.name',
             ],
         ]);
 
@@ -63,7 +63,7 @@ class ConfigurationTest extends TestCase
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'api_uri' => 'https://www.docusign.net/restapi',
-                'callback_route_name' => 'docusign_callback',
+                'callback' => 'docusign_callback',
                 'signatures_overridable' => false,
                 'signatures' => [],
                 'storage' => [
@@ -72,7 +72,7 @@ class ConfigurationTest extends TestCase
                     'visibility' => null,
                     'case_sensitive' => true,
                     'disable_asserts' => false,
-                ]
+                ],
             ],
         ], $config);
     }
@@ -127,7 +127,7 @@ class ConfigurationTest extends TestCase
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'api_uri' => 'https://www.docusign.net/restapi',
-                'callback_route_name' => 'docusign_callback',
+                'callback' => 'docusign_callback',
                 'signatures_overridable' => true,
                 'signatures' => [
                     'my_document' => [

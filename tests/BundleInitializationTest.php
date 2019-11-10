@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Tests\Bridge\FlySystem;
 
-use DocusignBundle\Controller\Callback;
-use DocusignBundle\Controller\Sign;
-use DocusignBundle\Controller\Webhook;
 use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;

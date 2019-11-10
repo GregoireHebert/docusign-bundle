@@ -61,7 +61,7 @@ class EnvelopeBuilder
     /** @var string|null */
     private $envelopeId;
     /** @var string */
-    private $callbackRouteName;
+    private $callback;
     /** @var string */
     private $webhookRouteName;
     /** @var RouterInterface */
@@ -85,7 +85,7 @@ class EnvelopeBuilder
         string $defaultSignerName,
         string $defaultSignerEmail,
         string $apiUri,
-        string $callbackRouteName,
+        string $callback,
         string $webhookRouteName
     ) {
         $this->logger = $logger;
@@ -99,7 +99,7 @@ class EnvelopeBuilder
         $this->signerEmail = $defaultSignerEmail;
 
         $this->apiUri = $apiUri;
-        $this->callbackRouteName = $callbackRouteName;
+        $this->callback = $callback;
         $this->webhookRouteName = $webhookRouteName;
 
         $this->docReference = time();
@@ -353,7 +353,7 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callbackRouteName, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
+            'return_url' => $this->getCallbackRouteUrl(),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);
@@ -383,5 +383,18 @@ class EnvelopeBuilder
         $this->config->addDefaultHeader('Authorization', 'Bearer '.($this->grant)());
         $this->apiClient = new ApiClient($this->config);
         $this->envelopesApi = new EnvelopesApi($this->apiClient);
+    }
+
+    private function getCallbackRouteUrl(): string
+    {
+        $queryParameters = array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters);
+
+        // Callback is a route name
+        if (!preg_match('/^https?:\/\//', $this->callback)) {
+            return $this->router->generate($this->callback, $queryParameters, Router::ABSOLUTE_URL);
+        }
+
+        // Callback is already an url
+        return $this->callback.(parse_url($this->callback, PHP_URL_QUERY) ? '&' : '?').http_build_query($queryParameters);
     }
 }

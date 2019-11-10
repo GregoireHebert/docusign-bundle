@@ -67,7 +67,7 @@ final class DocusignExtension extends Extension
                     '$defaultSignerName' => $value['default_signer_name'],
                     '$defaultSignerEmail' => $value['default_signer_email'],
                     '$apiUri' => $value['api_uri'],
-                    '$callbackRouteName' => $value['callback_route_name'],
+                    '$callback' => $value['callback'],
                     '$webhookRouteName' => 'docusign_webhook',
                 ]);
 

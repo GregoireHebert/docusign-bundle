@@ -85,7 +85,7 @@ final class Configuration implements ConfigurationInterface
                         ->cannotBeEmpty()
                         ->defaultValue('https://www.docusign.net/restapi')
                     ->end()
-                    ->scalarNode('callback_route_name')
+                    ->scalarNode('callback')
                         ->info('Where does DocuSign redirect the user after the document has been signed. Use a route name')
                         ->cannotBeEmpty()
                         ->defaultValue('docusign_callback')

@@ -34,8 +34,8 @@ class DocusignExtensionTest extends TestCase
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
         'storage' => [
             'storage' => 'dummy.default.storage',
-            'options' => []
-        ]
+            'options' => [],
+        ],
     ]];
     public const DEMO_CONFIG = ['docusign' => [
         'demo' => true,
@@ -49,8 +49,8 @@ class DocusignExtensionTest extends TestCase
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
         'storage' => [
             'adapter' => 'dummy.demo.storage',
-            'options' => []
-        ]
+            'options' => [],
+        ],
     ]];
 
     private $extension;
