@@ -108,6 +108,93 @@ Now force push to update your PR:
 git push --force-with-lease
 ```
 
+# Run the project locally
+
+Create the `features/.env.local.php` file as following:
+
+```php
+<?php
+
+return [
+    'DOCUSIGN_INTEGRATION_KEY' => 'your-personal-integration-key',
+    'DOCUSIGN_USER_GUID' => 'your-personal-user-guid',
+    'DOCUSIGN_ACCOUNT_ID' => your-personal-account-id,
+    'APP_ENV' => 'embedded',
+    'APP_DEBUG' => true,
+];
+```
+
+Then, [generate an RSA key pair](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken)
+on DocuSign and store the private key on `features/var/jwt/docusign.pem`.
+
+## Starting the demo project
+
+```shell
+features/console server:start
+```
+
+Then go to http://localhost:8000.
+
+## Debugging
+
+The [WebProfilerBundle](https://symfony.com/web-profiler-bundle) is available at http://localhost:8000/_profiler/.
+
+## List of embedded documents
+
+To access the list of embedded documents, you'll need to login as `admin:4dm1n`: http://localhost:8000/embedded.
+
+## Running tests
+
+Create the `phpunit.xml` file as following:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="true"
+         colors="true"
+         bootstrap="features/bootstrap.php"
+>
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <env name="APP_ENV" value="embedded" />
+        <env name="APP_DEBUG" value="true" />
+        <env name="KERNEL_DIR" value="features/" />
+        <env name="KERNEL_CLASS" value="Kernel" />
+        <env name="DOCUSIGN_INTEGRATION_KEY" value="your-integration-key" />
+        <env name="DOCUSIGN_USER_GUID" value="your-user-guid" />
+        <env name="DOCUSIGN_ACCOUNT_ID" value="your-account-id" />
+        <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
+        <server name="PANTHER_NO_SANDBOX" value="1" />
+        <server name="PANTHER_CHROME_ARGUMENTS" value="--remote-debugging-port=9222" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Docusign bundle Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+        </whitelist>
+    </filter>
+
+    <extensions>
+        <extension class="Symfony\Component\Panther\ServerExtension" />
+    </extensions>
+</phpunit>
+```
+
+Then, run the following command to execute e2e tests:
+
+```shell
+vendor/bin/phpunit --testdox
+```
+
 # License and Copyright Attribution
 
 When you open a Pull Request to the Docusign bundle, you agree to license your code under the [MIT license](LICENSE)

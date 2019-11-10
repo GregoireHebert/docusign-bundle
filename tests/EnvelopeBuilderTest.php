@@ -15,7 +15,6 @@ namespace DocusignBundle\Tests;
 
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use DocusignBundle\Grant\GrantInterface;
 use League\Flysystem\FilesystemInterface;
@@ -60,7 +59,7 @@ class EnvelopeBuilderTest extends TestCase
         );
     }
 
-    public function testRemoteSignatureEnvelope(): void
+    public function testItCreatesARemoteSignatureEnvelope(): void
     {
         $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilderInterface::class))->willReturn('/path/to/redirect');
 

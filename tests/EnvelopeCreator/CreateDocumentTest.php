@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the DocusignBundle.
+ *
+ * (c) Grégoire Hébert <gregoire@les-tilleuls.coop>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace DocusignBundle\Tests\EnvelopeCreator;
@@ -23,7 +32,7 @@ class CreateDocumentTest extends TestCase
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);
     }
 
-    public function testMissingFile(): void
+    public function testItThrowsAnErrorOnMissingFile(): void
     {
         $this->envelopeBuilderProphecyMock->getFileContent()->shouldBeCalled()->willReturn(false);
         $this->envelopeBuilderProphecyMock->getFilePath()->shouldBeCalled()->willReturn(null);
@@ -31,10 +40,10 @@ class CreateDocumentTest extends TestCase
 
         $this->expectException(FileNotFoundException::class);
         $createDocument = new CreateDocument($this->envelopeBuilderProphecyMock->reveal());
-        $createDocument(['signature_name'=> 'default']);
+        $createDocument(['signature_name' => 'default']);
     }
 
-    public function testHandle(): void
+    public function testItCreatesADocument(): void
     {
         $this->envelopeBuilderProphecyMock->getFilePath()->shouldBeCalled()->willReturn('julienclair.mp3');
         $this->envelopeBuilderProphecyMock->getFileContent()->shouldBeCalled()->willReturn('bytes');
@@ -45,8 +54,7 @@ class CreateDocumentTest extends TestCase
         $this->envelopeBuilderProphecyMock->getName()->willReturn('default');
 
         $createDocument = new CreateDocument($envelopeBuilder = $this->envelopeBuilderProphecyMock->reveal());
-        $createDocument(['signature_name'=>'default']);
-
+        $createDocument(['signature_name' => 'default']);
         $this->assertInstanceOf(EnvelopeBuilderInterface::class, $envelopeBuilder);
         $this->assertInstanceOf(Document::class, $document = $envelopeBuilder->getDocument());
     }

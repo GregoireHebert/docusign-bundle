@@ -16,9 +16,8 @@ namespace DocusignBundle;
 use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\Model;
 use League\Flysystem\FilesystemInterface;
-use Symfony\Contracts\Service\ResetInterface;
 
-interface EnvelopeBuilderInterface extends ResetInterface
+interface EnvelopeBuilderInterface
 {
     public function setFile(string $filePath);
 
@@ -45,6 +44,8 @@ interface EnvelopeBuilderInterface extends ResetInterface
     public function getMode(): string;
 
     public function getEnvelopesApi(): ?EnvelopesApi;
+
+    public function reset(): void;
 
     public function getAccountId(): string;
 

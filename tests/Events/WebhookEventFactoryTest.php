@@ -32,7 +32,7 @@ final class WebhookEventFactoryTest extends TestCase
     /**
      * @dataProvider getEvents
      */
-    public function testCreateEventFromStatus(string $eventClass, string $eventName): void
+    public function testItCreatesAnEventFromStatus(string $eventClass, string $eventName): void
     {
         $this->assertInstanceOf($eventClass, WebhookEventFactory::create(
             $eventName,
@@ -61,7 +61,7 @@ XML
         ];
     }
 
-    public function testCannotCreateEventFromInvalidStatus(): void
+    public function testItCannotCreatesAnEventFromInvalidStatus(): void
     {
         $this->expectException(InvalidStatusException::class);
         WebhookEventFactory::create('invalid');

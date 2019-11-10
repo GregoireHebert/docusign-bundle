@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebhookTest extends TestCase
 {
-    public function testWebhook(): void
+    public function testTheWebhookControllerDispatchesAnEventWhenCalled(): void
     {
         $requestProphecy = $this->prophesize(Request::class);
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
