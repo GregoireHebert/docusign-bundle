@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the DocusignBundle.
+ *
+ * (c) Grégoire Hébert <gregoire@les-tilleuls.coop>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace DocusignBundle\Tests\DependencyInjection;
@@ -43,7 +52,7 @@ class ConfigurationTest extends TestCase
                 'account_id' => 1234567,
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
-                'storage' => 'flysystem.adapter.name'
+                'storage' => 'flysystem.adapter.name',
             ],
         ]);
 
@@ -72,7 +81,7 @@ class ConfigurationTest extends TestCase
                     'visibility' => null,
                     'case_sensitive' => true,
                     'disable_asserts' => false,
-                ]
+                ],
             ],
         ], $config);
     }
