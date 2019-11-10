@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Embedded documents{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for name, path in documents %}
+            <li><a href="{{ path('docusign_sign_default', {'path': path}) }}">{{ name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block footer %}
+    <p><a href="{{ path('homepage') }}">&#8592; Back to the homepage</a></p>
+{% endblock %}

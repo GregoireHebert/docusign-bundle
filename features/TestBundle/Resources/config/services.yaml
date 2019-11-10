@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+    bind:
+      $kernelProjectDir: '%kernel.project_dir%'
+
+  DocusignBundle\E2e\TestBundle\:
+    resource: '../../*'
+    exclude: '../../{DependencyInjection,TestBundle.php}'
+
+  DocusignBundle\E2e\TestBundle\Controller\:
+    resource: '../../Controller/*'
+    tags: ['controller.service_arguments']

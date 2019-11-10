@@ -44,22 +44,18 @@ class SignatureExtractorTest extends TestCase
         $this->requestStackMock->getCurrentRequest()->willReturn($requestMock);
     }
 
-    public function testDefaultSignaturesWithType(): void
+    public function testItExtractsDefaultSignaturesWithType(): void
     {
         $this->queryMock->get('signatures')->willReturn(null);
         $this->queryMock->get('document_type')->willReturn('Quote');
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
             'Receipt' => [
-                'signatures' => [
-                    ['page' => 1, 'x_position' => 250, 'y_position' => 50],
-                ],
+                ['page' => 1, 'x_position' => 250, 'y_position' => 50],
             ],
         ]);
 
@@ -69,7 +65,7 @@ class SignatureExtractorTest extends TestCase
         ], $signatureExtractor->getSignatures());
     }
 
-    public function testNoSignatures(): void
+    public function testItCannotExtractNoSignatures(): void
     {
         $this->queryMock->get('signatures')->willReturn(null);
         $this->queryMock->get('document_type')->willReturn(null);
@@ -77,22 +73,18 @@ class SignatureExtractorTest extends TestCase
         $this->assertNull((new SignatureExtractor($this->requestStackMock->reveal(), false, []))->getSignatures());
     }
 
-    public function testDefaultSignaturesWithAmbiguity(): void
+    public function testItThrowsAnErrorOnExtractDefaultSignaturesWithAmbiguity(): void
     {
         $this->queryMock->get('signatures')->willReturn(null);
         $this->queryMock->get('document_type')->willReturn(null);
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
             'Receipt' => [
-                'signatures' => [
-                    ['page' => 1, 'x_position' => 250, 'y_position' => 50],
-                ],
+                ['page' => 1, 'x_position' => 250, 'y_position' => 50],
             ],
         ]);
 
@@ -100,17 +92,15 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testDefaultSignaturesNoAmbiguity(): void
+    public function testItExtractsDefaultSignaturesWithNoAmbiguity(): void
     {
         $this->queryMock->get('signatures')->willReturn(null);
         $this->queryMock->get('document_type')->willReturn(null);
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
         ]);
 
@@ -120,7 +110,7 @@ class SignatureExtractorTest extends TestCase
         ], $signatureExtractor->getSignatures());
     }
 
-    public function testRequestSignatureInvalid(): void
+    public function testItThrowsAnErrorOnInvalidRequestSignature(): void
     {
         $this->queryMock->get('signatures')->willReturn('invalid');
 
@@ -131,7 +121,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testDefaultSignatureCannotBeOverridden(): void
+    public function testTheDefaultSignatureCannotBeOverridden(): void
     {
         $this->queryMock->get('document_type')->willReturn(null);
         $this->queryMock->get('signatures')->shouldNotBeCalled();
@@ -139,7 +129,7 @@ class SignatureExtractorTest extends TestCase
         $this->assertNull((new SignatureExtractor($this->requestStackMock->reveal(), false, []))->getSignatures());
     }
 
-    public function testRequestSignatureGoodResolution(): void
+    public function testItExtractsSignatureFromRequest(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 3, 'x_position' => 350, 'y_position' => 500],
@@ -154,7 +144,7 @@ class SignatureExtractorTest extends TestCase
         ], $signatureExtractor->getSignatures());
     }
 
-    public function testRequestSignatureMissingXPosition(): void
+    public function testItThrowsAnErrorOnMissingXPosition(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 3, 'y_position' => 500],
@@ -167,7 +157,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testRequestSignatureMissingYPosition(): void
+    public function testItThrowsAnErrorOnMissingYPosition(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 3, 'x_position' => 500],
@@ -180,7 +170,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testRequestSignatureXPositionWrongType(): void
+    public function testItThrowsAnErrorOnXPositionWrongType(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 3, 'x_position' => 'wrong', 'y_position' => 500],
@@ -193,7 +183,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testRequestSignatureYPositionWrongType(): void
+    public function testItThrowsAnErrorOnYPositionWrongType(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 3, 'y_position' => 'wrong', 'x_position' => 500],
@@ -206,7 +196,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testRequestSignaturePageWrongType(): void
+    public function testItThrowsAnErrorOnPageWrongType(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['page' => 'wrong', 'y_position' => 400, 'x_position' => 500],
@@ -219,7 +209,7 @@ class SignatureExtractorTest extends TestCase
         $signatureExtractor->getSignatures();
     }
 
-    public function testSignaturesRequestOverDefault(): void
+    public function testItExtractsSignaturesRequestOverDefault(): void
     {
         $this->queryMock->get('signatures')->willReturn([
             ['y_position' => 400, 'x_position' => 500],
@@ -227,10 +217,8 @@ class SignatureExtractorTest extends TestCase
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), true, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
         ]);
 

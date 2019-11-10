@@ -24,10 +24,10 @@
     },
     "require": {
         "php": "^7.2",
-        "ext-simplexml": "*",
+        "ext-SimpleXML": "*",
         "docusign/esign-client": "^3.0",
         "lcobucci/jwt": "^3.3.1",
-        "league/flysystem": "^1",
+        "league/flysystem": "^1.0.8",
         "psr/log": "^1.1",
         "symfony/config": "^3.4 || ^4.2",
         "symfony/dependency-injection": "^3.4 || ^4.2",
@@ -46,8 +46,18 @@
         "friendsofphp/php-cs-fixer": "^2.15",
         "league/flysystem-bundle": "^1.2",
         "nyholm/symfony-bundle-test": "^1.4",
-        "phpstan/phpstan": "^0.11.15",
-        "phpunit/phpunit": "^7.5.2 || ^8.0"
+        "phpstan/phpstan": "^0.11.19",
+        "phpunit/phpunit": "^7.5.2 || ^8.0",
+        "symfony/css-selector": "^3.4 || ^4.2",
+        "symfony/dotenv": "^3.4 || ^4.2",
+        "symfony/monolog-bundle": "^3.5",
+        "symfony/panther": "^0.6.0",
+        "symfony/polyfill-php72": "^1.9",
+        "symfony/process": "^3.4",
+        "symfony/profiler-pack": "^1.0",
+        "symfony/security-bundle": "^3.4 || ^4.2",
+        "symfony/twig-bundle": "^3.4 || ^4.2",
+        "symfony/web-server-bundle": "^3.4 || ^4.2"
     },
     "suggest": {
         "league/flysystem-bundle": "For Symfony >4.2 - Allow the use of the official adapter system instead of the compat layer."
@@ -59,7 +69,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "DocusignBundle\\Tests\\": "tests/"
+            "DocusignBundle\\Tests\\": "tests/",
+            "DocusignBundle\\E2e\\": "features/"
         }
     },
     "config": {

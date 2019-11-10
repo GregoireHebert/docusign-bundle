@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SignTest extends TestCase
 {
-    public function testSign(): void
+    public function testTheSignControllerRedirectsTheUserToDocusign(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();
@@ -64,7 +64,7 @@ class SignTest extends TestCase
         $this->assertStringContainsString('dummyURL', $response->getContent());
     }
 
-    public function testSignWithoutParam(): void
+    public function testTheSignControllerCalledWithoutParamThrowsAnError(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldNotBeCalled();
@@ -86,7 +86,7 @@ class SignTest extends TestCase
         (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 
-    public function testSignFileNotFound(): void
+    public function testTheSignControllerCalledWithWrongFilePathThrowAnError(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();
@@ -118,7 +118,7 @@ class SignTest extends TestCase
         (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 
-    public function testSignNoSignature(): void
+    public function testTheSignControllerCalledWithoutSignaturesThrowsAnError(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(PreSignEvent::class, Argument::type(PreSignEvent::class))->shouldBeCalled();

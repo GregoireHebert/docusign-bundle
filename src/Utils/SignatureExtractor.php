@@ -45,11 +45,11 @@ class SignatureExtractor
         }
 
         if (null !== $documentType) {
-            return $this->defaultSignatures[$documentType]['signatures'] ?? null;
+            return $this->defaultSignatures[$documentType] ?? null;
         }
 
         if (null === $documentType && 1 === $signaturesDefined) {
-            return array_shift($this->defaultSignatures)['signatures'] ?? null;
+            return array_shift($this->defaultSignatures) ?? null;
         }
 
         if (null === $documentType && 1 < $signaturesDefined) {

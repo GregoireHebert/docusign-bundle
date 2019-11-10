@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests;
 
 use DocusignBundle\DocusignBundle;
-use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Utils\SignatureExtractor;
@@ -30,7 +29,7 @@ final class BundleInitializationTest extends BaseBundleTestCase
         return DocusignBundle::class;
     }
 
-    public function testInitBundle(): void
+    public function testTheBundleIsBootable(): void
     {
         $kernel = $this->createKernel();
         $kernel->addConfigFile(__DIR__.'/config/docusign.yml');

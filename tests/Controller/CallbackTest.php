@@ -15,7 +15,6 @@ namespace DocusignBundle\Tests\Controller;
 
 use DocusignBundle\Controller\Callback;
 use DocusignBundle\DocusignBundle;
-use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -26,7 +25,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class CallbackTest extends TestCase
 {
-    public function testCallback(): void
+    public function testTheCallbackControllerIsValid(): void
     {
         $requestProphecy = $this->prophesize(Request::class);
         $requestProphecy->get('event')->willReturn(Callback::EVENT_COMPLETE);

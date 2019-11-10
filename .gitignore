@@ -7,3 +7,7 @@
 /composer.phar
 /phpunit.xml
 /vendor/
+/features/var
+/features/.env.local.php
+!features/var/storage/embedded/dummy.pdf
+*.png
