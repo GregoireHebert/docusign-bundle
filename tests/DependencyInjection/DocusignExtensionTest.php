@@ -18,6 +18,7 @@ use DocusignBundle\Controller\Sign;
 use DocusignBundle\Controller\Webhook;
 use DocusignBundle\DependencyInjection\DocusignExtension;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
@@ -129,6 +130,10 @@ class DocusignExtensionTest extends TestCase
             ->setPublic(false)
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->addTag('routing.loader')
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
 
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
@@ -150,6 +155,12 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.grant.default', JwtGrant::class)->willReturn($definitionProphecy->reveal())->shouldBeCalled();
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateDocument::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\DefineEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\SendEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateRecipient::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\EnvelopeCreator::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilder = $containerBuilderProphecy->reveal();
 
@@ -205,6 +216,10 @@ class DocusignExtensionTest extends TestCase
             ->setPublic(false)
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->addTag('routing.loader')
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
 
         $containerBuilderProphecy->setDefinition('docusign_callback', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
@@ -228,6 +243,12 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('flysystem.storage.default', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateDocument::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\DefineEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\SendEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateRecipient::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\EnvelopeCreator::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilder = $containerBuilderProphecy->reveal();
 

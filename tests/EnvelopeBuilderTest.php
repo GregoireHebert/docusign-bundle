@@ -15,7 +15,6 @@ namespace DocusignBundle\Tests;
 
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use DocusignBundle\Grant\GrantInterface;
 use League\Flysystem\FilesystemInterface;

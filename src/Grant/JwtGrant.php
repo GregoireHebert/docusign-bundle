@@ -27,7 +27,6 @@ final class JwtGrant implements GrantInterface
 {
     public const DEMO_ACCOUNT_API_URI = 'https://account-d.docusign.com/oauth/token';
     public const ACCOUNT_API_URI = 'https://account.docusign.com/oauth/token';
-    public const DEMO_API_URI = 'https://demo.docusign.net/restapi';
 
     private $client;
     private $privateKey;

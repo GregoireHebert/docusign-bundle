@@ -113,7 +113,6 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-
     public function testConfig(): void
     {
         $treeBuilder = $this->configuration->getConfigTreeBuilder();

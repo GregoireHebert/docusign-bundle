@@ -1,30 +1,29 @@
 <?php
 
+/*
+ * This file is part of the DocusignBundle.
+ *
+ * (c) Grégoire Hébert <gregoire@les-tilleuls.coop>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace DocusignBundle\Tests\EnvelopeCreator;
 
-use DocuSign\eSign\ApiException;
-use DocuSign\eSign\Model\ViewUrl;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\EnvelopeCreator\CreateDocument;
-use DocusignBundle\EnvelopeCreator\CreateRecipient;
-use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
-use DocusignBundle\EnvelopeCreator\SendEnvelope;
-use DocusignBundle\Exception\UnableToSignException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 class EnvelopeCreatorTest extends TestCase
 {
-
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
     private $loggerProphecyMock;
@@ -44,7 +43,7 @@ class EnvelopeCreatorTest extends TestCase
         $this->sendEnvelopeProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
     }
 
-    public function testMissingFilePath()
+    public function testMissingFilePath(): void
     {
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
@@ -63,7 +62,7 @@ class EnvelopeCreatorTest extends TestCase
         $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal());
     }
 
-    public function testMissingDocReference()
+    public function testMissingDocReference(): void
     {
         $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
         $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(0);
@@ -86,7 +85,7 @@ class EnvelopeCreatorTest extends TestCase
         $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal());
     }
 
-    public function testRemoteSignatureWithRouteName()
+    public function testRemoteSignatureWithRouteName(): void
     {
         $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
         $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(1);
@@ -113,13 +112,13 @@ class EnvelopeCreatorTest extends TestCase
         $this->assertEquals('route/to/redirect', $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal()));
     }
 
-    public function testEmbeddedSignature()
+    public function testEmbeddedSignature(): void
     {
         $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
         $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(1);
         $this->envelopeBuilderProphecyMock->getCallback()->willReturn('http://website.tld/callback/routename');
         $this->envelopeBuilderProphecyMock->getEnvelopeId()->willReturn('envelopeId');
-        $this->envelopeBuilderProphecyMock->getCallbackParameters()->willReturn(['callbackParameter'=>'parameterValue']);
+        $this->envelopeBuilderProphecyMock->getCallbackParameters()->willReturn(['callbackParameter' => 'parameterValue']);
         $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_EMBEDDED;
 

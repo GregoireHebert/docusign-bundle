@@ -7,7 +7,7 @@ on:
 
 jobs:
   tests:
-    name: Tests (PHP ${{ matrix.php }})
+    name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }}
     runs-on: ubuntu-latest
     container:
       image: php:${{ matrix.php }}
@@ -19,7 +19,7 @@ jobs:
           - '7.3'
         dependency:
           - ''
-          - '--prefer-lowest && composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle'
+          - 'lowest'
       fail-fast: false
     steps:
       - name: Checkout
@@ -28,20 +28,32 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            unzip
+            unzip \
+            libzip-dev \
+            chromium
+          docker-php-ext-install zip
       - name: Disable PHP memory limit
         run: echo 'memory_limit=-1' >> /usr/local/etc/php/php.ini
       - name: Install Composer
         run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
       - name: Update project dependencies
-        run: composer update --no-progress --no-suggest --ansi ${{ matrix.dependency }}
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --colors=always
+        if: matrix.dependency == ''
+        run: composer update --no-progress --no-suggest --ansi
+      - name: Update project dependencies lowest
+        if: matrix.dependency == 'lowest'
+        run: |
+          composer update --no-progress --no-suggest --ansi --prefer-lowest
+          composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle
       - name: Run phpstan tests
         if: matrix.dependency == ''
         run: vendor/bin/phpstan analyze
       - name: Run phpstan tests lowest
-        if: matrix.dependency != ''
+        if: matrix.dependency == 'lowest'
         run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
+      - name: Run PHPUnit tests
+        run: |
+          mkdir -p features/var/jwt
+          echo $DOCUSIGN_RSA_PRIVATE_KEY > features/var/jwt/docusign.pem
+          vendor/bin/phpunit --colors=always --testdox

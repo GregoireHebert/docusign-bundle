@@ -15,6 +15,7 @@ namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
 use DocusignBundle\EnvelopeCreator\CreateRecipient;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
@@ -73,7 +74,7 @@ final class DocusignExtension extends Extension
                     '$privateKey' => $value['auth_jwt']['private_key'],
                     '$integrationKey' => $value['auth_jwt']['integration_key'],
                     '$userGuid' => $value['auth_jwt']['user_guid'],
-                    '$apiUri' => $value['demo'] ? JwtGrant::DEMO_API_URI : $value['api_uri'],
+                    '$apiUri' => $value['api_uri'],
                     '$accountApiUri' => $value['demo'] ? JwtGrant::DEMO_ACCOUNT_API_URI : JwtGrant::ACCOUNT_API_URI,
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
@@ -150,17 +151,24 @@ final class DocusignExtension extends Extension
                 ]);
 
             if (null === $default) {
+                $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
                 $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
+                $container->setAlias(CreateDocument::class, new Alias("docusign.create_document.$name"));
+                $container->setAlias(DefineEnvelope::class, new Alias("docusign.define_envelope.$name"));
+                $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
+                $container->setAlias(CreateRecipient::class, new Alias("docusign.create_recipient.$name"));
+                $container->setAlias(EnvelopeCreator::class, new Alias("docusign.envelope_creator.$name"));
                 $default = $name;
             }
         }
 
         $container->register('docusign.route_loader', DocusignLoader::class)
             ->setArgument('$config', $config)
-            ->setPublic(false);
+            ->setPublic(false)
+            ->addTag('routing.loader');
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('controllers.xml');

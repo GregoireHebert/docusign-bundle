@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests;
 
 use DocusignBundle\DocusignBundle;
-use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Utils\SignatureExtractor;

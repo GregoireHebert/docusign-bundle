@@ -51,15 +51,11 @@ class SignatureExtractorTest extends TestCase
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
             'Receipt' => [
-                'signatures' => [
-                    ['page' => 1, 'x_position' => 250, 'y_position' => 50],
-                ],
+                ['page' => 1, 'x_position' => 250, 'y_position' => 50],
             ],
         ]);
 
@@ -84,15 +80,11 @@ class SignatureExtractorTest extends TestCase
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
             'Receipt' => [
-                'signatures' => [
-                    ['page' => 1, 'x_position' => 250, 'y_position' => 50],
-                ],
+                ['page' => 1, 'x_position' => 250, 'y_position' => 50],
             ],
         ]);
 
@@ -107,10 +99,8 @@ class SignatureExtractorTest extends TestCase
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), false, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
         ]);
 
@@ -227,10 +217,8 @@ class SignatureExtractorTest extends TestCase
 
         $signatureExtractor = new SignatureExtractor($this->requestStackMock->reveal(), true, [
             'Quote' => [
-                'signatures' => [
-                    ['page' => 3, 'x_position' => 350, 'y_position' => 500],
-                    ['page' => 2, 'x_position' => 600, 'y_position' => 100],
-                ],
+                ['page' => 3, 'x_position' => 350, 'y_position' => 500],
+                ['page' => 2, 'x_position' => 600, 'y_position' => 100],
             ],
         ]);
 
