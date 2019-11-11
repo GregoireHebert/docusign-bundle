@@ -106,7 +106,7 @@ class EnvelopeCreator
     private function getCallbackRoute(EnvelopeBuilder $envelopeBuilder): string
     {
         try {
-            Assert::regex($envelopeBuilder->callbackRouteName, '^https?://.+(:[0-9]+)?$');
+            Assert::regex($envelopeBuilder->callbackRouteName, '#^https?://.+(:[0-9]+)?$#');
 
             return $envelopeBuilder->callbackRouteName;
         } catch (InvalidArgumentException $exception) {

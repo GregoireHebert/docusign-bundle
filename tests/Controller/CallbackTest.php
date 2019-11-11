@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests\Bridge\FlySystem;
+namespace DocusignBundle\Tests;
 
 use DocusignBundle\Controller\Callback;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;

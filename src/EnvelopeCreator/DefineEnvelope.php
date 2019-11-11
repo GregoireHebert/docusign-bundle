@@ -20,13 +20,13 @@ class DefineEnvelope
 
     public function handle(EnvelopeBuilder $envelopeBuilder): void
     {
-        $envelopeBuilder->envelopeDefinition = new Model\EnvelopeDefinition([
+        $envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
             'email_subject' => EnvelopeBuilder::EMAIL_SUBJECT,
             'documents' => [$envelopeBuilder->document],
             'recipients' => new Model\Recipients(['signers' => $envelopeBuilder->signers, 'carbon_copies' => $envelopeBuilder->carbonCopies ?? null]),
             'status' => 'sent',
             'event_notification' => $this->getEventsNotifications($envelopeBuilder),
-        ]);
+        ]));
     }
 
     private function getEventsNotifications(EnvelopeBuilder $envelopeBuilder): Model\EventNotification

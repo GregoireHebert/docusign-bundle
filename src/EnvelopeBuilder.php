@@ -180,4 +180,19 @@ class EnvelopeBuilder
 
         return $this;
     }
+
+    public function setEnvelopeDefinition(?Model\EnvelopeDefinition $envelopeDefinition): void
+    {
+        $this->envelopeDefinition = $envelopeDefinition;
+    }
+
+    public function setEnvelopesApi(?EnvelopesApi $envelopesApi): void
+    {
+        $this->envelopesApi = $envelopesApi;
+    }
+
+    public function setEnvelopeId(?string $envelopeId): void
+    {
+        $this->envelopeId = $envelopeId;
+    }
 }

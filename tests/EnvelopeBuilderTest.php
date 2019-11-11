@@ -11,17 +11,11 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests\Bridge\FlySystem;
+namespace DocusignBundle\Tests;
 
 use DocusignBundle\EnvelopeBuilder;
-use DocusignBundle\EnvelopeCreator\CreateDocument;
-use DocusignBundle\EnvelopeCreator\CreateRecipient;
-use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
-use DocusignBundle\EnvelopeCreator\SendEnvelope;
-use DocusignBundle\Exception\UnableToSignException;
 use DocusignBundle\Grant\GrantInterface;
-use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;

@@ -19,12 +19,13 @@ class SendEnvelope
         $this->grant = $grant;
     }
 
+    /**
+     * @throws \DocuSign\eSign\ApiException
+     */
     public function handle(EnvelopeBuilder $envelopeBuilder): void
     {
-        $envelopeBuilder->envelopesApi = $this->setUpConfiguration($envelopeBuilder);
-        $result = $envelopeBuilder->envelopesApi->createEnvelope($envelopeBuilder->accountId, $envelopeBuilder->envelopeDefinition);
-
-        $envelopeBuilder->envelopeId = $result['envelope_id'];
+        $envelopeBuilder->setEnvelopesApi($this->setUpConfiguration($envelopeBuilder));
+        $envelopeBuilder->setEnvelopeId($envelopeBuilder->envelopesApi->createEnvelope($envelopeBuilder->accountId, $envelopeBuilder->envelopeDefinition)->getEnvelopeId());
     }
 
     private function setUpConfiguration(EnvelopeBuilder $envelopeBuilder): EnvelopesApi
