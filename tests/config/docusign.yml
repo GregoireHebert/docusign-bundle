@@ -4,6 +4,7 @@ services:
 
 docusign:
   demo: true
+  mode: embedded
   auth_jwt:
     private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
     integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
