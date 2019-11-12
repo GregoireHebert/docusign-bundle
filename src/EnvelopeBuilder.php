@@ -16,7 +16,6 @@ namespace DocusignBundle;
 use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
-use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use League\Flysystem\FilesystemInterface;
 use Webmozart\Assert\Assert;
@@ -67,7 +66,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     private $mode;
     /** @var int */
     private $signatureNo = 1;
-    /** @var EnvelopeCreator */
+    /** @var EnvelopeCreatorInterface */
     private $envelopeCreator;
 
     public function __construct(
@@ -287,5 +286,18 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public function getEnvelopeId(): ?string
     {
         return $this->envelopeId;
+    }
+
+    public function setDocument(?Model\Document $document): void
+    {
+        $this->document = $document;
+    }
+
+    /**
+     * @return array|Model\CarbonCopy[]
+     */
+    public function getCarbonCopies()
+    {
+        return $this->carbonCopies;
     }
 }

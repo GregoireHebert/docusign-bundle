@@ -28,7 +28,7 @@ final class PreSignEvent extends Event
         $this->request = $request;
     }
 
-    public function getEnvelopeBuilder(): EnvelopeBuilder
+    public function getEnvelopeBuilder(): EnvelopeBuilderInterface
     {
         return $this->envelopeBuilder;
     }

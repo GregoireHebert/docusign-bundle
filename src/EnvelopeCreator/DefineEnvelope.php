@@ -26,8 +26,8 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface
     {
         $envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
             'email_subject' => self::EMAIL_SUBJECT,
-            'documents' => [$envelopeBuilder->document],
-            'recipients' => new Model\Recipients(['signers' => $envelopeBuilder->signers, 'carbon_copies' => $envelopeBuilder->carbonCopies ?? null]),
+            'documents' => [$envelopeBuilder->getDocument()],
+            'recipients' => new Model\Recipients(['signers' => $envelopeBuilder->getSigners(), 'carbon_copies' => $envelopeBuilder->getCarbonCopies() ?? null]),
             'status' => 'sent',
             'event_notification' => $this->getEventsNotifications($envelopeBuilder),
         ]));
@@ -53,7 +53,7 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface
         ];
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, $envelopeBuilder->webhookParameters, Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, $envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');

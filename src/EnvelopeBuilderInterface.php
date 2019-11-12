@@ -62,4 +62,8 @@ interface EnvelopeBuilderInterface extends ResetInterface
     public function getWebhookParameters(): array;
 
     public function getEnvelopeId(): ?string;
+
+    public function setDocument(?Model\Document $document): void;
+
+    public function getCarbonCopies();
 }

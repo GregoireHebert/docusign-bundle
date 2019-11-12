@@ -13,18 +13,18 @@ final class CreateDocument implements EnvelopeBuilderCallableInterface
     public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): void
     {
         if (false === $contentBytes = $envelopeBuilder->getFileSystem()->read($envelopeBuilder->getFilePath())) {
-            throw new FileNotFoundException($envelopeBuilder->filePath ?? 'null');
+            throw new FileNotFoundException($envelopeBuilder->getFilePath() ?? 'null');
         }
 
         $base64FileContent = base64_encode($contentBytes);
         ['extension' => $extension, 'filename' => $filename] = pathinfo($envelopeBuilder->getFilePath());
 
-        $envelopeBuilder->document = new Model\Document([
+        $envelopeBuilder->setDocument(new Model\Document([
             'document_base64' => $base64FileContent,
             'name' => $filename,
             'file_extension' => $extension,
             'document_id' => $envelopeBuilder->getDocReference(),
-        ]);
+        ]));
 
         $envelopeBuilder->addSigner($envelopeBuilder->getSignerName(), $envelopeBuilder->getSignerEmail());
     }

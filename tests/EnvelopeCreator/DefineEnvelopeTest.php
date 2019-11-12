@@ -25,10 +25,10 @@ class DefineEnvelopeTest extends TestCase
 
     public function testEnvelopeDefinition(): void
     {
-        $this->envelopeBuilderProphecyMock->document = 'document';
-        $this->envelopeBuilderProphecyMock->signers = 'signers';
-        $this->envelopeBuilderProphecyMock->carbonCopies = 'carbonCopies';
-        $this->envelopeBuilderProphecyMock->webhookParameters = ['parameter'=>'value'];
+        $this->envelopeBuilderProphecyMock->getDocument()->willReturn(null);
+        $this->envelopeBuilderProphecyMock->getSigners()->willReturn([]);
+        $this->envelopeBuilderProphecyMock->getCarbonCopies()->willReturn([]);
+        $this->envelopeBuilderProphecyMock->getWebhookParameters()->willReturn(['parameter'=>'value']);
         $this->envelopeBuilderProphecyMock->setEnvelopeDefinition(Argument::allOf(
             Argument::type(EnvelopeDefinition::class),
             Argument::which('getEmailSubject', DefineEnvelope::EMAIL_SUBJECT),
