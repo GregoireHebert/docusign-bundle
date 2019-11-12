@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Model;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
-class DefineEnvelope
+final class DefineEnvelope implements EnvelopeBuilderCallableInterface
 {
-    private $router;
+    public const EMAIL_SUBJECT = 'Please sign this document';
 
-    public function __construct(RouterInterface $router)
+    private $router;
+    private $webhookRouteName;
+
+    public function __construct(RouterInterface $router, string $webhookRouteName)
     {
         $this->router = $router;
+        $this->webhookRouteName = $webhookRouteName;
     }
 
-    public function handle(EnvelopeBuilder $envelopeBuilder): void
+    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): void
     {
         $envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
-            'email_subject' => EnvelopeBuilder::EMAIL_SUBJECT,
+            'email_subject' => self::EMAIL_SUBJECT,
             'documents' => [$envelopeBuilder->document],
             'recipients' => new Model\Recipients(['signers' => $envelopeBuilder->signers, 'carbon_copies' => $envelopeBuilder->carbonCopies ?? null]),
             'status' => 'sent',
@@ -29,7 +33,7 @@ class DefineEnvelope
         ]));
     }
 
-    private function getEventsNotifications(EnvelopeBuilder $envelopeBuilder): Model\EventNotification
+    private function getEventsNotifications(EnvelopeBuilderInterface $envelopeBuilder): Model\EventNotification
     {
         $envelopeEvents = [
             (new Model\EnvelopeEvent())->setEnvelopeEventStatusCode('sent'),
@@ -49,7 +53,7 @@ class DefineEnvelope
         ];
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate($envelopeBuilder->webhookRouteName, $envelopeBuilder->webhookParameters, Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, $envelopeBuilder->webhookParameters, Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');

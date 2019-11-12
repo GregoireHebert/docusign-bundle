@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Controller;
 
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
 use DocusignBundle\Utils\SignatureExtractor;
@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class Sign
 {
-    public function __invoke(EnvelopeBuilder $envelopeBuilder, SignatureExtractor $signatureExtractor, Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
+    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, SignatureExtractor $signatureExtractor, Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
     {
         if (empty($path = $request->query->get('path'))) {
             throw new MissingMandatoryParameterHttpException('You must define a `path` query parameter.');

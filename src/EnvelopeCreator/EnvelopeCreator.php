@@ -5,42 +5,35 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\ApiException;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Exception\UnableToSignException;
-use InvalidArgumentException;
 use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webmozart\Assert\Assert;
 
-class EnvelopeCreator
+final class EnvelopeCreator implements EnvelopeCreatorInterface
 {
     private $router;
     private $logger;
     private $stopwatch;
-    private $createDocument;
-    private $createRecipient;
-    private $defineEnvelope;
-    private $sendEnvelope;
+    /** @var EnvelopeBuilderCallableInterface[]|iterable */
+    private $actions;
+    private $signatureName;
 
     public function __construct(
         RouterInterface $router,
         LoggerInterface $logger,
         Stopwatch $stopwatch,
-        CreateDocument $createDocument,
-        CreateRecipient $createRecipient,
-        DefineEnvelope $defineEnvelope,
-        SendEnvelope $sendEnvelope
+        string $signatureName,
+        iterable $actions
     ) {
         $this->router = $router;
         $this->logger = $logger;
         $this->stopwatch = $stopwatch;
-        $this->createDocument = $createDocument;
-        $this->createRecipient = $createRecipient;
-        $this->defineEnvelope = $defineEnvelope;
-        $this->sendEnvelope = $sendEnvelope;
+        $this->actions = $actions;
+        $this->signatureName = $signatureName;
     }
 
     /**
@@ -50,38 +43,30 @@ class EnvelopeCreator
      *
      * @throw InvalidArgumentException
      */
-    public function createEnvelope(EnvelopeBuilder $envelopeBuilder): string
+    public function createEnvelope(EnvelopeBuilderInterface $envelopeBuilder): string
     {
         try {
             $this->validate($envelopeBuilder);
+            $result = null;
 
-            $key = '[Docusign] Create document';
-            $this->stopwatch->start($key);
-            $this->createDocument->handle($envelopeBuilder);
-            $this->stopwatch->stop($key);
+            foreach ($this->actions as $action) {
+                $key = sprintf('[Docusign] execute action %s', \get_class($action));
+                $this->stopwatch->start($key);
 
-            $this->defineEnvelope->handle($envelopeBuilder);
+                if (!empty($result = $action($envelopeBuilder, ['signature_name' => $this->signatureName]))) {
+                    $this->stopwatch->stop($key);
+                    break;
+                }
 
-            $key = '[Docusign] Send envelope';
-            $this->stopwatch->start($key);
-            $this->sendEnvelope->handle($envelopeBuilder);
-            $this->stopwatch->stop($key);
-
-            if (EnvelopeBuilder::MODE_REMOTE === $envelopeBuilder->mode) {
-                return $this->getCallbackRoute($envelopeBuilder);
+                $this->stopwatch->stop($key);
             }
 
-            $key = '[Docusign] Create recipient';
-            $this->stopwatch->start($key);
-            $viewUrl = $this->createRecipient->handle($envelopeBuilder);
-            $this->stopwatch->stop($key);
-
-            return $viewUrl->getUrl();
+            return $result;
         } catch (ApiException $exception) {
             $this->logger->critical('Unable to send a document to DocuSign.', [
-                'document' => $envelopeBuilder->document,
-                'signers' => $envelopeBuilder->signers,
-                'envelope' => $envelopeBuilder->envelopeDefinition,
+                'document' => $envelopeBuilder->getDocument(),
+                'signers' => $envelopeBuilder->getSigners(),
+                'envelope' => $envelopeBuilder->getEnvelopeDefinition(),
                 'request' => $exception->getResponseBody(),
             ]);
             if (!empty($key)) {
@@ -90,41 +75,13 @@ class EnvelopeCreator
 
             throw new UnableToSignException($exception->getMessage());
         } finally {
-            $this->reset($envelopeBuilder);
+            $envelopeBuilder->reset();
         }
     }
 
-    private function validate(EnvelopeBuilder $envelopeBuilder): void
+    private function validate(EnvelopeBuilderInterface $envelopeBuilder): void
     {
-        Assert::notNull($envelopeBuilder->filePath);
-        Assert::notEmpty($envelopeBuilder->docReference);
-    }
-
-    /**
-     * Returns the callback.
-     */
-    private function getCallbackRoute(EnvelopeBuilder $envelopeBuilder): string
-    {
-        try {
-            Assert::regex($envelopeBuilder->callbackRouteName, '#^https?://.+(:[0-9]+)?$#');
-
-            return $envelopeBuilder->callbackRouteName;
-        } catch (InvalidArgumentException $exception) {
-            return $this->router->generate($envelopeBuilder->callbackRouteName, array_unique(['envelopeId' => $envelopeBuilder->envelopeId] + $envelopeBuilder->callbackParameters), Router::ABSOLUTE_URL);
-        }
-    }
-
-    public function reset(EnvelopeBuilder $envelopeBuilder): void
-    {
-        $envelopeBuilder->docReference = time(); // Will stop working after the 19/01/2038 at 03:14:07. (high five If you guess why)
-        $envelopeBuilder->filePath = null;
-        $envelopeBuilder->signatureZones = [];
-        $envelopeBuilder->document = null;
-        $envelopeBuilder->signers = [];
-        $envelopeBuilder->carbonCopies = [];
-        $envelopeBuilder->envelopeDefinition = null;
-        $envelopeBuilder->apiClient = null;
-        $envelopeBuilder->envelopesApi = null;
-        $envelopeBuilder->envelopeId = null;
+        Assert::notNull($envelopeBuilder->getFilePath());
+        Assert::notEmpty($envelopeBuilder->getDocReference());
     }
 }

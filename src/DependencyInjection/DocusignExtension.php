@@ -15,9 +15,7 @@ namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
-use DocusignBundle\EnvelopeCreator\CreateDocument;
-use DocusignBundle\EnvelopeCreator\CreateRecipient;
-use DocusignBundle\EnvelopeCreator\DefineEnvelope;
+use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\Grant\GrantInterface;
@@ -29,6 +27,7 @@ use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -37,6 +36,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DocusignExtension extends Extension
 {
+    use PriorityTaggedServiceTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -50,22 +51,12 @@ final class DocusignExtension extends Extension
                 ->registerForAutoconfiguration(PluginInterface::class)
                 ->addTag('flysystem.plugin');
         }
+
+        $container
+            ->registerForAutoconfiguration(EnvelopeBuilderCallableInterface::class)
+            ->addTag('docusign.envelope_builder.action');
+
         $default = null;
-
-        // CreateDocument
-        $container->register('docusign.create_document', CreateDocument::class)
-            ->setAutowired(true)
-            ->setPublic(false);
-
-        // CreateRecipient
-        $container->register('docusign.create_recipient', CreateRecipient::class)
-            ->setAutowired(true)
-            ->setPublic(false);
-
-        // DefineEnvelope
-        $container->register('docusign.define_envelope', DefineEnvelope::class)
-            ->setAutowired(true)
-            ->setPublic(false);
 
         foreach ($config as $name => $value) {
             // Storage (FlySystem compatibility)
@@ -92,18 +83,19 @@ final class DocusignExtension extends Extension
                 ->setPublic(false)
                 ->setArguments([
                     '$grant' => new Reference("docusign.grant.$name"),
-                ]);
+                    '$signatureName' => $name,
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
 
             // EnvelopeCreator
             $container->register("docusign.envelope_creator.$name", EnvelopeCreator::class)
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
-                    '$createDocument' => new Reference('docusign.create_document'),
-                    '$createRecipient' => new Reference('docusign.create_recipient'),
-                    '$defineEnvelope' => new Reference('docusign.define_envelope'),
-                    '$sendEnvelope' => new Reference("docusign.send_envelope.$name"),
-                ]);
+                    '$actions' => $this->findAndSortTaggedServices('docusign.envelope_builder.action', $container),
+                    '$signatureName' => $name,
+                ])
+                ->addTag('docusign.envelope_creator');
 
             // Envelope builder
             $container->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
@@ -135,6 +127,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
                 $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
+                $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $default = $name;
             }
         }
@@ -145,6 +138,7 @@ final class DocusignExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('controllers.xml');
+        $loader->load('services.xml');
     }
 
     /*

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="docusign.create_document" class="DocusignBundle\EnvelopeCreator\CreateDocument" public="false" autowire="false">
+            <tag name="docusign.envelope_builder.action" priority="-2"/>
+        </service>
+        <service id="DocusignBundle\EnvelopeCreator\CreateDocument" alias="docusign.create_document" public="false" />
+
+        <service id="docusign.define_envelope" class="DocusignBundle\EnvelopeCreator\DefineEnvelope" public="false" autowire="true">
+            <argument type="string" key="$webhookRouteName">docusign_webhook</argument>
+            <tag name="docusign.envelope_builder.action" priority="-4"/>
+        </service>
+        <service id="DocusignBundle\EnvelopeCreator\DefineEnvelope" alias="docusign.define_envelope" public="false" />
+
+        <service id="docusign.create_recipient" class="DocusignBundle\EnvelopeCreator\CreateRecipient" public="false" autowire="true">
+            <tag name="docusign.envelope_builder.action" priority="-16"/>
+        </service>
+        <service id="DocusignBundle\EnvelopeCreator\CreateRecipient" alias="docusign.create_recipient" public="false" />
+    </services>
+</container>

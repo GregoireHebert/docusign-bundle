@@ -8,30 +8,45 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Configuration;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Grant\GrantInterface;
+use DocusignBundle\Utils\CallbackRouteGenerator;
+use Symfony\Component\Routing\RouterInterface;
 
-class SendEnvelope
+final class SendEnvelope implements EnvelopeBuilderCallableInterface
 {
     public $grant;
+    private $router;
+    private $signatureName;
 
-    public function __construct(GrantInterface $grant)
+    public function __construct(GrantInterface $grant, RouterInterface $router, string $signatureName)
     {
         $this->grant = $grant;
+        $this->router = $router;
+        $this->signatureName = $signatureName;
     }
 
     /**
      * @throws \DocuSign\eSign\ApiException
      */
-    public function handle(EnvelopeBuilder $envelopeBuilder): void
+    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = [])
     {
+        if ($context['signature_name'] !== $this->signatureName) {
+            return;
+        }
+
         $envelopeBuilder->setEnvelopesApi($this->setUpConfiguration($envelopeBuilder));
-        $envelopeBuilder->setEnvelopeId($envelopeBuilder->envelopesApi->createEnvelope($envelopeBuilder->accountId, $envelopeBuilder->envelopeDefinition)->getEnvelopeId());
+        $envelopeBuilder->setEnvelopeId($envelopeBuilder->getEnvelopesApi()->createEnvelope($envelopeBuilder->getAccountId(), $envelopeBuilder->getEnvelopeDefinition())->getEnvelopeId());
+
+        if (EnvelopeBuilder::MODE_REMOTE === $envelopeBuilder->getMode()) {
+            return CallbackRouteGenerator::getCallbackRoute($this->router, $envelopeBuilder);
+        }
     }
 
-    private function setUpConfiguration(EnvelopeBuilder $envelopeBuilder): EnvelopesApi
+    private function setUpConfiguration(EnvelopeBuilderInterface $envelopeBuilder): EnvelopesApi
     {
         $config = new Configuration();
-        $config->setHost($envelopeBuilder->apiUri);
+        $config->setHost($envelopeBuilder->getApiUri());
         $config->addDefaultHeader('Authorization', 'Bearer '.($this->grant)());
 
         return new EnvelopesApi(new ApiClient($config));

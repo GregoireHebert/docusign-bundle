@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests;
 
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use DocusignBundle\Grant\GrantInterface;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +42,7 @@ class EnvelopeBuilderTest extends TestCase
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);
         $this->stopwatchMock = $this->prophesize(Stopwatch::class);
         $this->grantProphecyMock = $this->prophesize(GrantInterface::class);
-        $this->envelopeCreatorProphecyMock = $this->prophesize(EnvelopeCreator::class);
+        $this->envelopeCreatorProphecyMock = $this->prophesize(EnvelopeCreatorInterface::class);
     }
 
     private function getEnveloppeBuilder(string $mode = 'embedded'): void
@@ -53,14 +55,13 @@ class EnvelopeBuilderTest extends TestCase
             'dummyemail@domain.tld',
             'http://dummy-uri.tld',
             'dummyCallbackRoute',
-            'dummyWebhookRoute',
             $mode
         );
     }
 
     public function testRemoteSignatureEnvelope(): void
     {
-        $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilder::class))->willReturn('/path/to/redirect');
+        $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilderInterface::class))->willReturn('/path/to/redirect');
 
         $this->getEnveloppeBuilder();
 

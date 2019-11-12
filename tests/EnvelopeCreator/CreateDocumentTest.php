@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests;
+namespace DocusignBundle\Tests\EnvelopeCreator;
 
 use DocuSign\eSign\Model\Document;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
@@ -19,39 +19,40 @@ class CreateDocumentTest extends TestCase
 
     public function setUp(): void
     {
-        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilder::class);
+        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);
     }
 
-    public function testMissingFile()
+    public function testMissingFile(): void
     {
         $createDocument = new CreateDocument();
 
         $this->fileSystemProphecyMock->read(Argument::any())->shouldBeCalled()->willReturn(false);
-        $this->envelopeBuilderProphecyMock->fileSystem = $this->fileSystemProphecyMock->reveal();
+        $this->envelopeBuilderProphecyMock->getFileSystem()->willReturn($this->fileSystemProphecyMock->reveal());
+        $this->envelopeBuilderProphecyMock->getFilePath()->shouldBeCalled();
 
         $this->expectException(FileNotFoundException::class);
-        $createDocument->handle($this->envelopeBuilderProphecyMock->reveal());
+        $createDocument($this->envelopeBuilderProphecyMock->reveal());
     }
 
-    public function testHandle()
+    public function testHandle(): void
     {
         $createDocument = new CreateDocument();
 
         $this->fileSystemProphecyMock->read(Argument::any())->shouldBeCalled()->willReturn('bytes');
-        $this->envelopeBuilderProphecyMock->fileSystem = $this->fileSystemProphecyMock->reveal();
-        $this->envelopeBuilderProphecyMock->filePath = 'julienclair.mp3';
-        $this->envelopeBuilderProphecyMock->docReference = 'ma/p?reference/a/moi';
-        $this->envelopeBuilderProphecyMock->signerName = 'Julien';
-        $this->envelopeBuilderProphecyMock->signerEmail = 'julien@clair.sing';
+        $this->envelopeBuilderProphecyMock->getFileSystem()->willReturn($this->fileSystemProphecyMock->reveal());
+        $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('julienclair.mp3');
+        $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(1);
+        $this->envelopeBuilderProphecyMock->getSignerName()->willReturn('Julien');
+        $this->envelopeBuilderProphecyMock->getSignerEmail()->willReturn('julien@clair.sing');
         $this->envelopeBuilderProphecyMock->addSigner('Julien', 'julien@clair.sing')->shouldBeCalled();
 
-        $envelopeBuilder = $createDocument->handle($this->envelopeBuilderProphecyMock->reveal());
-        $this->assertInstanceOf(EnvelopeBuilder::class, $envelopeBuilder);
+        $createDocument($envelopeBuilder = $this->envelopeBuilderProphecyMock->reveal());
+        $this->assertInstanceOf(EnvelopeBuilderInterface::class, $envelopeBuilder);
         $this->assertInstanceOf(Document::class, $envelopeBuilder->document);
         $this->assertEquals(base64_encode('bytes'), $envelopeBuilder->document->getDocumentBase64());
         $this->assertEquals('julienclair', $envelopeBuilder->document->getName());
         $this->assertEquals('mp3', $envelopeBuilder->document->getFileExtension());
-        $this->assertEquals('ma/p?reference/a/moi', $envelopeBuilder->document->getDocumentId());
+        $this->assertEquals(1, $envelopeBuilder->document->getDocumentId());
     }
 }

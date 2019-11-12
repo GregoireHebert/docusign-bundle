@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests;
+namespace DocusignBundle\Tests\EnvelopeCreator;
 
 use DocuSign\eSign\Model\EnvelopeDefinition;
-use DocuSign\eSign\Model\EventNotification;
-use DocuSign\eSign\Model\Recipients;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -21,7 +19,7 @@ class DefineEnvelopeTest extends TestCase
 
     public function setUp(): void
     {
-        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilder::class);
+        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
     }
 
@@ -31,16 +29,15 @@ class DefineEnvelopeTest extends TestCase
         $this->envelopeBuilderProphecyMock->signers = 'signers';
         $this->envelopeBuilderProphecyMock->carbonCopies = 'carbonCopies';
         $this->envelopeBuilderProphecyMock->webhookParameters = ['parameter'=>'value'];
-        $this->envelopeBuilderProphecyMock->webhookRouteName = 'docusign_webhook';
         $this->envelopeBuilderProphecyMock->setEnvelopeDefinition(Argument::allOf(
             Argument::type(EnvelopeDefinition::class),
-            Argument::which('getEmailSubject', EnvelopeBuilder::EMAIL_SUBJECT),
+            Argument::which('getEmailSubject', DefineEnvelope::EMAIL_SUBJECT),
             Argument::which('getStatus', 'sent')
         ))->shouldBeCalled();
 
         $this->routerProphecyMock->generate('docusign_webhook', ['parameter'=>'value'], Router::ABSOLUTE_URL)->shouldBeCalled();
 
-        $createDocument = new DefineEnvelope($this->routerProphecyMock->reveal());
-        $createDocument->handle($this->envelopeBuilderProphecyMock->reveal());
+        $createDocument = new DefineEnvelope($this->routerProphecyMock->reveal(), 'docusign_webhook');
+        $createDocument($this->envelopeBuilderProphecyMock->reveal());
     }
 }

@@ -17,56 +17,54 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use League\Flysystem\FilesystemInterface;
 use Webmozart\Assert\Assert;
 
-class EnvelopeBuilder
+final class EnvelopeBuilder implements EnvelopeBuilderInterface
 {
     public const EMBEDDED_AUTHENTICATION_METHOD = 'NONE';
-    public const EMAIL_SUBJECT = 'Please sign this document';
     public const MODE_REMOTE = 'remote';
     public const MODE_EMBEDDED = 'embedded';
 
     /** @var string */
-    public $accountId;
+    private $accountId;
     /** @var string */
-    public $signerName;
+    private $signerName;
     /** @var string */
-    public $signerEmail;
+    private $signerEmail;
     /** @var string */
-    public $apiUri;
+    private $apiUri;
     /** @var string|null */
-    public $filePath;
+    private $filePath;
     /** @var int */
-    public $docReference;
+    private $docReference;
     /** @var FilesystemInterface */
-    public $fileSystem;
+    private $fileSystem;
     /** @var Model\Document|null */
-    public $document;
+    private $document;
     /** @var Model\EnvelopeDefinition|null */
-    public $envelopeDefinition;
+    private $envelopeDefinition;
     /** @var EnvelopesApi|null */
-    public $envelopesApi;
+    private $envelopesApi;
     /** @var string|null */
-    public $envelopeId;
+    private $envelopeId;
     /** @var string */
-    public $callback;
+    private $callback;
     /** @var array */
-    public $callbackParameters = [];
+    private $callbackParameters = [];
     /** @var Model\Signer[]|array */
-    public $signers = [];
+    private $signers = [];
     /** @var Model\CarbonCopy[]|array */
-    public $carbonCopies = [];
+    private $carbonCopies = [];
     /** @var Model\SignHere[]|array */
-    public $signatureZones = [];
+    private $signatureZones = [];
     /** @var ApiClient|null */
-    public $apiClient;
-    /** @var string */
-    public $webhookRouteName;
+    private $apiClient;
     /** @var array */
-    public $webhookParameters = [];
+    private $webhookParameters = [];
     /** @var string */
-    public $mode;
+    private $mode;
     /** @var int */
     private $signatureNo = 1;
     /** @var EnvelopeCreator */
@@ -74,13 +72,12 @@ class EnvelopeBuilder
 
     public function __construct(
         FilesystemInterface $storage,
-        EnvelopeCreator $envelopeCreator,
+        EnvelopeCreatorInterface $envelopeCreator,
         string $accountId,
         string $defaultSignerName,
         string $defaultSignerEmail,
         string $apiUri,
         string $callback,
-        string $webhookRouteName,
         string $mode
     ) {
         $this->envelopeCreator = $envelopeCreator;
@@ -92,7 +89,6 @@ class EnvelopeBuilder
 
         $this->apiUri = $apiUri;
         $this->callback = $callback;
-        $this->webhookRouteName = $webhookRouteName;
 
         $this->mode = $mode;
 
@@ -194,5 +190,147 @@ class EnvelopeBuilder
     public function setEnvelopeId(?string $envelopeId): void
     {
         $this->envelopeId = $envelopeId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode(): string
+    {
+        return $this->mode;
+    }
+
+    public function reset(): void
+    {
+        $this->docReference = time(); // Will stop working after the 19/01/2038 at 03:14:07. (high five If you guess why)
+        $this->filePath = null;
+        $this->signatureZones = [];
+        $this->document = null;
+        $this->signers = [];
+        $this->carbonCopies = [];
+        $this->envelopeDefinition = null;
+        $this->apiClient = null;
+        $this->envelopesApi = null;
+        $this->envelopeId = null;
+    }
+
+    /**
+     * @return EnvelopesApi|null
+     */
+    public function getEnvelopesApi(): ?EnvelopesApi
+    {
+        return $this->envelopesApi;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountId(): string
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @return Model\EnvelopeDefinition|null
+     */
+    public function getEnvelopeDefinition(): ?Model\EnvelopeDefinition
+    {
+        return $this->envelopeDefinition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUri(): string
+    {
+        return $this->apiUri;
+    }
+
+    /**
+     * @return Model\Document|null
+     */
+    public function getDocument(): ?Model\Document
+    {
+        return $this->document;
+    }
+
+    /**
+     * @return array|Model\Signer[]
+     */
+    public function getSigners(): array
+    {
+        return $this->signers;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    /**
+     * @return FilesystemInterface
+     */
+    public function getFileSystem(): FilesystemInterface
+    {
+        return $this->fileSystem;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignerName(): string
+    {
+        return $this->signerName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignerEmail(): string
+    {
+        return $this->signerEmail;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDocReference(): int
+    {
+        return $this->docReference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallback(): string
+    {
+        return $this->callback;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCallbackParameters(): array
+    {
+        return $this->callbackParameters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWebhookParameters(): array
+    {
+        return $this->webhookParameters;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEnvelopeId(): ?string
+    {
+        return $this->envelopeId;
     }
 }

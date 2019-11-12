@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests;
+namespace DocusignBundle\Tests\Controller;
 
 use DocusignBundle\Controller\Callback;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;

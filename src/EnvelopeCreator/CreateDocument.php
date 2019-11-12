@@ -5,29 +5,27 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Model;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use League\Flysystem\FileNotFoundException;
 
-class CreateDocument
+final class CreateDocument implements EnvelopeBuilderCallableInterface
 {
-    public function handle(EnvelopeBuilder $envelopeBuilder)
+    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): void
     {
-        if (false === $contentBytes = $envelopeBuilder->fileSystem->read($envelopeBuilder->filePath)) {
+        if (false === $contentBytes = $envelopeBuilder->getFileSystem()->read($envelopeBuilder->getFilePath())) {
             throw new FileNotFoundException($envelopeBuilder->filePath ?? 'null');
         }
 
         $base64FileContent = base64_encode($contentBytes);
-        ['extension' => $extension, 'filename' => $filename] = pathinfo($envelopeBuilder->filePath);
+        ['extension' => $extension, 'filename' => $filename] = pathinfo($envelopeBuilder->getFilePath());
 
         $envelopeBuilder->document = new Model\Document([
             'document_base64' => $base64FileContent,
             'name' => $filename,
             'file_extension' => $extension,
-            'document_id' => $envelopeBuilder->docReference,
+            'document_id' => $envelopeBuilder->getDocReference(),
         ]);
 
-        $envelopeBuilder->addSigner($envelopeBuilder->signerName, $envelopeBuilder->signerEmail);
-
-        return $envelopeBuilder;
+        $envelopeBuilder->addSigner($envelopeBuilder->getSignerName(), $envelopeBuilder->getSignerEmail());
     }
 }

@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests;
+namespace DocusignBundle\Tests\EnvelopeCreator;
 
 use DocuSign\eSign\ApiException;
 use DocuSign\eSign\Model\ViewUrl;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
 use DocusignBundle\EnvelopeCreator\CreateRecipient;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
+use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\Exception\UnableToSignException;
@@ -34,14 +36,14 @@ class EnvelopeCreatorTest extends TestCase
 
     public function setUp(): void
     {
-        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilder::class);
+        $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->loggerProphecyMock = $this->prophesize(LoggerInterface::class);
         $this->stopwatchProphecyMock = $this->prophesize(Stopwatch::class);
-        $this->createDocumentProphecyMock = $this->prophesize(CreateDocument::class);
-        $this->createRecipientProphecyMock = $this->prophesize(CreateRecipient::class);
-        $this->defineEnvelopeProphecyMock = $this->prophesize(DefineEnvelope::class);
-        $this->sendEnvelopeProphecyMock = $this->prophesize(SendEnvelope::class);
+        $this->createDocumentProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
+        $this->createRecipientProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
+        $this->defineEnvelopeProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
+        $this->sendEnvelopeProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
     }
 
     public function testMissingFilePath()
@@ -50,10 +52,13 @@ class EnvelopeCreatorTest extends TestCase
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
+            'default',
+            [
+                $this->createDocumentProphecyMock->reveal(),
+                $this->defineEnvelopeProphecyMock->reveal(),
+                $this->sendEnvelopeProphecyMock->reveal(),
+                $this->createRecipientProphecyMock->reveal(),
+            ]
         );
 
         $this->expectException(\InvalidArgumentException::class);
@@ -63,154 +68,90 @@ class EnvelopeCreatorTest extends TestCase
 
     public function testMissingDocReference()
     {
-        $this->envelopeBuilderProphecyMock->filePath = 'file/path';
+        $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
+        $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(0);
+        $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
 
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
+            'default',
+            [
+                $this->createDocumentProphecyMock->reveal(),
+                $this->defineEnvelopeProphecyMock->reveal(),
+                $this->sendEnvelopeProphecyMock->reveal(),
+                $this->createRecipientProphecyMock->reveal(),
+            ]
         );
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected a non-empty value. Got: null');
+        $this->expectExceptionMessage('Expected a non-empty value. Got: 0');
         $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal());
     }
 
     public function testRemoteSignatureWithRouteName()
     {
-        $this->envelopeBuilderProphecyMock->filePath = 'file/path';
-        $this->envelopeBuilderProphecyMock->docReference = 'file/path';
-        $this->envelopeBuilderProphecyMock->callbackRouteName = 'callback/routename';
-        $this->envelopeBuilderProphecyMock->envelopeId = 'envelopeId';
-        $this->envelopeBuilderProphecyMock->callbackParameters = ['callbackParameter'=>'parameterValue'];
+        $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
+        $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(1);
+        $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_REMOTE;
 
         $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
         $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
 
-        $this->createDocumentProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->createRecipientProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldNotBeCalled();
-
-        $this->routerProphecyMock->generate('callback/routename', ['envelopeId'=>'envelopeId', 'callbackParameter'=>'parameterValue'], Router::ABSOLUTE_URL)->shouldBeCalled()->willReturn('route/to/redirect');
+        $this->createDocumentProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
+        $this->defineEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
+        $this->sendEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled()->willReturn('route/to/redirect');
+        $this->createRecipientProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldNotBeCalled();
 
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
+            'default',
+            [
+                $this->createDocumentProphecyMock->reveal(),
+                $this->defineEnvelopeProphecyMock->reveal(),
+                $this->sendEnvelopeProphecyMock->reveal(),
+                $this->createRecipientProphecyMock->reveal(),
+            ]
         );
 
         $this->assertEquals('route/to/redirect', $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal()));
     }
 
-    public function testRemoteSignatureWithURL()
-    {
-        $this->envelopeBuilderProphecyMock->filePath = 'file/path';
-        $this->envelopeBuilderProphecyMock->docReference = 'file/path';
-        $this->envelopeBuilderProphecyMock->callbackRouteName = 'http://website.tld/callback/routename';
-        $this->envelopeBuilderProphecyMock->envelopeId = 'envelopeId';
-        $this->envelopeBuilderProphecyMock->callbackParameters = ['callbackParameter'=>'parameterValue'];
-        $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_REMOTE;
-
-        $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
-        $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
-
-        $this->createDocumentProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->createRecipientProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldNotBeCalled();
-
-        $this->routerProphecyMock->generate('callback/routename', ['envelopeId'=>'envelopeId', 'callbackParameter'=>'parameterValue'], Router::ABSOLUTE_URL)->shouldNotBeCalled();
-
-        $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
-            $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
-        );
-
-        $this->assertEquals('http://website.tld/callback/routename', $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal()));
-    }
-
     public function testEmbeddedSignature()
     {
-        $this->envelopeBuilderProphecyMock->filePath = 'file/path';
-        $this->envelopeBuilderProphecyMock->docReference = 'file/path';
-        $this->envelopeBuilderProphecyMock->callbackRouteName = 'http://website.tld/callback/routename';
-        $this->envelopeBuilderProphecyMock->envelopeId = 'envelopeId';
-        $this->envelopeBuilderProphecyMock->callbackParameters = ['callbackParameter'=>'parameterValue'];
+        $this->envelopeBuilderProphecyMock->getFilePath()->willReturn('file/path');
+        $this->envelopeBuilderProphecyMock->getDocReference()->willReturn(1);
+        $this->envelopeBuilderProphecyMock->getCallback()->willReturn('http://website.tld/callback/routename');
+        $this->envelopeBuilderProphecyMock->getEnvelopeId()->willReturn('envelopeId');
+        $this->envelopeBuilderProphecyMock->getCallbackParameters()->willReturn(['callbackParameter'=>'parameterValue']);
+        $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_EMBEDDED;
 
         $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
         $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
 
-        $viewUrlProphecyMock = $this->prophesize(ViewUrl::class);
-        $viewUrlProphecyMock->getUrl()->shouldBeCalled()->willReturn('http://docusign.com/url/to/redirect');
-
-        $this->createDocumentProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->createRecipientProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled()->willReturn($viewUrlProphecyMock->reveal());
-
-        $this->routerProphecyMock->generate('callback/routename', ['envelopeId'=>'envelopeId', 'callbackParameter'=>'parameterValue'], Router::ABSOLUTE_URL)->shouldNotBeCalled();
+        $this->createDocumentProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
+        $this->defineEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
+        $this->sendEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
+        $this->createRecipientProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled()->willReturn('http://docusign.com/url/to/redirect');
 
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
+            'default',
+            [
+                $this->createDocumentProphecyMock->reveal(),
+                $this->defineEnvelopeProphecyMock->reveal(),
+                $this->sendEnvelopeProphecyMock->reveal(),
+                $this->createRecipientProphecyMock->reveal(),
+            ]
         );
 
         $this->assertEquals('http://docusign.com/url/to/redirect', $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal()));
-    }
-
-    public function testUnReachableDocusign()
-    {
-        $this->envelopeBuilderProphecyMock->filePath = 'file/path';
-        $this->envelopeBuilderProphecyMock->docReference = 'file/path';
-        $this->envelopeBuilderProphecyMock->callbackRouteName = 'http://website.tld/callback/routename';
-        $this->envelopeBuilderProphecyMock->envelopeId = 'envelopeId';
-        $this->envelopeBuilderProphecyMock->callbackParameters = ['callbackParameter'=>'parameterValue'];
-        $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_EMBEDDED;
-
-        $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
-        $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
-
-        $this->createDocumentProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldBeCalled()->will(function () { throw new ApiException(); });
-        $this->createRecipientProphecyMock->handle(Argument::type(EnvelopeBuilder::class))->shouldNotBeCalled();
-
-        $this->loggerProphecyMock->critical(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
-
-        $this->routerProphecyMock->generate('callback/routename', ['envelopeId'=>'envelopeId', 'callbackParameter'=>'parameterValue'], Router::ABSOLUTE_URL)->shouldNotBeCalled();
-
-        $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
-            $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
-            $this->createDocumentProphecyMock->reveal(),
-            $this->createRecipientProphecyMock->reveal(),
-            $this->defineEnvelopeProphecyMock->reveal(),
-            $this->sendEnvelopeProphecyMock->reveal()
-        );
-
-        $this->expectException(UnableToSignException::class);
-        $envelopeCreator->createEnvelope($this->envelopeBuilderProphecyMock->reveal());
     }
 }
