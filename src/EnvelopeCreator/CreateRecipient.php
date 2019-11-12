@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Model;
-use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Utils\CallbackRouteGenerator;
 use Symfony\Component\Routing\RouterInterface;
 

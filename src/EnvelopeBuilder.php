@@ -192,9 +192,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->envelopeId = $envelopeId;
     }
 
-    /**
-     * @return string
-     */
     public function getMode(): string
     {
         return $this->mode;
@@ -214,41 +211,26 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->envelopeId = null;
     }
 
-    /**
-     * @return EnvelopesApi|null
-     */
     public function getEnvelopesApi(): ?EnvelopesApi
     {
         return $this->envelopesApi;
     }
 
-    /**
-     * @return string
-     */
     public function getAccountId(): string
     {
         return $this->accountId;
     }
 
-    /**
-     * @return Model\EnvelopeDefinition|null
-     */
     public function getEnvelopeDefinition(): ?Model\EnvelopeDefinition
     {
         return $this->envelopeDefinition;
     }
 
-    /**
-     * @return string
-     */
     public function getApiUri(): string
     {
         return $this->apiUri;
     }
 
-    /**
-     * @return Model\Document|null
-     */
     public function getDocument(): ?Model\Document
     {
         return $this->document;
@@ -262,73 +244,46 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->signers;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFilePath(): ?string
     {
         return $this->filePath;
     }
 
-    /**
-     * @return FilesystemInterface
-     */
     public function getFileSystem(): FilesystemInterface
     {
         return $this->fileSystem;
     }
 
-    /**
-     * @return string
-     */
     public function getSignerName(): string
     {
         return $this->signerName;
     }
 
-    /**
-     * @return string
-     */
     public function getSignerEmail(): string
     {
         return $this->signerEmail;
     }
 
-    /**
-     * @return int
-     */
     public function getDocReference(): int
     {
         return $this->docReference;
     }
 
-    /**
-     * @return string
-     */
     public function getCallback(): string
     {
         return $this->callback;
     }
 
-    /**
-     * @return array
-     */
     public function getCallbackParameters(): array
     {
         return $this->callbackParameters;
     }
 
-    /**
-     * @return array
-     */
     public function getWebhookParameters(): array
     {
         return $this->webhookParameters;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEnvelopeId(): ?string
     {
         return $this->envelopeId;
