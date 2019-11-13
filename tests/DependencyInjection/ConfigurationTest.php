@@ -73,7 +73,7 @@ class ConfigurationTest extends TestCase
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'api_uri' => 'https://www.docusign.net/restapi',
-                'callback_route_name' => 'docusign_callback',
+                'callback' => 'docusign_callback',
                 'sign_path' => '/foo/sign',
                 'signatures_overridable' => false,
                 'signatures' => [],
@@ -139,7 +139,7 @@ class ConfigurationTest extends TestCase
                 'default_signer_name' => 'Grégoire Hébert',
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'api_uri' => 'https://www.docusign.net/restapi',
-                'callback_route_name' => 'docusign_callback',
+                'callback' => 'docusign_callback',
                 'sign_path' => '/foo/sign',
                 'signatures_overridable' => true,
                 'signatures' => [

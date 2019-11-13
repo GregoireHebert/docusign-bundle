@@ -20,7 +20,7 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
-final class SignLoader extends Loader
+final class DocusignLoader extends Loader
 {
     private $config;
 
@@ -46,6 +46,14 @@ final class SignLoader extends Loader
 
         // Load dynamic routes: sign per document
         foreach ($this->config as $name => $config) {
+            if (preg_match('/^https?:\/\//', $config['callback'])) {
+                $routeCollection->add("docusign_callback_$name", (new Route("docusign/callback/$name", [
+                    '_controller' => 'FrameworkBundle:Redirect:urlRedirect',
+                    'path' => $config['callback'],
+                    'permanent' => true,
+                    '_docusign_name' => $name,
+                ]))->setMethods('GET'));
+            }
             $routeCollection->add("docusign_sign_$name", (new Route($config['sign_path'], [
                 '_controller' => 'docusign_sign',
                 '_docusign_name' => $name,

@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Tests\Routing;
 
-use DocusignBundle\Routing\SignLoader;
+use DocusignBundle\Routing\DocusignLoader;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
-final class SignLoaderTest extends TestCase
+final class DocusignLoaderTest extends TestCase
 {
     private $loader;
 
     protected function setUp(): void
     {
-        $this->loader = new SignLoader([
+        $this->loader = new DocusignLoader([
             'foo' => [
                 'sign_path' => '/docusign/sign/foo',
+                'callback' => 'docusign_callback',
             ],
             'bar' => [
                 'sign_path' => '/docusign/sign/bar/{key}',
+                'callback' => 'http://www.example.com'
             ],
         ]);
     }
@@ -53,11 +55,21 @@ final class SignLoaderTest extends TestCase
         $this->assertNotNull($route = $routeCollection->get('docusign_sign_foo'));
         $this->assertEquals('/docusign/sign/foo', $route->getPath());
         $this->assertEquals('docusign_sign', $route->getDefault('_controller'));
+        $this->assertEquals('foo', $route->getDefault('_docusign_name'));
         $this->assertEquals(['GET'], $route->getMethods());
 
         $this->assertNotNull($route = $routeCollection->get('docusign_sign_bar'));
         $this->assertEquals('/docusign/sign/bar/{key}', $route->getPath());
         $this->assertEquals('docusign_sign', $route->getDefault('_controller'));
+        $this->assertEquals('bar', $route->getDefault('_docusign_name'));
+        $this->assertEquals(['GET'], $route->getMethods());
+
+        $this->assertNotNull($route = $routeCollection->get('docusign_callback_bar'));
+        $this->assertEquals('/docusign/callback/bar', $route->getPath());
+        $this->assertEquals('FrameworkBundle:Redirect:urlRedirect', $route->getDefault('_controller'));
+        $this->assertEquals('http://www.example.com', $route->getDefault('path'));
+        $this->assertTrue($route->getDefault('permanent'));
+        $this->assertEquals('bar', $route->getDefault('_docusign_name'));
         $this->assertEquals(['GET'], $route->getMethods());
     }
 }

@@ -20,7 +20,7 @@ use DocusignBundle\DependencyInjection\DocusignExtension;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
-use DocusignBundle\Routing\SignLoader;
+use DocusignBundle\Routing\DocusignLoader;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -105,7 +105,7 @@ class DocusignExtensionTest extends TestCase
         /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
         $loaderDefinitionProphecy = $this->prophesize(Definition::class);
         $containerBuilderProphecy
-            ->register('docusign.route_loader', SignLoader::class)
+            ->register('docusign.route_loader', DocusignLoader::class)
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
         $loaderDefinitionProphecy
@@ -165,7 +165,7 @@ class DocusignExtensionTest extends TestCase
         /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
         $loaderDefinitionProphecy = $this->prophesize(Definition::class);
         $containerBuilderProphecy
-            ->register('docusign.route_loader', SignLoader::class)
+            ->register('docusign.route_loader', DocusignLoader::class)
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
         $loaderDefinitionProphecy

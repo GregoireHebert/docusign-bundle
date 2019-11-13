@@ -17,7 +17,7 @@ use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
-use DocusignBundle\Routing\SignLoader;
+use DocusignBundle\Routing\DocusignLoader;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
@@ -77,7 +77,7 @@ final class DocusignExtension extends Extension
                     '$defaultSignerName' => $value['default_signer_name'],
                     '$defaultSignerEmail' => $value['default_signer_email'],
                     '$apiUri' => $value['api_uri'],
-                    '$callbackRouteName' => $value['callback_route_name'],
+                    '$callback' => $value['callback'],
                     '$webhookRouteName' => 'docusign_webhook',
                 ]);
 
@@ -99,7 +99,7 @@ final class DocusignExtension extends Extension
             }
         }
 
-        $container->register('docusign.route_loader', SignLoader::class)
+        $container->register('docusign.route_loader', DocusignLoader::class)
             ->setArgument('$config', $config)
             ->setPublic(false);
 
