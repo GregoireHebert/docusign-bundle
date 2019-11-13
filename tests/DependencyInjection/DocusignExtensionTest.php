@@ -47,6 +47,7 @@ class DocusignExtensionTest extends TestCase
             'storage' => 'dummy.default.storage',
             'options' => [],
         ],
+        'sign_path' => '/foo/sign',
     ]];
     public const DEMO_CONFIG = ['docusign' => [
         'demo' => true,
@@ -62,6 +63,7 @@ class DocusignExtensionTest extends TestCase
             'adapter' => 'dummy.demo.storage',
             'options' => [],
         ],
+        'sign_path' => '/foo/sign',
     ]];
 
     private $extension;
