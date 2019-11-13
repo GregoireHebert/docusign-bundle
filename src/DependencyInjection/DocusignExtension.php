@@ -15,6 +15,9 @@ namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeCreator\CreateDocument;
+use DocusignBundle\EnvelopeCreator\CreateRecipient;
+use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
@@ -27,7 +30,7 @@ use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -36,8 +39,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DocusignExtension extends Extension
 {
-    use PriorityTaggedServiceTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -77,22 +78,48 @@ final class DocusignExtension extends Extension
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
 
-            // SendEnvelope
+            // CreateDocument
+            $container->register("docusign.create_document.$name", CreateDocument::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
+
+            // DefineEnvelope
+            $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
+
             $container->register("docusign.send_envelope.$name", SendEnvelope::class)
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                     '$grant' => new Reference("docusign.grant.$name"),
-                    '$signatureName' => $name,
                 ])
                 ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
+
+            // CreateRecipient
+            $container->register("docusign.create_recipient.$name", CreateRecipient::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
 
             // EnvelopeCreator
             $container->register("docusign.envelope_creator.$name", EnvelopeCreator::class)
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
-                    '$actions' => $this->findAndSortTaggedServices('docusign.envelope_builder.action', $container),
+                    '$actions' => new TaggedIteratorArgument('docusign.envelope_builder.action'),
                     '$signatureName' => $name,
                 ])
                 ->addTag('docusign.envelope_creator');
@@ -109,8 +136,8 @@ final class DocusignExtension extends Extension
                     '$defaultSignerEmail' => $value['default_signer_email'],
                     '$apiUri' => $value['api_uri'],
                     '$callback' => $value['callback'],
-                    '$webhookRouteName' => 'docusign_webhook',
                     '$mode' => $value['mode'],
+                    '$name' => $name,
                 ]);
 
             // Signature extractor
@@ -127,7 +154,6 @@ final class DocusignExtension extends Extension
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
                 $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
-                $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $default = $name;
             }
         }
@@ -138,7 +164,6 @@ final class DocusignExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('controllers.xml');
-        $loader->load('services.xml');
     }
 
     /*

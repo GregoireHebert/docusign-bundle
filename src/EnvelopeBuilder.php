@@ -68,6 +68,8 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     private $signatureNo = 1;
     /** @var EnvelopeCreatorInterface */
     private $envelopeCreator;
+    /** @var string */
+    private $name;
 
     public function __construct(
         FilesystemInterface $storage,
@@ -77,7 +79,8 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         string $defaultSignerEmail,
         string $apiUri,
         string $callback,
-        string $mode
+        string $mode,
+        string $name
     ) {
         $this->envelopeCreator = $envelopeCreator;
         $this->fileSystem = $storage;
@@ -90,6 +93,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->callback = $callback;
 
         $this->mode = $mode;
+        $this->name = $name;
 
         $this->docReference = time();
     }
@@ -99,6 +103,11 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->filePath = $filePath;
 
         return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function createEnvelope(): string
@@ -253,6 +262,19 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->fileSystem;
     }
 
+    /**
+     * @return false|string
+     */
+    public function getFileContent()
+    {
+        return $this->getFileSystem()->read($this->getFilePath());
+    }
+
+    public function getViewUrl(Model\RecipientViewRequest $recipientViewRequest): string
+    {
+        return $this->envelopesApi->createRecipientView($this->getAccountId(), $this->getEnvelopeId(), $recipientViewRequest)->getUrl();
+    }
+
     public function getSignerName(): string
     {
         return $this->signerName;
@@ -299,5 +321,10 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public function getCarbonCopies()
     {
         return $this->carbonCopies;
+    }
+
+    public function setDefaultSigner(): void
+    {
+        $this->addSigner($this->getSignerName(), $this->getSignerEmail());
     }
 }

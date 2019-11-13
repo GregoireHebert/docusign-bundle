@@ -21,28 +21,33 @@ use Symfony\Component\Routing\RouterInterface;
 final class DefineEnvelope implements EnvelopeBuilderCallableInterface
 {
     public const EMAIL_SUBJECT = 'Please sign this document';
+    public const WEBHOOK_ROUTE_NAME = 'docusign_webhook';
 
     private $router;
-    private $webhookRouteName;
+    private $envelopeBuilder;
 
-    public function __construct(RouterInterface $router, string $webhookRouteName)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router)
     {
         $this->router = $router;
-        $this->webhookRouteName = $webhookRouteName;
+        $this->envelopeBuilder = $envelopeBuilder;
     }
 
-    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): void
+    public function __invoke(array $context = []): void
     {
-        $envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
+        if ($context['signature_name'] !== $this->envelopeBuilder->getName()) {
+            return;
+        }
+
+        $this->envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
             'email_subject' => self::EMAIL_SUBJECT,
-            'documents' => [$envelopeBuilder->getDocument()],
-            'recipients' => new Model\Recipients(['signers' => $envelopeBuilder->getSigners(), 'carbon_copies' => $envelopeBuilder->getCarbonCopies() ?? null]),
+            'documents' => [$this->envelopeBuilder->getDocument()],
+            'recipients' => new Model\Recipients(['signers' => $this->envelopeBuilder->getSigners(), 'carbon_copies' => $this->envelopeBuilder->getCarbonCopies() ?? null]),
             'status' => 'sent',
-            'event_notification' => $this->getEventsNotifications($envelopeBuilder),
+            'event_notification' => $this->getEventsNotifications(),
         ]));
     }
 
-    private function getEventsNotifications(EnvelopeBuilderInterface $envelopeBuilder): Model\EventNotification
+    private function getEventsNotifications(): Model\EventNotification
     {
         $envelopeEvents = [
             (new Model\EnvelopeEvent())->setEnvelopeEventStatusCode('sent'),
@@ -62,7 +67,7 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface
         ];
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate($this->webhookRouteName, $envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate(self::WEBHOOK_ROUTE_NAME, $this->envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');

@@ -19,22 +19,33 @@ use League\Flysystem\FileNotFoundException;
 
 final class CreateDocument implements EnvelopeBuilderCallableInterface
 {
-    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): void
+    private $envelopeBuilder;
+
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder)
     {
-        if (false === $contentBytes = $envelopeBuilder->getFileSystem()->read($envelopeBuilder->getFilePath())) {
-            throw new FileNotFoundException($envelopeBuilder->getFilePath() ?? 'null');
+        $this->envelopeBuilder = $envelopeBuilder;
+    }
+
+    public function __invoke(array $context = []): void
+    {
+        if ($context['signature_name'] !== $this->envelopeBuilder->getName()) {
+            return;
+        }
+
+        if (false === $contentBytes = $this->envelopeBuilder->getFileContent()) {
+            throw new FileNotFoundException($this->envelopeBuilder->getFilePath() ?? 'null');
         }
 
         $base64FileContent = base64_encode($contentBytes);
-        ['extension' => $extension, 'filename' => $filename] = pathinfo($envelopeBuilder->getFilePath());
+        ['extension' => $extension, 'filename' => $filename] = pathinfo($this->envelopeBuilder->getFilePath());
 
-        $envelopeBuilder->setDocument(new Model\Document([
+        $this->envelopeBuilder->setDocument(new Model\Document([
             'document_base64' => $base64FileContent,
             'name' => $filename,
             'file_extension' => $extension,
-            'document_id' => $envelopeBuilder->getDocReference(),
+            'document_id' => $this->envelopeBuilder->getDocReference(),
         ]));
 
-        $envelopeBuilder->addSigner($envelopeBuilder->getSignerName(), $envelopeBuilder->getSignerEmail());
+        $this->envelopeBuilder->setDefaultSigner();
     }
 }

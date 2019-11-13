@@ -19,14 +19,12 @@ use DocusignBundle\Exception\UnableToSignException;
 use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
 use Webmozart\Assert\Assert;
 
 final class EnvelopeCreator implements EnvelopeCreatorInterface
 {
     private $router;
     private $logger;
-    private $stopwatch;
     /** @var EnvelopeBuilderCallableInterface[]|iterable */
     private $actions;
     private $signatureName;
@@ -34,13 +32,11 @@ final class EnvelopeCreator implements EnvelopeCreatorInterface
     public function __construct(
         RouterInterface $router,
         LoggerInterface $logger,
-        Stopwatch $stopwatch,
         string $signatureName,
         iterable $actions
     ) {
         $this->router = $router;
         $this->logger = $logger;
-        $this->stopwatch = $stopwatch;
         $this->actions = $actions;
         $this->signatureName = $signatureName;
     }
@@ -59,15 +55,9 @@ final class EnvelopeCreator implements EnvelopeCreatorInterface
             $result = null;
 
             foreach ($this->actions as $action) {
-                $key = sprintf('[Docusign] execute action %s', \get_class($action));
-                $this->stopwatch->start($key);
-
-                if (!empty($result = $action($envelopeBuilder, ['signature_name' => $this->signatureName]))) {
-                    $this->stopwatch->stop($key);
+                if (!empty($result = $action(['signature_name' => $this->signatureName]))) {
                     break;
                 }
-
-                $this->stopwatch->stop($key);
             }
 
             return $result;
@@ -78,9 +68,6 @@ final class EnvelopeCreator implements EnvelopeCreatorInterface
                 'envelope' => $envelopeBuilder->getEnvelopeDefinition(),
                 'request' => $exception->getResponseBody(),
             ]);
-            if (!empty($key)) {
-                $this->stopwatch->stop($key);
-            }
 
             throw new UnableToSignException($exception->getMessage());
         } finally {

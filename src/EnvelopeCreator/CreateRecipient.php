@@ -22,23 +22,32 @@ use Symfony\Component\Routing\RouterInterface;
 final class CreateRecipient implements EnvelopeBuilderCallableInterface
 {
     private $router;
+    private $envelopeBuilder;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router)
     {
+        $this->envelopeBuilder = $envelopeBuilder;
         $this->router = $router;
     }
 
-    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, array $context = []): string
+    /**
+     * @return string|void
+     */
+    public function __invoke(array $context = [])
     {
+        if ($context['signature_name'] !== $this->envelopeBuilder->getName()) {
+            return;
+        }
+
         $recipientViewRequest = new Model\RecipientViewRequest([
             'authentication_method' => EnvelopeBuilder::EMBEDDED_AUTHENTICATION_METHOD,
-            'client_user_id' => $envelopeBuilder->getAccountId(),
+            'client_user_id' => $this->envelopeBuilder->getAccountId(),
             'recipient_id' => '1',
-            'return_url' => CallbackRouteGenerator::getCallbackRoute($this->router, $envelopeBuilder),
-            'user_name' => $envelopeBuilder->getSignerName(),
-            'email' => $envelopeBuilder->getSignerEmail(),
+            'return_url' => CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder),
+            'user_name' => $this->envelopeBuilder->getSignerName(),
+            'email' => $this->envelopeBuilder->getSignerEmail(),
         ]);
 
-        return $envelopeBuilder->getEnvelopesApi()->createRecipientView($envelopeBuilder->getAccountId(), $envelopeBuilder->getEnvelopeId(), $recipientViewRequest)->getUrl();
+        return $this->envelopeBuilder->getViewUrl($recipientViewRequest);
     }
 }

@@ -28,7 +28,6 @@ class EnvelopeCreatorTest extends TestCase
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
     private $loggerProphecyMock;
-    private $stopwatchProphecyMock;
     private $createDocumentProphecyMock;
     private $createRecipientProphecyMock;
     private $defineEnvelopeProphecyMock;
@@ -39,7 +38,6 @@ class EnvelopeCreatorTest extends TestCase
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->loggerProphecyMock = $this->prophesize(LoggerInterface::class);
-        $this->stopwatchProphecyMock = $this->prophesize(Stopwatch::class);
         $this->createDocumentProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
         $this->createRecipientProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
         $this->defineEnvelopeProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
@@ -51,7 +49,6 @@ class EnvelopeCreatorTest extends TestCase
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
             'default',
             [
                 $this->createDocumentProphecyMock->reveal(),
@@ -75,7 +72,6 @@ class EnvelopeCreatorTest extends TestCase
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
             'default',
             [
                 $this->createDocumentProphecyMock->reveal(),
@@ -97,18 +93,14 @@ class EnvelopeCreatorTest extends TestCase
         $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_REMOTE;
 
-        $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
-        $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
-
-        $this->createDocumentProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled()->willReturn('route/to/redirect');
-        $this->createRecipientProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldNotBeCalled();
+        $this->createDocumentProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled();
+        $this->defineEnvelopeProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled();
+        $this->sendEnvelopeProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled()->willReturn('route/to/redirect');
+        $this->createRecipientProphecyMock->__invoke(Argument::type('array'))->shouldNotBeCalled();
 
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
             'default',
             [
                 $this->createDocumentProphecyMock->reveal(),
@@ -131,18 +123,14 @@ class EnvelopeCreatorTest extends TestCase
         $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->mode = EnvelopeBuilder::MODE_EMBEDDED;
 
-        $this->stopwatchProphecyMock->start(Argument::type('string'))->shouldBeCalled();
-        $this->stopwatchProphecyMock->stop(Argument::type('string'))->shouldBeCalled();
-
-        $this->createDocumentProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
-        $this->defineEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
-        $this->sendEnvelopeProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled();
-        $this->createRecipientProphecyMock->__invoke(Argument::type(EnvelopeBuilderInterface::class), Argument::type('array'))->shouldBeCalled()->willReturn('http://docusign.com/url/to/redirect');
+        $this->createDocumentProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled();
+        $this->defineEnvelopeProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled();
+        $this->sendEnvelopeProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled();
+        $this->createRecipientProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled()->willReturn('http://docusign.com/url/to/redirect');
 
         $envelopeCreator = new EnvelopeCreator(
             $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
-            $this->stopwatchProphecyMock->reveal(),
             'default',
             [
                 $this->createDocumentProphecyMock->reveal(),

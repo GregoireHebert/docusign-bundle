@@ -22,6 +22,8 @@ interface EnvelopeBuilderInterface extends ResetInterface
 {
     public function setFile(string $filePath);
 
+    public function getName(): string;
+
     public function createEnvelope(): string;
 
     public function addCarbonCopy(string $name, string $email);
@@ -58,6 +60,13 @@ interface EnvelopeBuilderInterface extends ResetInterface
 
     public function getFileSystem(): FilesystemInterface;
 
+    /**
+     * @return false|string
+     */
+    public function getFileContent();
+
+    public function getViewUrl(Model\RecipientViewRequest $recipientViewRequest): string;
+
     public function getSignerName(): string;
 
     public function getSignerEmail(): string;
@@ -75,4 +84,6 @@ interface EnvelopeBuilderInterface extends ResetInterface
     public function setDocument(?Model\Document $document): void;
 
     public function getCarbonCopies();
+
+    public function setDefaultSigner(): void;
 }

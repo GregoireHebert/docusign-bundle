@@ -23,12 +23,6 @@ class CallbackRouteGenerator
     {
         $queryParameters = array_unique(['envelopeId' => $envelopeBuilder->getEnvelopeId()] + $envelopeBuilder->getCallbackParameters());
 
-        // Callback is a route name
-        if (!preg_match('/^https?:\/\//', $envelopeBuilder->getCallback())) {
-            return $router->generate($envelopeBuilder->getCallback(), $queryParameters, Router::ABSOLUTE_URL);
-        }
-
-        // Callback is already an url
-        return $envelopeBuilder->getCallback().(parse_url($envelopeBuilder->getCallback(), PHP_URL_QUERY) ? '&' : '?').http_build_query($queryParameters);
+        return $router->generate($envelopeBuilder->getCallback(), $queryParameters, Router::ABSOLUTE_URL);
     }
 }

@@ -26,6 +26,7 @@ class DefineEnvelopeTest extends TestCase
     public function testEnvelopeDefinition(): void
     {
         $this->envelopeBuilderProphecyMock->getDocument()->willReturn(null);
+        $this->envelopeBuilderProphecyMock->getName()->willReturn('default');
         $this->envelopeBuilderProphecyMock->getSigners()->willReturn([]);
         $this->envelopeBuilderProphecyMock->getCarbonCopies()->willReturn([]);
         $this->envelopeBuilderProphecyMock->getWebhookParameters()->willReturn(['parameter'=>'value']);
@@ -37,7 +38,7 @@ class DefineEnvelopeTest extends TestCase
 
         $this->routerProphecyMock->generate('docusign_webhook', ['parameter'=>'value'], Router::ABSOLUTE_URL)->shouldBeCalled();
 
-        $createDocument = new DefineEnvelope($this->routerProphecyMock->reveal(), 'docusign_webhook');
-        $createDocument($this->envelopeBuilderProphecyMock->reveal());
+        $createDocument = new DefineEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal(), 'docusign_webhook');
+        $createDocument(['signature_name'=>'default']);
     }
 }
