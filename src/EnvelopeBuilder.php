@@ -70,7 +70,7 @@ class EnvelopeBuilder
     /** @var string|null */
     private $envelopeId;
     /** @var string */
-    private $callbackRouteName;
+    private $callback;
     /** @var string */
     private $webhookRouteName;
     /** @var RouterInterface */
@@ -94,7 +94,7 @@ class EnvelopeBuilder
         string $defaultSignerName,
         string $defaultSignerEmail,
         string $apiUri,
-        string $callbackRouteName,
+        string $callback,
         string $webhookRouteName
     ) {
         $this->logger = $logger;
@@ -108,7 +108,7 @@ class EnvelopeBuilder
         $this->signerEmail = $defaultSignerEmail;
 
         $this->apiUri = $apiUri;
-        $this->callbackRouteName = $callbackRouteName;
+        $this->callback = $callback;
         $this->webhookRouteName = $webhookRouteName;
 
         $this->docReference = time();
@@ -362,7 +362,7 @@ class EnvelopeBuilder
             'authentication_method' => self::EMBEDDED_AUTHENTICATION_METHOD,
             'client_user_id' => $this->accountId,
             'recipient_id' => '1',
-            'return_url' => $this->router->generate($this->callbackRouteName, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
+            'return_url' => $this->router->generate($this->callback, array_unique(['envelopeId' => $this->envelopeId] + $this->callbackParameters), Router::ABSOLUTE_URL),
             'user_name' => $this->signerName,
             'email' => $this->signerEmail,
         ]);

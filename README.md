@@ -58,7 +58,8 @@ return [
 # config/routes.yml
 
 docusign:
-    resource: '@DocusignBundle/Resources/config/routing.xml'
+    resource: .
+    type: docusign
 ```
 
 ### Configure the bundle
@@ -84,7 +85,7 @@ docusign:
     default_signer_name: "Grégoire Hébert"
     default_signer_email: "gregoire@les-tilleuls.coop"
     api_uri: "https://www.docusign.net/restapi" # default
-    callback_route_name: "docusign_callback"
+    callback: "docusign_callback"
     signatures_overridable: false # default
     signatures:
         default_document_type:
