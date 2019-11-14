@@ -52,6 +52,10 @@ final class EmbeddedTest extends PantherTestCase
         $client->followRedirects();
 
         $client->request('GET', '/embedded');
+        $client->submitForm('Login', [
+            '_username' => 'admin',
+            '_password' => '4dm1n',
+        ]);
 
         $client->clickLink('dummy.pdf');
         $crawler = $client->waitFor('#action-bar-btn-continue');
