@@ -11,7 +11,7 @@ An Electronic Signature ensure a person agreed with the document.
 1.  [Bundle Installation](#bundle-installation)
     1.  [register the bundle](#register-the-bundle)
     1.  [Configure the bundle](#configure-the-bundle)
-1.  [Docusign Configurationn](#docusign-configurationn)
+1.  [Docusign Configuration](#docusign-configuration)
     1.  [Types of signatures](#types-of-signatures)
     1.  [Format Restrictions:](#format-restrictions)
     1.  [Add an integration key on docusign](#add-an-integration-key-on-docusign)
@@ -168,7 +168,7 @@ docusign:
                 directory: '%kernel.project_dir%/var/storage/default'
 ```
 
-## Docusign Configurationn
+## Docusign Configuration
 
 ### Types of signatures
 
