@@ -19,7 +19,7 @@ An Electronic Signature ensure a person agreed with the document.
     1.  [Inside a twig template](#inside-a-twig-template)
     1.  [Using document variations signature positionning](#using-document-variations-signature-positionning)
 1.  [Customization](#customization)
-    1.  [Configure a custom storage without league/flysystem-bundle](#configure-a-custom-storage-without-league/flysystem-bundle)
+    1.  [Configure a custom storage without league/flysystem-bundle](#configure-a-custom-storage-without-leagueflysystem-bundle)
     1.  [Use league/flysystem-bundle](#use-league/flysystem-bundle)
         1.  [Installation](#installation)
         1.  [Configure the storage](#configure-the-storage)
