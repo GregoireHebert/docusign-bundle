@@ -7,7 +7,28 @@
 This Symfony Bundle is used to create electronic signature with DocuSign.
 An Electronic Signature ensure a person agreed with the document.
 
-{:toc}
+1.  [Requirements](#requirements)
+1.  [Bundle Installation](#bundle-installation)
+    1.  [register the bundle](#register-the-bundle)
+    1.  [Configure the bundle](#configure-the-bundle)
+1.  [Docusign Configurationn](#docusign-configurationn)
+    1.  [Types of signatures](#types-of-signatures)
+    1.  [Format Restrictions:](#format-restrictions)
+    1.  [Add an integration key on docusign](#add-an-integration-key-on-docusign)
+1.  [Basic usage](#basic-usage)
+    1.  [Inside a twig template:](#inside-a-twig-template:)
+    1.  [Using document variations signature positionning](#using-document-variations-signature-positionning)
+1.  [Customization](#customization)
+    1.  [Configure a custom storage without league/flysystem-bundle](#configure-a-custom-storage-without-league/flysystem-bundle)
+    1.  [Use league/flysystem-bundle](#use-league/flysystem-bundle)
+        1[  (Installation](#installation)
+        1[  (Configure the storage](#configure-the-storage)
+    1.  [Override configuration signature positions](#override-configuration-signature-positions)
+    1.  [Events](#events)
+        1[  (Sign events](#sign-events)
+        1[  (Webhook events](#webhook-events)
+    1.  [Using an external route as callback](#using-an-external-route-as-callback)
+1.  [Backward Compatibility promise](#backward-compatibility-promise)
 
 This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
 
