@@ -11,14 +11,16 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests\Bridge\FlySystem;
+namespace DocusignBundle\Tests;
 
 use DocusignBundle\EnvelopeBuilder;
-use DocusignBundle\Exception\UnableToSignException;
+use DocusignBundle\EnvelopeBuilderInterface;
+use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use DocusignBundle\Grant\GrantInterface;
-use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -31,6 +33,7 @@ class EnvelopeBuilderTest extends TestCase
     private $stopwatchMock;
     private $grantProphecyMock;
     private $envelopeBuilder;
+    private $envelopeCreatorProphecyMock;
 
     protected function setUp(): void
     {
@@ -39,40 +42,38 @@ class EnvelopeBuilderTest extends TestCase
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);
         $this->stopwatchMock = $this->prophesize(Stopwatch::class);
         $this->grantProphecyMock = $this->prophesize(GrantInterface::class);
+        $this->envelopeCreatorProphecyMock = $this->prophesize(EnvelopeCreatorInterface::class);
+    }
 
+    private function getEnveloppeBuilder(string $mode = 'embedded'): void
+    {
         $this->envelopeBuilder = new EnvelopeBuilder(
-            $this->loggerProphecyMock->reveal(),
-            $this->stopwatchMock->reveal(),
-            $this->routerProphecyMock->reveal(),
             $this->fileSystemProphecyMock->reveal(),
-            $this->grantProphecyMock->reveal(),
+            $this->envelopeCreatorProphecyMock->reveal(),
             'dummyId',
             'dummyName',
             'dummyemail@domain.tld',
-            'dummyURI',
+            'http://dummy-uri.tld',
             'dummyCallbackRoute',
-            'dummyWebhookRoute'
+            $mode,
+            'default'
         );
     }
 
-    public function testForgottenSetFile(): void
+    public function testRemoteSignatureEnvelope(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->envelopeBuilder->createEnvelope();
-    }
+        $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilderInterface::class))->willReturn('/path/to/redirect');
 
-    public function testUnableToCreateEnvelope(): void
-    {
-        $this->routerProphecyMock->generate('dummyCallbackRoute');
-        $this->routerProphecyMock->generate('dummyWebHoookRoute');
+        $this->getEnveloppeBuilder();
 
         $this->fileSystemProphecyMock->read('dummyFilePath.pdf')->willReturn('dummyFileContent');
         $this->grantProphecyMock->__invoke()->willReturn('encoded_access_token');
 
-        $this->expectException(UnableToSignException::class);
-        $this->envelopeBuilder
+        $redirectPath = $this->envelopeBuilder
             ->setFile('dummyFilePath.pdf')
             ->addSignatureZone(1, 2, 3)
             ->createEnvelope();
+
+        $this->assertEquals('/path/to/redirect', $redirectPath);
     }
 }

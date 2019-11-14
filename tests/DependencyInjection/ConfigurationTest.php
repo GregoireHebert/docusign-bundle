@@ -17,6 +17,7 @@ use DocusignBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationTest extends TestCase
@@ -42,6 +43,7 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
+                'mode' => 'embedded',
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
@@ -62,6 +64,7 @@ class ConfigurationTest extends TestCase
 
         $this->assertEquals([
             'default' => [
+                'mode' => 'embedded',
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
@@ -88,11 +91,35 @@ class ConfigurationTest extends TestCase
         ], $config);
     }
 
+    public function testInvalidModeConfig(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The value "invalid" is not allowed for path "docusign.default.mode". Permissible values: "remote", "embedded"');
+        $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'mode' => 'invalid',
+            ],
+        ]);
+    }
+
+    public function testMissingModeConfig(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The child node "mode" at path "docusign.demo" must be configured.');
+        $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'demo' => true,
+            ],
+        ]);
+    }
+
+
     public function testConfig(): void
     {
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
+                'mode' => 'embedded',
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
@@ -128,6 +155,7 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
         $this->assertEquals([
             'default' => [
+                'mode' => 'embedded',
                 'demo' => false,
                 'auth_jwt' => [
                     'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',

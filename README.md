@@ -231,7 +231,6 @@ To do that you can subscribe to the `DocumentSignatureCompletedEvent`.
 // src/EventSubscriber/PreSignSubscriber.php
 namespace App\EventSubscriber;
 
-use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

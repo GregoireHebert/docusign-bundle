@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace DocusignBundle\Tests\Bridge\FlySystem;
+namespace DocusignBundle\Tests\Controller;
 
 use DocusignBundle\Controller\Sign;
-use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
 use DocusignBundle\Utils\SignatureExtractor;
@@ -44,7 +44,7 @@ class SignTest extends TestCase
             ],
         ]);
 
-        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
+        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
         $envelopeBuilderProphecy->createEnvelope()->willReturn('dummyURL');
         $envelopeBuilderProphecy->addSignatureZone(1, 200, 300)->willReturn($envelopeBuilderProphecy->reveal());
         $envelopeBuilderProphecy->setFile('dummyPath')->willReturn($envelopeBuilderProphecy->reveal());
@@ -71,7 +71,7 @@ class SignTest extends TestCase
 
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
 
-        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
+        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
 
         $parameterBagProphecy = $this->prophesize(ParameterBag::class);
         $parameterBagProphecy->get('path')->willReturn(null);
@@ -100,7 +100,7 @@ class SignTest extends TestCase
             ],
         ]);
 
-        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
+        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
         $envelopeBuilderProphecy->setFile('dummyPath')->willReturn($envelopeBuilderProphecy->reveal());
         $envelopeBuilderProphecy->addSignatureZone(Argument::type('integer'), Argument::type('integer'), Argument::type('integer'))->willReturn($envelopeBuilderProphecy->reveal());
         $envelopeBuilderProphecy->createEnvelope()->willThrow(FileNotFoundException::class);
@@ -126,7 +126,7 @@ class SignTest extends TestCase
         $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
         $signatureExtractorProphecy->getSignatures()->willReturn([]);
 
-        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilder::class);
+        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
         $envelopeBuilderProphecy->setFile('dummyPath')->willReturn($envelopeBuilderProphecy->reveal());
         $envelopeBuilderProphecy->addSignatureZone()->shouldNotBeCalled();
         $envelopeBuilderProphecy->createEnvelope()->shouldNotBeCalled();

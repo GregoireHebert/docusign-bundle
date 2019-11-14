@@ -15,6 +15,12 @@ namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\EnvelopeBuilder;
+use DocusignBundle\EnvelopeCreator\CreateDocument;
+use DocusignBundle\EnvelopeCreator\CreateRecipient;
+use DocusignBundle\EnvelopeCreator\DefineEnvelope;
+use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
+use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
@@ -24,6 +30,7 @@ use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -45,6 +52,11 @@ final class DocusignExtension extends Extension
                 ->registerForAutoconfiguration(PluginInterface::class)
                 ->addTag('flysystem.plugin');
         }
+
+        $container
+            ->registerForAutoconfiguration(EnvelopeBuilderCallableInterface::class)
+            ->addTag('docusign.envelope_builder.action');
+
         $default = null;
 
         foreach ($config as $name => $value) {
@@ -66,19 +78,66 @@ final class DocusignExtension extends Extension
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
 
+            // CreateDocument
+            $container->register("docusign.create_document.$name", CreateDocument::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
+
+            // DefineEnvelope
+            $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
+
+            $container->register("docusign.send_envelope.$name", SendEnvelope::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                    '$grant' => new Reference("docusign.grant.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
+
+            // CreateRecipient
+            $container->register("docusign.create_recipient.$name", CreateRecipient::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                ])
+                ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
+
+            // EnvelopeCreator
+            $container->register("docusign.envelope_creator.$name", EnvelopeCreator::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$actions' => new TaggedIteratorArgument('docusign.envelope_builder.action'),
+                    '$signatureName' => $name,
+                ])
+                ->addTag('docusign.envelope_creator');
+
             // Envelope builder
             $container->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
                     '$storage' => new Reference($value['storage']['storage']),
-                    '$grant' => new Reference("docusign.grant.$name"),
+                    '$envelopeCreator' => new Reference("docusign.envelope_creator.$name"),
                     '$accountId' => $value['account_id'],
                     '$defaultSignerName' => $value['default_signer_name'],
                     '$defaultSignerEmail' => $value['default_signer_email'],
                     '$apiUri' => $value['api_uri'],
                     '$callback' => $value['callback'],
-                    '$webhookRouteName' => 'docusign_webhook',
+                    '$mode' => $value['mode'],
+                    '$name' => $name,
                 ]);
 
             // Signature extractor

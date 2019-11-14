@@ -36,6 +36,11 @@
             "DocusignBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "DocusignBundle\\Tests\\": "tests/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
