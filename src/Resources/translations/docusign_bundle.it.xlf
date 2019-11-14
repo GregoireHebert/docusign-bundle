@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="docusign.sign_this">
+                <source>Please sign this document.</source>
+                <target>Si prega di firmare questo documento.</target>
+            </trans-unit>
+            <trans-unit id="docusign.status">
+                <source>The document signature has ended with an unexpected status "%status%".</source>
+                <target>La firma del documento si è conclusa con uno stato inaspettato "%status%".</target>
+            </trans-unit>
+            <trans-unit id="docusign.document_signed">
+                <source>Congratulation! Document signed.</source>
+                <target>Congratulazioni! Documento firmato.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

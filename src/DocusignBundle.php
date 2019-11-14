@@ -20,6 +20,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class DocusignBundle extends Bundle
 {
+    public const TRANSLATION_DOMAIN = 'docusign_bundle';
+
     public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new PluginPass());

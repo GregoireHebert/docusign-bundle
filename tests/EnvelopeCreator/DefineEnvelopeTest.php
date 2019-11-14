@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests\EnvelopeCreator;
 
 use DocuSign\eSign\Model\EnvelopeDefinition;
+use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class DefineEnvelopeTest extends TestCase
 {
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
+    private $translatorProphecyMock;
 
     public function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
+        $this->translatorProphecyMock = $this->prophesize(TranslatorInterface::class);
     }
 
     public function testEnvelopeDefinition(): void
@@ -38,7 +42,9 @@ class DefineEnvelopeTest extends TestCase
 
         $this->routerProphecyMock->generate('docusign_webhook', ['parameter'=>'value'], Router::ABSOLUTE_URL)->shouldBeCalled();
 
-        $createDocument = new DefineEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal(), 'docusign_webhook');
+        $this->translatorProphecyMock->trans(Argument::type('string'), [], DocusignBundle::TRANSLATION_DOMAIN)->shouldBeCalled()->willReturn(DefineEnvelope::EMAIL_SUBJECT);
+
+        $createDocument = new DefineEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal(), $this->translatorProphecyMock->reveal());
         $createDocument(['signature_name'=>'default']);
     }
 }
