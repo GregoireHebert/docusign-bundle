@@ -14,7 +14,9 @@ jobs:
     name: Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     container:
-      image: php:${{ matrix.php }}
+      image: php:${{ matrix.php }}-alpine
+      options: >-
+        --tmpfs /tmp:exec
     strategy:
       # https://github.community/t5/GitHub-Actions/GitHub-Actions-Matrix-options-dont-work-as-documented/m-p/29558
       matrix:
@@ -42,9 +44,8 @@ jobs:
 
       - name: Install system packages
         run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            unzip
+          apk add \
+            unzip \
 
       - name: Install pcov PHP extension
         if: matrix.coverage
