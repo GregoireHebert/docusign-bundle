@@ -24,17 +24,17 @@
 
 First go and authenticate yourself in `https://admindemo.docusign.com`
 
-1. In DocuSign Admin, click API and Keys. ![click API and Keys.](/assets/menu_api_and_keys.png)
-1. Click `ADD APP` / `INTEGRATION KEY`. ![go to Add Integration key](/assets/add_integration_key.png)
-1. Add a name for your app, then click ADD. ![click API and Keys.](/assets/integration_key.png)
+1. In DocuSign Admin, click API and Keys. ![click API and Keys.](assets/menu_api_and_keys.png)
+1. Click `ADD APP` / `INTEGRATION KEY`. ![go to Add Integration key](assets/add_integration_key.png)
+1. Add a name for your app, then click ADD. ![click API and Keys.](assets/integration_key.png)
 1. Select an authentication type:
     - **JSON Web Token Grant (Service Integration)** - This is used for a service integration which integrates directly with a DocuSign account. It requires an RSA keypair.
         - Create an RSA keypair.
-          To generate a new keypair, click `ADD RSA KEYPAIR`. ![click API and Keys.](/assets/add_rsa_key.png)
+          To generate a new keypair, click `ADD RSA KEYPAIR`. ![click API and Keys.](assets/add_rsa_key.png)
           **Important:** Copy the RSA keys to a secure location immediately after you create them. Secret keys and RSA keys are displayed in plain text only once: when they are first created. After that, for security purposes, DocuSign only shows the last 4 digits of any secret keys or the RSA Keypair ID of any keypairs generated. Secrets should be stored securely within your application. They should never be shared or disclosed publicly.
-          ![copy private key.](/assets/copy_private_rsa_key.png)
-1. Click `ADD URI` and enter a redirect `URI` for your application. When your application sends an authorization request to DocuSign, it includes the redirect `URI` in the request. The Account Server verifies that the URI in the request and the URI in the application registration match and sends a request to this URI to continue the process. Your application can have more than one redirect `URI`. ![redirect uri.](/assets/add_redirect_uri.png)
-1. Click `SAVE`. Your integration key is generated and added to the list of keys. ![user guid.](/assets/user_guid.png)
+          ![copy private key.](assets/copy_private_rsa_key.png)
+1. Click `ADD URI` and enter a redirect `URI` for your application. When your application sends an authorization request to DocuSign, it includes the redirect `URI` in the request. The Account Server verifies that the URI in the request and the URI in the application registration match and sends a request to this URI to continue the process. Your application can have more than one redirect `URI`. ![redirect uri.](assets/add_redirect_uri.png)
+1. Click `SAVE`. Your integration key is generated and added to the list of keys. ![user guid.](assets/user_guid.png)
 
 Set Your private key into `%kernel.project_dir%/var/jwt/docusign.pem`.
 This path is configurable as following:
