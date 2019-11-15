@@ -20,6 +20,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class Consent
 {
+    public const DEMO_CONSENT_URI = 'https://account-d.docusign.com/oauth/auth';
+    public const CONSENT_URI = 'https://account.docusign.com/oauth/auth';
+
     private $envelopeBuilder;
     private $router;
     private $consentUri;

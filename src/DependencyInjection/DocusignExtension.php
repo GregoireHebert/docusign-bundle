@@ -150,14 +150,20 @@ final class DocusignExtension extends Extension
                     '$signatures' => $value['signatures'],
                 ]);
 
-            $container->register("docusign.consent.$name", Consent::class)
-                ->setAutowired(true)
-                ->setPublic(true)
-                ->setArguments([
-                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                    '$consentUri' => $value['demo'] ? JwtGrant::DEMO_CONSENT_URI : JwtGrant::CONSENT_URI,
-                    '$integrationKey' => $value['auth_jwt']['integration_key'],
-                ]);
+            if (!empty($value['auth_jwt'])) {
+                $container->register("docusign.consent.$name", Consent::class)
+                    ->setAutowired(true)
+                    ->setPublic(true)
+                    ->setArguments([
+                        '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                        '$consentUri' => $value['demo'] ? Consent::DEMO_CONSENT_URI : Consent::CONSENT_URI,
+                        '$integrationKey' => $value['auth_jwt']['integration_key'],
+                    ]);
+
+                if (null === $default) {
+                    $container->setAlias(Consent::class, new Alias("docusign.consent.$name"));
+                }
+            }
 
             if (null === $default) {
                 $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
@@ -170,7 +176,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $container->setAlias(CreateRecipient::class, new Alias("docusign.create_recipient.$name"));
                 $container->setAlias(EnvelopeCreator::class, new Alias("docusign.envelope_creator.$name"));
-                $container->setAlias(Consent::class, new Alias("docusign.consent.$name"));
+
                 $default = $name;
             }
         }

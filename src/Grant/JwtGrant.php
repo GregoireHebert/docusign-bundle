@@ -26,10 +26,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class JwtGrant implements GrantInterface
 {
     public const DEMO_ACCOUNT_API_URI = 'https://account-d.docusign.com/oauth/token';
-    public const DEMO_CONSENT_URI = 'https://account-d.docusign.com/oauth/auth';
-
     public const ACCOUNT_API_URI = 'https://account.docusign.com/oauth/token';
-    public const CONSENT_URI = 'https://account.docusign.com/oauth/auth';
 
     private $client;
     private $privateKey;
