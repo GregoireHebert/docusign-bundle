@@ -42,8 +42,8 @@ jobs:
       - name: Update project dependencies lowest
         if: matrix.dependency == 'lowest'
         run: |
-          composer update --no-progress --no-suggest --ansi --prefer-lowest
           composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle
+          composer update --no-progress --no-suggest --ansi --prefer-lowest
       - name: Run phpstan tests
         if: matrix.dependency == ''
         run: vendor/bin/phpstan analyze
