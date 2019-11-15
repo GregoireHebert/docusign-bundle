@@ -26,13 +26,15 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class JwtGrant implements GrantInterface
 {
     public const DEMO_ACCOUNT_API_URI = 'https://account-d.docusign.com/oauth/token';
+    public const DEMO_CONSENT_URI = 'https://account-d.docusign.com/oauth/auth';
+
     public const ACCOUNT_API_URI = 'https://account.docusign.com/oauth/token';
+    public const CONSENT_URI = 'https://account.docusign.com/oauth/auth';
 
     private $client;
     private $privateKey;
     private $integrationKey;
     private $userGuid;
-    private $apiUri;
     private $accountApiUri;
     private $ttl;
 
@@ -40,7 +42,6 @@ final class JwtGrant implements GrantInterface
         string $privateKey,
         string $integrationKey,
         string $userGuid,
-        string $apiUri,
         string $accountApiUri,
         int $ttl,
         HttpClientInterface $client = null
@@ -49,7 +50,6 @@ final class JwtGrant implements GrantInterface
         $this->privateKey = $privateKey;
         $this->integrationKey = $integrationKey;
         $this->userGuid = $userGuid;
-        $this->apiUri = $apiUri;
         $this->accountApiUri = $accountApiUri;
         $this->ttl = $ttl;
     }

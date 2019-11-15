@@ -58,6 +58,11 @@ final class DocusignLoader extends Loader
                 '_controller' => 'docusign_sign',
                 '_docusign_name' => $name,
             ]))->setMethods('GET'));
+
+            $routeCollection->add("docusign_consent_$name", (new Route("docusign/consent/$name", [
+                '_controller' => "docusign.consent.$name",
+                '_docusign_name' => $name,
+            ]))->setMethods('GET'));
         }
 
         return $routeCollection;

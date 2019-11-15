@@ -147,8 +147,8 @@ final class Kernel extends BaseKernel
             'sign_path' => '/docusign/sign',
             'callback' => 'embedded_callback',
             'account_id' => (string) $_ENV['DOCUSIGN_ACCOUNT_ID'],
-            'default_signer_name' => 'Vincent Chalamon',
-            'default_signer_email' => 'vincent@les-tilleuls.coop',
+            'default_signer_name' => 'Grégoire Hébert',
+            'default_signer_email' => 'gregoire@les-tilleuls.coop',
             'signatures' => [
                 [
                     'page' => 1,

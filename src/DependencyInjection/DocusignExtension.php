@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
+use DocusignBundle\Controller\Consent;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
@@ -74,7 +75,6 @@ final class DocusignExtension extends Extension
                     '$privateKey' => $value['auth_jwt']['private_key'],
                     '$integrationKey' => $value['auth_jwt']['integration_key'],
                     '$userGuid' => $value['auth_jwt']['user_guid'],
-                    '$apiUri' => $value['api_uri'],
                     '$accountApiUri' => $value['demo'] ? JwtGrant::DEMO_ACCOUNT_API_URI : JwtGrant::ACCOUNT_API_URI,
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
@@ -150,6 +150,15 @@ final class DocusignExtension extends Extension
                     '$signatures' => $value['signatures'],
                 ]);
 
+            $container->register("docusign.consent.$name", Consent::class)
+                ->setAutowired(true)
+                ->setPublic(true)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                    '$consentUri' => $value['demo'] ? JwtGrant::DEMO_CONSENT_URI : JwtGrant::CONSENT_URI,
+                    '$integrationKey' => $value['auth_jwt']['integration_key'],
+                ]);
+
             if (null === $default) {
                 $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
@@ -161,6 +170,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $container->setAlias(CreateRecipient::class, new Alias("docusign.create_recipient.$name"));
                 $container->setAlias(EnvelopeCreator::class, new Alias("docusign.envelope_creator.$name"));
+                $container->setAlias(Consent::class, new Alias("docusign.consent.$name"));
                 $default = $name;
             }
         }

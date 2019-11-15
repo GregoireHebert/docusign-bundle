@@ -13,9 +13,9 @@
         <env name="APP_DEBUG" value="false" />
         <env name="KERNEL_DIR" value="features/" />
         <env name="KERNEL_CLASS" value="Kernel" />
-        <env name="DOCUSIGN_INTEGRATION_KEY" value="861088ec-596e-4193-8761-c450ffe75dd8" />
-        <env name="DOCUSIGN_USER_GUID" value="fc912c03-bcfc-4685-9901-059c56fd9a67" />
-        <env name="DOCUSIGN_ACCOUNT_ID" value="1234567" />
+        <env name="DOCUSIGN_INTEGRATION_KEY" value="530dcf4b-3725-40a1-93f1-651a124c043d" />
+        <env name="DOCUSIGN_USER_GUID" value="cc547250-9432-4708-89f2-b4563cc727f6" />
+        <env name="DOCUSIGN_ACCOUNT_ID" value="8560457" />
         <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
         <server name="PANTHER_NO_SANDBOX" value="1" />
         <server name="PANTHER_CHROME_ARGUMENTS" value="--remote-debugging-port=9222" />

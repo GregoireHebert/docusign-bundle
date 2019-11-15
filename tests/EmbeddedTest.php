@@ -20,6 +20,17 @@ use Symfony\Component\Panther\PantherTestCase;
  */
 final class EmbeddedTest extends PantherTestCase
 {
+    public function testAcceptConsent(): void
+    {
+        $client = static::createPantherClient();
+        $client->followRedirects();
+
+        $crawler = $client->request('GET', '/docusign/consent/default');
+        if ('DocuSign' === $crawler->filter('head > title')->first()->text()) {
+            $client->submitForm('Accept');
+        }
+    }
+
     public function testTheEmbeddedDocumentsListRequiresAnAuthentication(): void
     {
         $client = static::createPantherClient();
