@@ -9,7 +9,6 @@ An Electronic Signature ensure a person agreed with the document.
 
 This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and can be with [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
 
-
 ## Requirements
 
 - php ^7.2
@@ -20,10 +19,10 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 
 1.  [Bundle Installation](doc/installation.md)
     1.  [Register the bundle](doc/installation.md#register-the-bundle)
-1.  [Configure DocuSign](#docusign-configuration)
-    1.  [Types of signatures](#types-of-signatures)
-    1.  [Format restrictions:](#format-restrictions)
-    1.  [Add an integration key on DocuSign](#add-an-integration-key-on-docusign)
+1.  [Configure DocuSign](doc/configure-docusign.md#docusign-configuration)
+    1.  [Types of signatures](doc/configure-docusign.md#types-of-signatures)
+    1.  [Format restrictions:](doc/configure-docusign.md#format-restrictions)
+    1.  [Add an integration key on DocuSign](doc/configure-docusign.md#add-an-integration-key-on-docusign)
 1.  [Configure the bundle](doc/configure-the-bundle.md)
     1.  [Create a default signature configuration](doc/configure-the-bundle.md#create-a-default-signature-configuration)
     1.  [Testing configuration](doc/configure-the-bundle.md#testing-configuration)
@@ -43,7 +42,6 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
     1.  [Installation](doc/use-flysystem-bundle.md#installation)
     1.  [Configure the storage](doc/use-flysystem-bundle.md#configure-the-storage)
     1.  [Configure the signature](doc/use-flysystem-bundle.md#configure-the-signature)
-1.  [Backward Compatibility promise](#backward-compatibility-promise)
 
 ## Backward Compatibility promise
 
