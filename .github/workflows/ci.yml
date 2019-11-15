@@ -48,7 +48,7 @@ jobs:
             unzip \
 
       - name: Install pcov PHP extension
-        if: matrix.coverage
+        if: matrix.coverage && matrix.dependency == ''
         run: |
           apk add $PHPIZE_DEPS
           pecl install pcov-$EXT_PCOV_VERSION
@@ -75,7 +75,7 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
       - name: Enable code coverage
-        if: matrix.coverage
+        if: matrix.coverage && matrix.dependency == ''
         run: echo '::set-env name=COVERAGE::1'
 
       - name: Run PHPUnit tests
