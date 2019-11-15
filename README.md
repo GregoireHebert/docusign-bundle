@@ -7,7 +7,7 @@
 This Symfony Bundle is used to create electronic signature with DocuSign.
 An Electronic Signature ensure a person agreed with the document.
 
-This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
+This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and can be with [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
 
 
 ## Requirements
@@ -18,7 +18,6 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 
 # Table of Content
 
-1.  [Requirements](#requirements)
 1.  [Bundle Installation](doc/installation.md)
     1.  [Register the bundle](doc/installation.md#register-the-bundle)
 1.  [Configure DocuSign](#docusign-configuration)

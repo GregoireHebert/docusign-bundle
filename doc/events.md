@@ -92,4 +92,4 @@ class WebhookSubscriber implements EventSubscriberInterface
 
 Next: [Customize the bundle](customize-the-bundle.md)
 
-[Go back](README.md)
+[Go back](/README.md)

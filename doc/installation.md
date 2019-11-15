@@ -33,4 +33,4 @@ return [
 Next: [Configure DocuSign](configure-docusign.md)
 
 
-[Go back](README.md)
+[Go back](/README.md)

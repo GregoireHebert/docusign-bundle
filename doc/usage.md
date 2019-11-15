@@ -25,4 +25,4 @@ If you have a named signature:
 
 Next: [Events](events.md)
 
-[Go back](README.md)
+[Go back](/README.md)

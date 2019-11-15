@@ -130,4 +130,4 @@ docusign:
 
 Next: [Basic usage](usage.md)
 
-[Go back](README.md)
+[Go back](/README.md)

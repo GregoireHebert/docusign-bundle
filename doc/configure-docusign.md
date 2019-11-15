@@ -52,4 +52,4 @@ docusign:
 
 Next: [Configure the bundle](configure-the-bundle.md)
 
-[Go back](README.md)
+[Go back](/README.md)
