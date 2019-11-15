@@ -9,12 +9,12 @@ An Electronic Signature ensure a person agreed with the document.
 
 1.  [Requirements](#requirements)
 1.  [Bundle Installation](#bundle-installation)
-    1.  [register the bundle](#register-the-bundle)
+    1.  [Register the bundle](#register-the-bundle)
     1.  [Configure the bundle](#configure-the-bundle)
-1.  [Docusign Configuration](#docusign-configuration)
+1.  [DocuSign Configuration](#docusign-configuration)
     1.  [Types of signatures](#types-of-signatures)
-    1.  [Format Restrictions:](#format-restrictions)
-    1.  [Add an integration key on docusign](#add-an-integration-key-on-docusign)
+    1.  [Format restrictions:](#format-restrictions)
+    1.  [Add an integration key on DocuSign](#add-an-integration-key-on-docusign)
 1.  [Basic usage](#basic-usage)
     1.  [Inside a twig template](#inside-a-twig-template)
     1.  [Using document variations signature positionning](#using-document-variations-signature-positionning)
@@ -93,7 +93,7 @@ docusign:
         default_signer_name: "Grégoire Hébert" # Name of the person that will be notified and will sign the document if none is sent to the url.
         default_signer_email: "gregoire@les-tilleuls.coop" # Mail of the person that will be notified and will sign the document if none is sent to the url.
 
-        api_uri: "https://www.docusign.net/restapi" # Docusign api uri
+        api_uri: "https://www.docusign.net/restapi" # DocuSign api uri
 
         callback: "docusign_callback" # Your route where to redirect the user after signature
 
@@ -168,14 +168,14 @@ docusign:
                 directory: '%kernel.project_dir%/var/storage/default'
 ```
 
-## Docusign Configuration
+## DocuSign configuration
 
 ### Types of signatures
 
-- **Embedded Signature**: Allow to sign a document from a website or a mobile app by being redirected to docusign the sent back to the website or mobileApp
+- **Embedded Signature**: Allow to sign a document from a website or a mobile app by being redirected to DocuSign the sent back to the website or mobileApp
 - **Remote Signature**: Send an Email to ask for a document signature.
 
-### Format Restrictions:
+### Format restrictions:
 
 | TYPE | EXTENSION |
 |------:|:----------|
@@ -190,7 +190,7 @@ docusign:
 |RECOMMENDED FILE SIZE | 5 MB |
 |MAXIMUM # PAGES PER DOCUMENT | 2,000 pages |
 
-### Add an integration key on docusign
+### Add an integration key on DocuSign
 
 First go and authenticate yourself in `https://admindemo.docusign.com`
 
