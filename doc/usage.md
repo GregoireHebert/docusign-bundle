@@ -1,5 +1,14 @@
 # Basic usage
 
+## JWT consent agreement
+
+When using the jwt grant authentication, you need to consent to DocuSign agreements.
+It's a 1 time action you need to perform on each of your environments.
+
+You need to consent for each specific signature configuration having a different integration key.
+You need to call the URL `/docusign/consent/default` or `/docusign/consent/mySignature` if you've named your signature configuration `mySignature` from your browser.
+In local it would be `http://localhost/docusign/consent/default`.
+
 ## Inside a twig template:
 
 If you have only one signature without name:

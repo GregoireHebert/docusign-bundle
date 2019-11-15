@@ -29,6 +29,7 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
     1.  [Document variations](doc/configure-the-bundle.md#document-variations)
     1.  [Multiple signature configuration](doc/configure-the-bundle.md#multiple-signature-configuration)
 1.  [Basic usage](doc/usage.md)
+    1.  [JWT consent agreement](doc/usage.md#jwt-consent-agreement)
     1.  [Inside a twig template](doc/usage.md#inside-a-twig-template)
     1.  [Events](doc/events.md)
         1.  [Sign events](doc/events.md#sign-events)
