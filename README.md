@@ -5,7 +5,7 @@
 [![Software license](https://img.shields.io/github/license/gregoirehebert/docusign-bundle.svg?style=flat-square)](https://github.com/gregoirehebert/docusign-bundle/blob/master/LICENSE)
 
 This Symfony Bundle is used to create electronic signature with DocuSign.
-An Electronic Signature ensure a person agreed with the document.
+An Electronic Signature ensure a person agreed with a document.
 
 This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and can be with [FlySystem Bundle](https://github.com/thephpleague/flysystem-bundle) to handle the files.
 
