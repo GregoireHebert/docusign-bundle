@@ -52,18 +52,24 @@ that you did not make in your PR, you're doing it wrong.
 
 All Pull Requests must include [this header](.github/PULL_REQUEST_TEMPLATE.md).
 
+### Static code analysis
+
+```shell
+vendor/bin/phpstan analyze
+```
+
 ### PHPUnit and Coverage Generation
 
 To launch unit tests:
 
 ```shell
-vendor/bin/phpunit --stop-on-failure -vvv
+vendor/bin/phpunit
 ```
 
 If you want coverage, you will need the `phpdbg` package and run:
 
 ```shell
-phpdbg -qrr vendor/bin/phpunit --coverage-html coverage -vvv --stop-on-failure
+phpdbg -qrr vendor/bin/phpunit --coverage-html coverage
 ```
 
 Sometimes there might be an error with too many open files when generating coverage. To fix this, you can increase the `ulimit`, for example:
