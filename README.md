@@ -15,7 +15,7 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 - simplexml php extension
 - curl php extension
 
-# Table of Content
+## Table of Content
 
 1.  [Bundle Installation](doc/installation.md)
     1.  [Register the bundle](doc/installation.md#register-the-bundle)
@@ -43,6 +43,14 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
     1.  [Configure the storage](doc/use-flysystem-bundle.md#configure-the-storage)
     1.  [Configure the signature](doc/use-flysystem-bundle.md#configure-the-signature)
 
+## Code of conduct
+
+This bundle is ruled by a [code a conduct](/.github/CODE_OF_CONDUCT.md).
+
+## Contributing
+
+Please have a look to [the contributing guide](/.github/CONTRIBUTING.md).
+
 ## Backward Compatibility promise
 
-This library follows the same Backward Compatibility promise as the Symfony framework: [https://symfony.com/doc/current/contributing/code/bc.html](https://symfony.com/doc/current/contributing/code/bc.html)
+This bundle follows the same Backward Compatibility promise as the Symfony framework: [https://symfony.com/doc/current/contributing/code/bc.html](https://symfony.com/doc/current/contributing/code/bc.html)
