@@ -5,6 +5,10 @@ on:
     - cron: 0 2 * * 1-5
   pull_request:
 
+env:
+  COVERAGE: '0'
+  EXT_PCOV_VERSION: '1.0.6'
+
 jobs:
   tests:
     name: Tests (PHP ${{ matrix.php }})
@@ -17,6 +21,9 @@ jobs:
         php:
           - '7.2'
           - '7.3'
+        include:
+          - php: '7.3'
+            coverage: true
         dependency:
           - ''
           - '--prefer-lowest && composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle'
@@ -25,11 +32,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: ${{ matrix.php }}-composer-${{ matrix.dependency }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ matrix.php }}-composer-${{ matrix.dependency }}-
+
       - name: Install system packages
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
             unzip
+
+      - name: Install pcov PHP extension
+        if: matrix.coverage
+        run: |
+          apk add $PHPIZE_DEPS
+          pecl install pcov-$EXT_PCOV_VERSION
+          docker-php-ext-enable pcov
 
       - name: Disable PHP memory limit
         run: echo 'memory_limit=-1' >> /usr/local/etc/php/php.ini
@@ -51,10 +73,39 @@ jobs:
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml
+      - name: Enable code coverage
+          if: matrix.coverage
+          run: echo '::set-env name=COVERAGE::1'
 
-      - name: Send code coverage report to Codecov.io
+      - name: Run PHPUnit tests
+        run: |
+          mkdir -p build/logs/phpunit
+          if [ "$COVERAGE" = '1' ]; then
+            vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always
+          else
+            vendor/bin/phpunit --colors=always
+          fi
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: phpunit-logs-php${{ matrix.php }}
+          path: build/logs/phpunit
+
+      - name: Upload coverage results to Codecov
+        if: matrix.coverage
+        uses: codecov/codecov-action@v1.0.3
+        with:
+          name: phpunit-php${{ matrix.php }}
+          flags: phpunit
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage results to Coveralls
+        if: matrix.coverage
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash) || true
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
+          export PATH="$PATH:$HOME/.composer/vendor/bin"
+          coveralls build/logs/phpunit/clover.xml
