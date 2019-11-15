@@ -31,6 +31,7 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;
+use Symfony\Component\DependencyInjection\Reference;
 
 class DocusignExtensionTest extends TestCase
 {
@@ -185,11 +186,17 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->addArgument(Argument::type(Reference::class))->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_creator')->shouldBeCalled();
+
+        $definitionProphecy->setDecoratedService('docusign.create_document.default')->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setDecoratedService('docusign.define_envelope.default')->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setDecoratedService('docusign.send_envelope.default')->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setDecoratedService('docusign.create_recipient.default')->shouldBeCalled()->willReturn($definitionProphecy);
 
         /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
         $loaderDefinitionProphecy = $this->prophesize(Definition::class);
@@ -219,6 +226,11 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.define_envelope.default', EnvelopeCreator\DefineEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.send_envelope.default', EnvelopeCreator\SendEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.envelope_creator.default', EnvelopeCreator\EnvelopeCreator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+
+        $containerBuilderProphecy->register('docusign.decorated_create_document.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.decorated_create_recipient.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.decorated_define_envelope.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.decorated_send_envelope.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
 
         $containerBuilderProphecy->register('docusign.envelope_builder.default', EnvelopeBuilder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
