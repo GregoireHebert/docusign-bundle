@@ -74,8 +74,8 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
       - name: Enable code coverage
-          if: matrix.coverage
-          run: echo '::set-env name=COVERAGE::1'
+        if: matrix.coverage
+        run: echo '::set-env name=COVERAGE::1'
 
       - name: Run PHPUnit tests
         run: |
