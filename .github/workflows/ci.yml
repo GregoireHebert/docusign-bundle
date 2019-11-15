@@ -88,14 +88,14 @@ jobs:
           fi
 
       - name: Upload test artifacts
-        if: always()
+        if: matrix.coverage && matrix.dependency == ''
         uses: actions/upload-artifact@v1
         with:
           name: phpunit-logs-php${{ matrix.php }}
           path: build/logs/phpunit
 
       - name: Upload coverage results to Codecov
-        if: matrix.coverage
+        if: matrix.coverage && matrix.dependency == ''
         uses: codecov/codecov-action@v1.0.3
         with:
           name: phpunit-php${{ matrix.php }}
@@ -103,7 +103,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage results to Coveralls
-        if: matrix.coverage
+        if: matrix.coverage && matrix.dependency == ''
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
