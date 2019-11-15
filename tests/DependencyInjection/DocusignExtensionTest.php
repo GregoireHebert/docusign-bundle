@@ -22,7 +22,7 @@ use DocusignBundle\EnvelopeCreator;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
-use DocusignBundle\Translator\TranslatorAware;
+use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -106,7 +106,7 @@ class DocusignExtensionTest extends TestCase
         $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-        $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAware::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
+        $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
@@ -181,7 +181,7 @@ class DocusignExtensionTest extends TestCase
         $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-        $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAware::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
+        $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         $aliasDefinition = $this->prophesize(Alias::class);
         $aliasDefinition->setPublic(false)->shouldBeCalled();

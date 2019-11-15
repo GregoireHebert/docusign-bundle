@@ -16,18 +16,18 @@ namespace DocusignBundle\EnvelopeCreator;
 use DocuSign\eSign\Model;
 use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\Translator\TranslatorAware;
-use DocusignBundle\Translator\TranslatorTrait;
+use DocusignBundle\Translator\TranslatorAwareInterface;
+use DocusignBundle\Translator\TranslatorAwareTrait;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAware
+final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAwareInterface
 {
     public const EMAIL_SUBJECT = 'Please sign this document';
     public const WEBHOOK_ROUTE_NAME = 'docusign_webhook';
 
-    use TranslatorTrait;
+    use TranslatorAwareTrait;
 
     private $router;
     private $envelopeBuilder;
@@ -47,7 +47,7 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
         }
 
         $this->envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
-            'email_subject' => $this->translator->trans(self::EMAIL_SUBJECT, [], DocusignBundle::TRANSLATION_DOMAIN),
+            'email_subject' => $this->getTranslator()->trans(self::EMAIL_SUBJECT, [], DocusignBundle::TRANSLATION_DOMAIN),
             'documents' => [$this->envelopeBuilder->getDocument()],
             'recipients' => new Model\Recipients(['signers' => $this->envelopeBuilder->getSigners(), 'carbon_copies' => $this->envelopeBuilder->getCarbonCopies() ?? null]),
             'status' => 'sent',

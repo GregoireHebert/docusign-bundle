@@ -24,7 +24,7 @@ use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
-use DocusignBundle\Translator\TranslatorAware;
+use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
@@ -59,7 +59,7 @@ final class DocusignExtension extends Extension
             ->addTag('docusign.envelope_builder.action');
 
         $container
-            ->registerForAutoconfiguration(TranslatorAware::class)
+            ->registerForAutoconfiguration(TranslatorAwareInterface::class)
             ->addTag('docusign.translator.aware');
 
         $default = null;

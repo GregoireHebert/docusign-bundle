@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Translation\TranslatorInterface;
 
-final class TranslationPass implements CompilerPassInterface
+final class TranslationCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {

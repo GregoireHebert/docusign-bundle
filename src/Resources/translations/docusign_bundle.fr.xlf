@@ -11,8 +11,8 @@
                 <target>La signature du document s'est terminée par le statut inattendu "%status%".</target>
             </trans-unit>
             <trans-unit id="docusign.document_signed">
-                <source>Congratulation! Document signed.</source>
-                <target>Félicitation! Document signé.</target>
+                <source>Congratulations! The document have been successfully signed.</source>
+                <target>Félicitations ! Le document a été signé avec succès.</target>
             </trans-unit>
         </body>
     </file>

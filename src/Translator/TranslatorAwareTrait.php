@@ -16,7 +16,7 @@ namespace DocusignBundle\Translator;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Translation\TranslatorInterface;
 
-trait TranslatorTrait
+trait TranslatorAwareTrait
 {
     private $translator;
 

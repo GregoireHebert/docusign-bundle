@@ -15,7 +15,7 @@ namespace DocusignBundle\Translator;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
-interface TranslatorAware
+interface TranslatorAwareInterface
 {
     public function setTranslator(TranslatorInterface $translator): void;
 }

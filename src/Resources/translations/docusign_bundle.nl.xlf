@@ -11,8 +11,8 @@
                 <target>De ondertekening van het document heeft een onverwachte status "%status%".</target>
             </trans-unit>
             <trans-unit id="docusign.document_signed">
-                <source>Congratulation! Document signed.</source>
-                <target>Gefeliciteerd! Document ondertekend.</target>
+                <source>Congratulations! The document have been successfully signed.</source>
+                <target>Gefeliciteerd! Het document is succesvol ondertekend.</target>
             </trans-unit>
         </body>
     </file>
