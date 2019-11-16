@@ -10,7 +10,7 @@
     <php>
         <ini name="error_reporting" value="-1" />
         <env name="APP_ENV" value="embedded" />
-        <env name="APP_DEBUG" value="false" />
+        <env name="APP_DEBUG" value="true" />
         <env name="KERNEL_DIR" value="features/" />
         <env name="KERNEL_CLASS" value="Kernel" />
         <env name="DOCUSIGN_INTEGRATION_KEY" value="530dcf4b-3725-40a1-93f1-651a124c043d" />
