@@ -63,7 +63,7 @@ jobs:
 
       - name: Run PHPUnit tests
         run: |
-          mkdir -p /tmp/build/logs/phpunit
+          mkdir -p build/logs/phpunit
           mkdir -p features/var/jwt
           echo $DOCUSIGN_RSA_PRIVATE_KEY > features/var/jwt/docusign.pem
           vendor/bin/phpunit --colors=always --testdox
@@ -73,4 +73,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: phpunit-logs-php${{ matrix.php }}
-          path: /tmp/build/logs/phpunit
+          path: build/logs/phpunit
