@@ -1,7 +1,27 @@
 {
     "name": "gheb/docusign-bundle",
     "description": "Symfony Bundle for electronic document signature with Docusign",
+    "homepage": "https://github.com/GregoireHebert/docusign-bundle",
+    "license": "MIT",
     "type": "symfony-bundle",
+    "keywords": ["symfony","symfony-bundle","electronic signature", "docusign"],
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Grégoire Hébert",
+            "email": "gregoire@les-tilleuls.coop",
+            "homepage": "https://knot.gheb.dev/",
+            "role": "Developer"
+        },
+        {
+            "name": "Vincent Chalamon",
+            "email": "vincentchalamon@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "gregoire+support-docusign@les-tilleuls.coop"
+    },
     "require": {
         "php": "^7.2",
         "ext-simplexml": "*",
@@ -41,13 +61,6 @@
             "DocusignBundle\\Tests\\": "tests/"
         }
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Grégoire Hébert",
-            "email": "gregoire@les-tilleuls.coop"
-        }
-    ],
     "config": {
         "sort-packages": true
     },
