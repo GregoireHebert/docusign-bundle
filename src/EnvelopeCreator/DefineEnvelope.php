@@ -20,7 +20,6 @@ use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Translator\TranslatorAwareTrait;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAwareInterface
 {
@@ -33,11 +32,10 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
     private $envelopeBuilder;
     private $translator;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router)
     {
         $this->router = $router;
         $this->envelopeBuilder = $envelopeBuilder;
-        $this->translator = $translator;
     }
 
     public function __invoke(array $context = []): void

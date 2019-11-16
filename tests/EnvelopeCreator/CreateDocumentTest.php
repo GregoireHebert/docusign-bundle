@@ -46,6 +46,7 @@ class CreateDocumentTest extends TestCase
 
         $createDocument = new CreateDocument($envelopeBuilder = $this->envelopeBuilderProphecyMock->reveal());
         $createDocument(['signature_name'=>'default']);
+
         $this->assertInstanceOf(EnvelopeBuilderInterface::class, $envelopeBuilder);
         $this->assertInstanceOf(Document::class, $document = $envelopeBuilder->getDocument());
     }

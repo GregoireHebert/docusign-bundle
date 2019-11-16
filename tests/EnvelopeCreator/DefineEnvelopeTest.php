@@ -44,7 +44,8 @@ class DefineEnvelopeTest extends TestCase
 
         $this->translatorProphecyMock->trans(Argument::type('string'), [], DocusignBundle::TRANSLATION_DOMAIN)->shouldBeCalled()->willReturn(DefineEnvelope::EMAIL_SUBJECT);
 
-        $createDocument = new DefineEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal(), $this->translatorProphecyMock->reveal());
-        $createDocument(['signature_name'=>'default']);
+        $defineEnvelope = new DefineEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal());
+        $defineEnvelope->setTranslator($this->translatorProphecyMock->reveal());
+        $defineEnvelope(['signature_name'=>'default']);
     }
 }
