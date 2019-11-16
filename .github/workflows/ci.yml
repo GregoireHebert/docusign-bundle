@@ -64,8 +64,6 @@ jobs:
       - name: Run PHPUnit tests
         run: |
           mkdir -p build/logs/phpunit
-          mkdir -p features/var/jwt
-          echo $DOCUSIGN_RSA_PRIVATE_KEY > features/var/jwt/docusign.pem
           vendor/bin/phpunit --colors=always --testdox
 
       - name: Upload test artifacts
