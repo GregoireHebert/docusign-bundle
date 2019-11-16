@@ -58,8 +58,8 @@ final class DocusignExtension extends Extension
         $adapterFactory = new AdapterDefinitionFactory();
         $container
             ->registerForAutoconfiguration(PluginInterface::class)
-            ->addTag('flysystem.plugin')
-        ;
+            ->addTag('flysystem.plugin');
+
         foreach ($config['storages'] as $storageName => $storageConfig) {
             // Create adapter service definition
             if ($adapter = $adapterFactory->createDefinition($storageConfig['adapter'], $storageConfig['options'])) {

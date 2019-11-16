@@ -68,7 +68,11 @@ jobs:
         run: composer update --no-progress --no-suggest --ansi
       - name: Remove flysystem-bundle
         run: |
-          composer remove --dev --no-progress --no-update --ansi \
-            league/flysystem-bundle
+          composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle
+          composer update --no-progress --no-suggest --ansi --prefer-lowest
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --colors=always
+      - name: Run phpstan tests
+        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
+      - name: Run php-cs-fixer tests
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff

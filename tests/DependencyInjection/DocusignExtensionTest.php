@@ -12,6 +12,8 @@ use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Utils\SignatureExtractor;
+use League\Flysystem\PluginInterface;
+use League\FlysystemBundle\FlysystemBundle;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\Alias;
@@ -26,10 +28,10 @@ class DocusignExtensionTest extends TestCase
         'demo' => false,
         'auth_jwt' => [
             'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-            'integration_key' => 'yourIntegrationKey',
-            'user_guid' => 'yourUserGuid',
+            'integration_key' => 'c9763e9d-74e1-4370-9889-d749efd2b2ac',
+            'user_guid' => '1d57a6cb-4fb0-4fb2-9fd9-09051f5b07ba',
         ],
-        'account_id' => 'ID',
+        'account_id' => 1234567,
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
     ]];
@@ -37,10 +39,10 @@ class DocusignExtensionTest extends TestCase
         'demo' => true,
         'auth_jwt' => [
             'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-            'integration_key' => 'yourIntegrationKey',
-            'user_guid' => 'yourUserGuid',
+            'integration_key' => 'c9763e9d-74e1-4370-9889-d749efd2b2ac',
+            'user_guid' => '1d57a6cb-4fb0-4fb2-9fd9-09051f5b07ba',
         ],
-        'account_id' => 'ID',
+        'account_id' => 1234567,
         'default_signer_name' => 'Grégoire Hébert',
         'default_signer_email' => 'gregoire@les-tilleuls.coop',
     ]];
@@ -65,6 +67,12 @@ class DocusignExtensionTest extends TestCase
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 
+        if (!class_exists(FlysystemBundle::class)) {
+            $childDefinitionProphecy = $this->prophesize(ChildDefinition::class);
+            $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->willReturn($childDefinitionProphecy)->shouldBeCalled();
+            $childDefinitionProphecy->addTag('flysystem.plugin')->shouldBeCalled();
+        }
+
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
 
@@ -91,10 +99,10 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilderProphecy->setParameter('docusign.auth_jwt.private_key', '%kernel.project_dir%/var/jwt/docusign.pem')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'yourIntegrationKey')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', 'yourUserGuid')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'c9763e9d-74e1-4370-9889-d749efd2b2ac')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', '1d57a6cb-4fb0-4fb2-9fd9-09051f5b07ba')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.account_id', 1234567)->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.auth_jwt.ttl', 3600)->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.account_id', 'ID')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_name', 'Grégoire Hébert')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_email', 'gregoire@les-tilleuls.coop')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.api_uri', 'https://www.docusign.net/restapi')->shouldBeCalled();
@@ -114,6 +122,12 @@ class DocusignExtensionTest extends TestCase
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 
+        if (!class_exists(FlysystemBundle::class)) {
+            $childDefinitionProphecy = $this->prophesize(ChildDefinition::class);
+            $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->willReturn($childDefinitionProphecy)->shouldBeCalled();
+            $childDefinitionProphecy->addTag('flysystem.plugin')->shouldBeCalled();
+        }
+
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
 
@@ -140,10 +154,10 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilderProphecy->setParameter('docusign.auth_jwt.private_key', '%kernel.project_dir%/var/jwt/docusign.pem')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'yourIntegrationKey')->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', 'yourUserGuid')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.integration_key', 'c9763e9d-74e1-4370-9889-d749efd2b2ac')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.auth_jwt.user_guid', '1d57a6cb-4fb0-4fb2-9fd9-09051f5b07ba')->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('docusign.account_id', 1234567)->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.auth_jwt.ttl', 3600)->shouldBeCalled();
-        $containerBuilderProphecy->setParameter('docusign.account_id', 'ID')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_name', 'Grégoire Hébert')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.default_signer_email', 'gregoire@les-tilleuls.coop')->shouldBeCalled();
         $containerBuilderProphecy->setParameter('docusign.api_uri', 'https://demo.docusign.net/restapi')->shouldBeCalled();

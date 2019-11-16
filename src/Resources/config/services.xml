@@ -29,7 +29,6 @@
             <argument>%docusign.auth_jwt.private_key%</argument>
             <argument>%docusign.auth_jwt.integration_key%</argument>
             <argument>%docusign.auth_jwt.user_guid%</argument>
-            <argument>%docusign.api_uri%</argument>
             <argument>%docusign.account_api_uri%</argument>
             <argument>%docusign.auth_jwt.ttl%</argument>
         </service>
