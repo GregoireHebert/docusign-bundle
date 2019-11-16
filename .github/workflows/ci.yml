@@ -14,7 +14,7 @@ jobs:
     name: Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     container:
-      image: php:${{ matrix.php }}-alpine
+      image: php:${{ matrix.php }}
       options: >-
         --tmpfs /tmp:exec
     strategy:
@@ -42,15 +42,19 @@ jobs:
           restore-keys: |
             ${{ matrix.php }}-composer-${{ matrix.dependency }}-
 
+      - name: Enable code coverage
+        if: matrix.coverage && matrix.dependency == ''
+        run: echo '::set-env name=COVERAGE::1'
+
       - name: Install system packages
         run: |
-          apk add \
-            unzip \
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            unzip
 
       - name: Install pcov PHP extension
-        if: matrix.coverage && matrix.dependency == ''
+        if: env.COVERAGE == '1'
         run: |
-          apk add $PHPIZE_DEPS
           pecl install pcov-$EXT_PCOV_VERSION
           docker-php-ext-enable pcov
 
@@ -74,28 +78,25 @@ jobs:
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
-      - name: Enable code coverage
-        if: matrix.coverage && matrix.dependency == ''
-        run: echo '::set-env name=COVERAGE::1'
-
-      - name: Run PHPUnit tests
+      - name: Run PHPUnit tests with coverage
+        if: env.COVERAGE == '1'
         run: |
           mkdir -p build/logs/phpunit
-          if [ "$COVERAGE" = '1' ]; then
-            vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always
-          else
-            vendor/bin/phpunit --colors=always
-          fi
+          vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always
+
+      - name: Run PHPUnit tests
+        if: env.COVERAGE == '0'
+        run: vendor/bin/phpunit --colors=always
 
       - name: Upload test artifacts
-        if: matrix.coverage && matrix.dependency == ''
+        if: env.COVERAGE == '1'
         uses: actions/upload-artifact@v1
         with:
           name: phpunit-logs-php${{ matrix.php }}
           path: build/logs/phpunit
 
       - name: Upload coverage results to Codecov
-        if: matrix.coverage && matrix.dependency == ''
+        if: env.COVERAGE == '1'
         uses: codecov/codecov-action@v1.0.3
         with:
           name: phpunit-php${{ matrix.php }}
@@ -103,7 +104,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage results to Coveralls
-        if: matrix.coverage && matrix.dependency == ''
+        if: env.COVERAGE == '1'
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
