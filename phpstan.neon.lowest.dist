@@ -10,4 +10,3 @@ parameters:
 
         # known bug of phpstan
         - "#Class League\\\\FlysystemBundle\\\\FlysystemBundle not found\\.#"
-        - "#Class Symfony\\\\Component\\\\DependencyInjection\\\\Compiler\\\\ValidateEnvPlaceholdersPass not found\\.#"
