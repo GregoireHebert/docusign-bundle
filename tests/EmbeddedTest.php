@@ -73,10 +73,10 @@ final class EmbeddedTest extends PantherTestCase
             '_username' => 'admin',
             '_password' => '4dm1n',
         ]);
-        $client->takeScreenshot(__DIR__.'/../build/logs/phpunit/list.png');
-        $client->takeScreenshot('build/logs/phpunit/list.png');
         $client->waitFor('#container #content ul li');
 
+        $client->takeScreenshot(__DIR__.'/../build/logs/phpunit/list1.png');
+        $client->takeScreenshot('build/logs/phpunit/list2.png');
         $client->clickLink('dummy.pdf');
         $crawler = $client->waitFor('#action-bar-btn-continue');
 
