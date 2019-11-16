@@ -63,8 +63,10 @@ final class EmbeddedTest extends PantherTestCase
         $client->followRedirects();
 
         $client->request('GET', '/embedded');
+        $client->takeScreenshot('list.png');
 
         $client->clickLink('dummy.pdf');
+        $client->takeScreenshot('docusign-continue.png');
         $crawler = $client->waitFor('#action-bar-btn-continue');
 
         $crawler->filter('#action-bar-btn-continue')->click();
