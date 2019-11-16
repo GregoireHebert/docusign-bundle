@@ -69,6 +69,7 @@ jobs:
           vendor/bin/phpunit --colors=always --testdox
 
       - name: Upload test artifacts
+        if: always()
         uses: actions/upload-artifact@v1
         with:
           name: phpunit-logs-php${{ matrix.php }}
