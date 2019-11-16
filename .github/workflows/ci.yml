@@ -69,7 +69,7 @@ jobs:
           vendor/bin/phpunit --colors=always --testdox
 
       - name: Upload test artifacts
-          uses: actions/upload-artifact@v1
-          with:
-            name: phpunit-logs-php${{ matrix.php }}
-            path: build/logs/phpunit
+        uses: actions/upload-artifact@v1
+        with:
+          name: phpunit-logs-php${{ matrix.php }}
+          path: build/logs/phpunit
