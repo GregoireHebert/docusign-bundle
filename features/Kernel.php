@@ -137,7 +137,7 @@ final class Kernel extends BaseKernel
         ]);
 
         $c->loadFromExtension('docusign', [
-            'demo' => 'true',
+            'demo' => true,
             'mode' => 'embedded',
             'auth_jwt' => [
                 'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
@@ -146,7 +146,7 @@ final class Kernel extends BaseKernel
             ],
             'sign_path' => '/docusign/sign',
             'callback' => 'embedded_callback',
-            'account_id' => (string) $_ENV['DOCUSIGN_ACCOUNT_ID'],
+            'account_id' => (int) $_ENV['DOCUSIGN_ACCOUNT_ID'],
             'default_signer_name' => 'Grégoire Hébert',
             'default_signer_email' => 'gregoire@les-tilleuls.coop',
             'signatures' => [

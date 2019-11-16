@@ -20,16 +20,23 @@ use Symfony\Component\Panther\PantherTestCase;
  */
 final class EmbeddedTest extends PantherTestCase
 {
-    public function testAcceptConsent(): void
+    protected function tearDown(): void
     {
-        $client = static::createPantherClient();
-        $client->followRedirects();
-
-        $crawler = $client->request('GET', '/docusign/consent/default');
-        if ('DocuSign' === $crawler->filter('head > title')->first()->text()) {
-            $client->submitForm('Accept');
-        }
+        parent::tearDown();
+        static::createPantherClient()->request('GET', '/logout');
     }
+
+//    public function testAcceptConsent(): void
+//    {
+//        $client = static::createPantherClient();
+//
+//        $crawler = $client->request('GET', '/docusign/consent/default');
+//        if ('DocuSign' === $crawler->filter('head > title')->first()->text()) {
+//            $client->submitForm('Accept');
+//        }
+//        $client->takeScreenshot('consent.png');
+//        // todo Missing assertion
+//    }
 
     public function testTheEmbeddedDocumentsListRequiresAnAuthentication(): void
     {
@@ -60,18 +67,33 @@ final class EmbeddedTest extends PantherTestCase
     public function testICanSignAnEmbeddedDocument(): void
     {
         $client = static::createPantherClient();
-        $client->followRedirects();
 
         $client->request('GET', '/embedded');
-        $client->takeScreenshot('list.png');
+        $client->submitForm('Login', [
+            '_username' => 'admin',
+            '_password' => '4dm1n',
+        ]);
+        $client->waitFor('#container #content ul li');
 
         $client->clickLink('dummy.pdf');
-        $client->takeScreenshot('docusign-continue.png');
         $crawler = $client->waitFor('#action-bar-btn-continue');
 
+        if ($crawler->filter('#disclosureAccepted')->isDisplayed()) {
+            $crawler->filter('label[for=disclosureAccepted]')->click();
+        }
+
         $crawler->filter('#action-bar-btn-continue')->click();
-        $crawler->filter('#navigate-btn')->click();
+        $crawler = $client->waitFor('.page-tabs .signature-tab > button');
+
         $crawler->filter('.page-tabs .signature-tab > button')->click();
+        $crawler = $client->waitFor('#action-bar-btn-finish');
+
+        // Wait for "Adopt and Sign" button (optional use-case)
+        sleep(1);
+        if ($crawler->selectButton('Adopt and Sign')->count()) {
+            $crawler->selectButton('Adopt and Sign')->click();
+        }
+
         $crawler->filter('#action-bar-btn-finish')->click();
         $crawler = $client->waitFor('.alert');
 

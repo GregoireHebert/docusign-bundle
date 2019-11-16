@@ -15,7 +15,6 @@ namespace DocusignBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\DependencyInjection\Compiler\ValidateEnvPlaceholdersPass;
 use Webmozart\Assert\Assert;
 
 final class Configuration implements ConfigurationInterface
@@ -49,27 +48,14 @@ final class Configuration implements ConfigurationInterface
                         ->isRequired()
                     ->end()
                     ->booleanNode('demo')
-                        ->beforeNormalization()
-                            ->ifString()
-                            ->then(static function ($v) { return \in_array($v, ['1', 'true'], true); })
-                        ->end()
                         ->info('Enable the demo mode')
                         ->defaultFalse()
                     ->end()
-                    ->scalarNode('account_id')
-                        ->beforeNormalization()
-                            ->ifString()
-                            ->then(static function ($v) { return (int) $v; })
-                        ->end()
+                    ->integerNode('account_id')
                         ->info('Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture')
-                        ->cannotBeEmpty()
+                        ->isRequired()
                         ->validate()
                             ->ifTrue(static function ($v) {
-                                // BC compat for symfony < 4.1
-                                if (!class_exists(ValidateEnvPlaceholdersPass::class)) {
-                                    return true;
-                                }
-
                                 try {
                                     Assert::integer($v);
                                     Assert::true(7 === \strlen((string) $v));
@@ -91,11 +77,6 @@ final class Configuration implements ConfigurationInterface
                         ->cannotBeEmpty()
                         ->validate()
                             ->ifTrue(static function ($v) {
-                                // BC compat for symfony < 4.1
-                                if (!class_exists(ValidateEnvPlaceholdersPass::class)) {
-                                    return true;
-                                }
-
                                 try {
                                     Assert::email($v);
 
@@ -155,11 +136,6 @@ final class Configuration implements ConfigurationInterface
                                 ->info('To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys')
                                 ->validate()
                                     ->ifTrue(static function ($v) {
-                                        // BC compat for symfony < 4.1
-                                        if (!class_exists(ValidateEnvPlaceholdersPass::class)) {
-                                            return true;
-                                        }
-
                                         try {
                                             Assert::uuid($v);
 
@@ -176,11 +152,6 @@ final class Configuration implements ConfigurationInterface
                                 ->info('Obtain your user UID (also called API username) from DocuSign Admin > Users > User > Actions > Edit')
                                 ->validate()
                                     ->ifTrue(static function ($v) {
-                                        // BC compat for symfony < 4.1
-                                        if (!class_exists(ValidateEnvPlaceholdersPass::class)) {
-                                            return true;
-                                        }
-
                                         try {
                                             Assert::uuid($v);
 
