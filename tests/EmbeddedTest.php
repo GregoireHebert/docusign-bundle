@@ -87,6 +87,12 @@ final class EmbeddedTest extends PantherTestCase
         $crawler->filter('#action-bar-btn-continue')->click();
         $crawler = $client->waitFor('.page-tabs .signature-tab > button');
 
+        // Wait for "Comment tooltip" button (optional use-case)
+        sleep(1);
+        if ($crawler->filter('#comments-tooltip-btn-ok')->isDisplayed()) {
+            $crawler->filter('#comments-tooltip-btn-ok')->click();
+        }
+
         $crawler->filter('.page-tabs .signature-tab > button')->click();
         $crawler = $client->waitFor('#action-bar-btn-finish');
 
@@ -97,6 +103,7 @@ final class EmbeddedTest extends PantherTestCase
         }
 
         $crawler->filter('#action-bar-btn-finish')->click();
+        $client->takeScreenshot('build/logs/phpunit/alert.png');
         $crawler = $client->waitFor('.alert');
 
         $this->assertSame('The document has been successfully signed!', $crawler->filter('.alert')->text());
