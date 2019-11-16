@@ -24,7 +24,6 @@ final class JwtGrant implements GrantInterface
     private $privateKey;
     private $integrationKey;
     private $userGuid;
-    private $apiUri;
     private $accountApiUri;
     private $ttl;
 
@@ -32,7 +31,6 @@ final class JwtGrant implements GrantInterface
         string $privateKey,
         string $integrationKey,
         string $userGuid,
-        string $apiURI,
         string $accountApiUri,
         int $ttl,
         HttpClientInterface $client = null
@@ -41,7 +39,6 @@ final class JwtGrant implements GrantInterface
         $this->privateKey = $privateKey;
         $this->integrationKey = $integrationKey;
         $this->userGuid = $userGuid;
-        $this->apiUri = $apiURI;
         $this->accountApiUri = $accountApiUri;
         $this->ttl = $ttl;
     }

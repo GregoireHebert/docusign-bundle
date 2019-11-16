@@ -1,10 +1,15 @@
+services:
+  docusign.storage:
+    class: \stdClass
+    tags: [flysystem.storage]
+
 docusign:
   demo: true
   auth_jwt:
     private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
-    integration_key: 'yourIntegrationKey'
-    user_guid: 'yourUserGuid'
-  account_id: 'yourAccountId'
+    integration_key: 'c11f0a7c-87b7-4f5f-9f11-ea922cf39eca'
+    user_guid: 'f182a702-a2b7-487e-92ec-c02859d6e217'
+  account_id: 1234567
   default_signer_name: 'Grégoire Hébert'
   default_signer_email: 'gregoire@les-tilleuls.coop'
   api_uri: 'https://eu.docusign.net/restapi'

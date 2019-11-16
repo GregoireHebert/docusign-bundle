@@ -1,0 +1,13 @@
+parameters:
+    level: 5
+    paths:
+        - src
+    inferPrivatePropertyTypeFromConstructor: true
+    ignoreErrors:
+        - "#Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component.+' and 'getRootNode' will always evaluate to false\\.#"
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::arrayNode\(\)\.#'
+        - '#Class League\\FlysystemBundle\\FlysystemBundle not found\.#'
+        - '#Class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder does not have a constructor and must be instantiated without any parameters\.#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::getRootNode\(\)\.#'
+        - '#Access to undefined constant League\\Flysystem\\Adapter\\Local::DISALLOW_LINKS\.#'
+        - '#Access to undefined constant League\\Flysystem\\Adapter\\Local::SKIP_LINKS\.#'
