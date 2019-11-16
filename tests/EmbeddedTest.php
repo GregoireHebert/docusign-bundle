@@ -75,10 +75,10 @@ final class EmbeddedTest extends PantherTestCase
         ]);
         $client->waitFor('#container #content ul li');
 
-        $client->takeScreenshot(__DIR__.'/../build/logs/phpunit/list1.png');
-        $client->takeScreenshot('build/logs/phpunit/list2.png');
         $client->clickLink('dummy.pdf');
+        $client->takeScreenshot('build/logs/phpunit/waiting.png');
         $crawler = $client->waitFor('#action-bar-btn-continue');
+        $client->takeScreenshot('build/logs/phpunit/failing.png');
 
         if ($crawler->filter('#disclosureAccepted')->isDisplayed()) {
             $crawler->filter('label[for=disclosureAccepted]')->click();
