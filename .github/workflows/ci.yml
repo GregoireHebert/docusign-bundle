@@ -52,7 +52,8 @@ jobs:
           apt-get install -y --no-install-recommends \
             unzip\
             libzip-dev \
-            chromium
+            chromium \
+            gnupg
           docker-php-ext-install zip
 
       - name: Install pcov PHP extension
@@ -89,11 +90,12 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
       - name: Prepare PHPUnit tests
+        env:
+          DOCUSIGN_RSA_PASSPHRASE: ${{ secrets.DOCUSIGN_RSA_PASSPHRASE }}
         run: |
           mkdir -p build/screenshots
-          mkdir -p build/logs/phpunit
-          mkdir -p features/var/jwt
-          echo $DOCUSIGN_RSA_PRIVATE_KEY > features/var/jwt/docusign.pem
+          ./.github/scripts/decrypt.sh
+          cat features/var/jwt/docusign.pem
 
       - name: Run PHPUnit tests with coverage
         if: env.COVERAGE == '1'
