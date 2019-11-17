@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to the DocuSign TestBundle{% endblock %}
+
+{% block content %}
+    <ul>
+        <li>Click <a href="{{ path('embedded') }}">here</a> to access the embedded documents list (require auth.)</li>
+    </ul>
+{% endblock %}

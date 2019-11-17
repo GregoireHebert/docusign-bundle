@@ -14,10 +14,6 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests;
 
 use DocusignBundle\DocusignBundle;
-use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\Grant\GrantInterface;
-use DocusignBundle\Grant\JwtGrant;
-use DocusignBundle\Utils\SignatureExtractor;
 use Nyholm\BundleTest\BaseBundleTestCase;
 
 /**
@@ -30,7 +26,7 @@ final class BundleInitializationTest extends BaseBundleTestCase
         return DocusignBundle::class;
     }
 
-    public function testInitBundle(): void
+    public function testTheBundleIsBootable(): void
     {
         $kernel = $this->createKernel();
         $kernel->addConfigFile(__DIR__.'/config/docusign.yml');
@@ -39,11 +35,7 @@ final class BundleInitializationTest extends BaseBundleTestCase
         $container = $this->getContainer();
 
         $this->assertFalse($container->has('docusign.grant.default'));
-        $this->assertFalse($container->has(JwtGrant::class));
-        $this->assertFalse($container->has(GrantInterface::class));
         $this->assertFalse($container->has('docusign.signature_extractor.default'));
-        $this->assertFalse($container->has(SignatureExtractor::class));
         $this->assertFalse($container->has('docusign.envelope_builder.default'));
-        $this->assertFalse($container->has(EnvelopeBuilder::class));
     }
 }

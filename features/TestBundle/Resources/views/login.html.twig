@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        form{text-align:center;max-width:50%;margin:0 auto;}
+        input{margin:10px 0;display:block;width:100%;}
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form action="{{ path('login') }}" method="post">
+        <input placeholder="Username" type="text" id="username" name="_username" value="{{ last_username }}"/>
+        <input placeholder="Password" type="password" id="password" name="_password"/>
+
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}
+
+{% block footer %}
+    <p><a href="{{ path('homepage') }}">&#8592; Back to the homepage</a></p>
+{% endblock %}

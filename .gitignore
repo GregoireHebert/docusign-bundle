@@ -7,3 +7,7 @@
 /composer.phar
 /phpunit.xml
 /vendor/
+/features/var
+!features/var/jwt/docusign.pem.enc
+/features/.env.*
+!features/var/storage/embedded/dummy.pdf

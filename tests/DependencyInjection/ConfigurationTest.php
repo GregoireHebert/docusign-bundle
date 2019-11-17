@@ -38,7 +38,7 @@ class ConfigurationTest extends TestCase
         $this->processor = new Processor();
     }
 
-    public function testDefaultConfig(): void
+    public function testItLoadsDefaultConfig(): void
     {
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [
@@ -91,7 +91,7 @@ class ConfigurationTest extends TestCase
         ], $config);
     }
 
-    public function testInvalidModeConfig(): void
+    public function testItThrowsAnErrorOnInvalidModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The value "invalid" is not allowed for path "docusign.default.mode". Permissible values: "remote", "embedded"');
@@ -102,7 +102,7 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-    public function testMissingModeConfig(): void
+    public function testItThrowsAnErrorOnMissingModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The child node "mode" at path "docusign.demo" must be configured.');
@@ -113,8 +113,7 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-
-    public function testConfig(): void
+    public function testItNormalizesConfig(): void
     {
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
         $config = $this->processor->processConfiguration($this->configuration, [

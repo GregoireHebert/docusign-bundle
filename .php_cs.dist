@@ -12,11 +12,8 @@ file that was distributed with this source code.
 HEADER;
 
 $finder = PhpCsFixer\Finder::create()
-    // disable flysystem since it's partially implemented and enter in conflict with phpstan
-    ->notPath('Bridge/FlySystem/Adapter/SharePointAdapter.php')
-    ->notPath('Bridge/FlySystem/DocusignStorage.php')
-    ->in(__DIR__.'/src')
-;
+    ->in(__DIR__)
+    ->exclude('features/var');
 
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
