@@ -30,7 +30,6 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
 
     private $router;
     private $envelopeBuilder;
-    private $translator;
 
     public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router)
     {
