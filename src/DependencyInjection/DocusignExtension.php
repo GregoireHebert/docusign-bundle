@@ -21,6 +21,7 @@ use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
+use DocusignBundle\EnvelopeCreator\TraceableEnvelopeBuilderCallable;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
@@ -83,41 +84,11 @@ final class DocusignExtension extends Extension
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
 
-            // CreateDocument
-            $container->register("docusign.create_document.$name", CreateDocument::class)
-                ->setAutowired(true)
-                ->setPublic(false)
-                ->setArguments([
-                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                ])
-                ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
+            $this->createActions($container, $name);
 
-            // DefineEnvelope
-            $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
-                ->setAutowired(true)
-                ->setPublic(false)
-                ->setArguments([
-                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                ])
-                ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
-
-            $container->register("docusign.send_envelope.$name", SendEnvelope::class)
-                ->setAutowired(true)
-                ->setPublic(false)
-                ->setArguments([
-                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                    '$grant' => new Reference("docusign.grant.$name"),
-                ])
-                ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
-
-            // CreateRecipient
-            $container->register("docusign.create_recipient.$name", CreateRecipient::class)
-                ->setAutowired(true)
-                ->setPublic(false)
-                ->setArguments([
-                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                ])
-                ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
+            if (false !== $value['demo']) {
+                $this->setActionsTraceable($container, $name);
+            }
 
             // EnvelopeCreator
             $container->register("docusign.envelope_creator.$name", EnvelopeCreator::class)
@@ -212,5 +183,75 @@ final class DocusignExtension extends Extension
         $definition->addTag('flysystem.storage');
 
         return $definition;
+    }
+
+    private function createActions(ContainerBuilder $container, string $name): void
+    {
+        // CreateDocument
+        $container->register("docusign.create_document.$name", CreateDocument::class)
+            ->setAutowired(true)
+            ->setPublic(false)
+            ->setArguments([
+                '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+            ])
+            ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
+
+        // DefineEnvelpe
+        $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
+            ->setAutowired(true)
+            ->setPublic(false)
+            ->setArguments([
+                '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+            ])
+            ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
+
+        $container->register("docusign.send_envelope.$name", SendEnvelope::class)
+            ->setAutowired(true)
+            ->setPublic(false)
+            ->setArguments([
+                '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                '$grant' => new Reference("docusign.grant.$name"),
+            ])
+            ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
+
+        // CreateRecipient
+        $container->register("docusign.create_recipient.$name", CreateRecipient::class)
+            ->setAutowired(true)
+            ->setPublic(false)
+            ->setArguments([
+                '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+            ])
+            ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
+    }
+
+    private function setActionsTraceable(ContainerBuilder $container, string $name): void
+    {
+        $container->register("docusign.decorated_create_document.$name", TraceableEnvelopeBuilderCallable::class)
+            ->setAutowired(true)
+            ->setDecoratedService("docusign.create_document.$name")
+            ->addArgument(new Reference("docusign.decorated_create_document.$name.inner"))
+            ->setPublic(false)
+        ;
+
+        $container->register("docusign.decorated_define_envelope.$name", TraceableEnvelopeBuilderCallable::class)
+            ->setAutowired(true)
+            ->setDecoratedService("docusign.define_envelope.$name")
+            ->addArgument(new Reference("docusign.decorated_define_envelope.$name.inner"))
+            ->setPublic(false)
+        ;
+
+        $container->register("docusign.decorated_send_envelope.$name", TraceableEnvelopeBuilderCallable::class)
+            ->setAutowired(true)
+            ->setDecoratedService("docusign.send_envelope.$name")
+            ->addArgument(new Reference("docusign.decorated_send_envelope.$name.inner"))
+            ->setPublic(false)
+        ;
+
+        $container->register("docusign.decorated_create_recipient.$name", TraceableEnvelopeBuilderCallable::class)
+            ->setAutowired(true)
+            ->setDecoratedService("docusign.create_recipient.$name")
+            ->addArgument(new Reference("docusign.decorated_create_recipient.$name.inner"))
+            ->setPublic(false)
+        ;
     }
 }
