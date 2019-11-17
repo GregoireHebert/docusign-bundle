@@ -5,18 +5,27 @@ on:
     - cron: 0 2 * * 1-5
   pull_request:
 
+env:
+  COVERAGE: '0'
+  EXT_PCOV_VERSION: '1.0.6'
+
 jobs:
   tests:
     name: Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     container:
       image: php:${{ matrix.php }}
+      options: >-
+        --tmpfs /tmp:exec
     strategy:
       # https://github.community/t5/GitHub-Actions/GitHub-Actions-Matrix-options-dont-work-as-documented/m-p/29558
       matrix:
         php:
           - '7.2'
           - '7.3'
+        include:
+          - php: '7.3'
+            coverage: true
         dependency:
           - ''
           - '--prefer-lowest && composer remove --dev --no-progress --no-update --ansi league/flysystem-bundle'
@@ -24,24 +33,81 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: ${{ matrix.php }}-composer-${{ matrix.dependency }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ matrix.php }}-composer-${{ matrix.dependency }}-
+
+      - name: Enable code coverage
+        if: matrix.coverage && matrix.dependency == ''
+        run: echo '::set-env name=COVERAGE::1'
+
       - name: Install system packages
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
             unzip
+
+      - name: Install pcov PHP extension
+        if: env.COVERAGE == '1'
+        run: |
+          pecl install pcov-$EXT_PCOV_VERSION
+          docker-php-ext-enable pcov
+
       - name: Disable PHP memory limit
         run: echo 'memory_limit=-1' >> /usr/local/etc/php/php.ini
+
       - name: Install Composer
         run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
+
       - name: Update project dependencies
         run: composer update --no-progress --no-suggest --ansi ${{ matrix.dependency }}
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --colors=always
+
       - name: Run phpstan tests
         if: matrix.dependency == ''
         run: vendor/bin/phpstan analyze
+
       - name: Run phpstan tests lowest
         if: matrix.dependency != ''
         run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
+
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Run PHPUnit tests with coverage
+        if: env.COVERAGE == '1'
+        run: |
+          mkdir -p build/logs/phpunit
+          vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always
+
+      - name: Run PHPUnit tests
+        if: env.COVERAGE == '0'
+        run: vendor/bin/phpunit --colors=always
+
+      - name: Upload test artifacts
+        if: env.COVERAGE == '1'
+        uses: actions/upload-artifact@v1
+        with:
+          name: phpunit-logs-php${{ matrix.php }}
+          path: build/logs/phpunit
+
+      - name: Upload coverage results to Codecov
+        if: env.COVERAGE == '1'
+        uses: codecov/codecov-action@v1.0.3
+        with:
+          name: phpunit-php${{ matrix.php }}
+          flags: phpunit
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage results to Coveralls
+        if: env.COVERAGE == '1'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
+          export PATH="$PATH:$HOME/.composer/vendor/bin"
+          coveralls build/logs/phpunit/clover.xml

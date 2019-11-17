@@ -3,6 +3,7 @@
 [![Actions Status](https://github.com/gregoirehebert/docusign-bundle/workflows/CI/badge.svg)](https://github.com/gregoirehebert/docusign-bundle/actions)
 [![Packagist Version](https://img.shields.io/packagist/v/gheb/docusign-bundle.svg?style=flat-square)](https://packagist.org/packages/gheb/docusign-bundle)
 [![Software license](https://img.shields.io/github/license/gregoirehebert/docusign-bundle.svg?style=flat-square)](https://github.com/gregoirehebert/docusign-bundle/blob/master/LICENSE)
+[![Coverage Status](https://coveralls.io/repos/github/GregoireHebert/docusign-bundle/badge.svg?branch=50/merge)](https://coveralls.io/github/GregoireHebert/docusign-bundle?branch=50/merge)
 
 This Symfony Bundle is used to create electronic signature with DocuSign.
 An Electronic Signature ensure a person agreed with a document.
