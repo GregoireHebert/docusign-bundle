@@ -51,7 +51,7 @@ class SendEnvelopeTest extends TestCase
         $this->envelopeBuilderProphecyMock->setEnvelopesApi(Argument::type(EnvelopesApi::class))->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->setEnvelopeId('envelopeId')->shouldBeCalled();
 
-        $createDocument = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->routerProphecyMock->reveal(), 'default');
-        $createDocument(['signature_name' => 'default']);
+        $sendEnvelope = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->routerProphecyMock->reveal(), 'default');
+        $sendEnvelope(['signature_name' => 'default']);
     }
 }

@@ -38,6 +38,7 @@
         "symfony/options-resolver": "^3.4 || ^4.2",
         "symfony/routing": "^3.4 || ^4.2",
         "symfony/stopwatch": "^3.4 || ^4.2",
+        "symfony/translation": "^3.4 || ^4.3",
         "vgrem/php-spo": "^2.2",
         "webmozart/assert": "^1.5"
     },

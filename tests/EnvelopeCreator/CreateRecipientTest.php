@@ -41,7 +41,7 @@ class CreateRecipientTest extends TestCase
 
         $this->routerProphecyMock->generate('route_name', ['envelopeId'=>'envelopeId', 'callbackParameter'=>'parameterValue'], Router::ABSOLUTE_URL)->shouldBeCalled()->willReturn('https://website.tld/route?envelopeId=envelopeId&callbackParameter=parameterValue');
 
-        $createDocument = new CreateRecipient($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal());
-        $createDocument(['signature_name'=>'default']);
+        $createRecipient = new CreateRecipient($this->envelopeBuilderProphecyMock->reveal(), $this->routerProphecyMock->reveal());
+        $createRecipient(['signature_name'=>'default']);
     }
 }

@@ -14,14 +14,19 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Model;
+use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilderInterface;
+use DocusignBundle\Translator\TranslatorAwareInterface;
+use DocusignBundle\Translator\TranslatorAwareTrait;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
-final class DefineEnvelope implements EnvelopeBuilderCallableInterface
+final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAwareInterface
 {
     public const EMAIL_SUBJECT = 'Please sign this document';
     public const WEBHOOK_ROUTE_NAME = 'docusign_webhook';
+
+    use TranslatorAwareTrait;
 
     private $router;
     private $envelopeBuilder;
@@ -39,7 +44,7 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface
         }
 
         $this->envelopeBuilder->setEnvelopeDefinition(new Model\EnvelopeDefinition([
-            'email_subject' => self::EMAIL_SUBJECT,
+            'email_subject' => $this->getTranslator()->trans(self::EMAIL_SUBJECT, [], DocusignBundle::TRANSLATION_DOMAIN),
             'documents' => [$this->envelopeBuilder->getDocument()],
             'recipients' => new Model\Recipients(['signers' => $this->envelopeBuilder->getSigners(), 'carbon_copies' => $this->envelopeBuilder->getCarbonCopies() ?? null]),
             'status' => 'sent',

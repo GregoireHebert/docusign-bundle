@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /*
  * FlySystem symfony 3.4 compatibility
  */
-final class PluginPass implements CompilerPassInterface
+final class PluginCompilerPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
