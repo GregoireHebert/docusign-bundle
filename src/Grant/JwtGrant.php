@@ -82,19 +82,13 @@ final class JwtGrant implements GrantInterface
         try {
             Assert::uuid($this->integrationKey);
         } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf(
-                'Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys',
-                $this->integrationKey
-            ));
+            throw new ConfigurationException(sprintf('Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys', $this->integrationKey));
         }
 
         try {
             Assert::uuid($this->userGuid);
         } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf(
-                'Your user guid "%s" is invalid. Obtain your user UID (also called API username) from DocuSign Admin > Users > User > Actions > Edit',
-                $this->userGuid
-            ));
+            throw new ConfigurationException(sprintf('Your user guid "%s" is invalid. Obtain your user UID (also called API username) from DocuSign Admin > Users > User > Actions > Edit', $this->userGuid));
         }
     }
 }

@@ -55,10 +55,7 @@ class Consent
         try {
             Assert::uuid($this->integrationKey);
         } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf(
-                'Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys',
-                $this->integrationKey
-            ));
+            throw new ConfigurationException(sprintf('Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys', $this->integrationKey));
         }
     }
 }

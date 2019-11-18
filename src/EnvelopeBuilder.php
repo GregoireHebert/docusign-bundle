@@ -107,10 +107,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
             Assert::integer($this->accountId);
             Assert::true(7 === \strlen((string) $this->accountId));
         } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf(
-                'Your Account Id "%s" is not valid. It must be a 7 long integer. Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture',
-                $this->accountId
-            ));
+            throw new ConfigurationException(sprintf('Your Account Id "%s" is not valid. It must be a 7 long integer. Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture', $this->accountId));
         }
 
         try {
