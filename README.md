@@ -12,7 +12,7 @@ This bundle is coupled with [FlySystem](https://flysystem.thephpleague.com) and 
 
 ## Requirements
 
-- php ^7.2
+- php ^7.2api
 - simplexml php extension
 - curl php extension
 

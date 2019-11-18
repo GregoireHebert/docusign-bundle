@@ -46,7 +46,7 @@ docusign:
     # Authentication credentials to log into docusign.
     auth_jwt:
         private_key: "Path/To/Your/PrivateKey.pem"
-        integration_id: "YourIntegrationId"
+        integration_key: "YourIntegrationKey"
         user_guid: "YourUserId"
 ```
 
