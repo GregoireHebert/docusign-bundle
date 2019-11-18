@@ -29,9 +29,9 @@ interface EnvelopeBuilderInterface
 
     public function addSignatureZone(int $pageNumber, int $xPosition, int $yPosition);
 
-    public function addCallbackParameter($parameter);
+    public function addCallbackParameter($name, $value);
 
-    public function addWebhookParameter($parameter);
+    public function addWebhookParameter($name, $value);
 
     public function addSigner(string $name, string $email);
 

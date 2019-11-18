@@ -146,16 +146,16 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this;
     }
 
-    public function addCallbackParameter($parameter): self
+    public function addCallbackParameter($name, $value): self
     {
-        $this->callbackParameters[] = $parameter;
+        $this->callbackParameters[$name] = $value;
 
         return $this;
     }
 
-    public function addWebhookParameter($parameter): self
+    public function addWebhookParameter($name, $value): self
     {
-        $this->webhookParameters[] = $parameter;
+        $this->webhookParameters[$name] = $value;
 
         return $this;
     }
