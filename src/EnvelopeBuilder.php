@@ -294,7 +294,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
 
     public function getViewUrl(Model\RecipientViewRequest $recipientViewRequest): string
     {
-        return $this->envelopesApi->createRecipientView($this->getAccountId(), $this->getEnvelopeId(), $recipientViewRequest)->getUrl();
+        return $this->envelopesApi->createRecipientView((string) $this->getAccountId(), $this->getEnvelopeId(), $recipientViewRequest)->getUrl();
     }
 
     public function getSignerName(): string
