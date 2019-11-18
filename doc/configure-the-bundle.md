@@ -16,8 +16,11 @@ docusign:
     # Authentication credentials to log into docusign.
     auth_jwt:
         private_key: "YourPrivateKey"
-        integration_id: "YourIntegrationId"
+        integration_key: "YourIntegrationKey"
         user_guid: "YourUserId"
+
+    # Your DocuSign account id
+    account_id: "YourAccountId"
 
     default_signer_name: "Grégoire Hébert" # Name of the person that will be notified and will sign the document if none is sent to the url.
     default_signer_email: "gregoire@les-tilleuls.coop" # Mail of the person that will be notified and will sign the document if none is sent to the url.
