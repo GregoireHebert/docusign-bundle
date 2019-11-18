@@ -47,7 +47,7 @@ interface EnvelopeBuilderInterface
 
     public function reset(): void;
 
-    public function getAccountId(): string;
+    public function getAccountId(): int;
 
     public function getEnvelopeDefinition(): ?Model\EnvelopeDefinition;
 

@@ -49,7 +49,7 @@ class EnvelopeBuilderTest extends TestCase
         $this->envelopeBuilder = new EnvelopeBuilder(
             $this->fileSystemProphecyMock->reveal(),
             $this->envelopeCreatorProphecyMock->reveal(),
-            'dummyId',
+            1234567,
             'dummyName',
             'dummyemail@domain.tld',
             'http://dummy-uri.tld',

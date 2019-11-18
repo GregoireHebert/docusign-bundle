@@ -15,7 +15,6 @@ namespace DocusignBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Webmozart\Assert\Assert;
 
 final class Configuration implements ConfigurationInterface
 {
@@ -54,19 +53,6 @@ final class Configuration implements ConfigurationInterface
                     ->integerNode('account_id')
                         ->info('Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture')
                         ->isRequired()
-                        ->validate()
-                            ->ifTrue(static function ($v) {
-                                try {
-                                    Assert::integer($v);
-                                    Assert::true(7 === \strlen((string) $v));
-
-                                    return false;
-                                } catch (\Exception $e) {
-                                    return true;
-                                }
-                            })
-                            ->thenInvalid('Invalid account id %s')
-                        ->end()
                     ->end()
                     ->scalarNode('default_signer_name')
                         ->info('Recipient Information as the signer full name')
@@ -75,18 +61,6 @@ final class Configuration implements ConfigurationInterface
                     ->scalarNode('default_signer_email')
                         ->info('Recipient Information as the signer email')
                         ->cannotBeEmpty()
-                        ->validate()
-                            ->ifTrue(static function ($v) {
-                                try {
-                                    Assert::email($v);
-
-                                    return false;
-                                } catch (\Exception $e) {
-                                    return true;
-                                }
-                            })
-                            ->thenInvalid('Invalid email %s')
-                        ->end()
                     ->end()
                     ->scalarNode('api_uri')
                         ->info('DocuSign production API URI (default: https://www.docusign.net/restapi)')
@@ -134,34 +108,10 @@ final class Configuration implements ConfigurationInterface
                             ->scalarNode('integration_key')
                                 ->isRequired()
                                 ->info('To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys')
-                                ->validate()
-                                    ->ifTrue(static function ($v) {
-                                        try {
-                                            Assert::uuid($v);
-
-                                            return false;
-                                        } catch (\Exception $e) {
-                                            return true;
-                                        }
-                                    })
-                                    ->thenInvalid('Invalid integration key %s')
-                                ->end()
                             ->end()
                             ->scalarNode('user_guid')
                                 ->isRequired()
                                 ->info('Obtain your user UID (also called API username) from DocuSign Admin > Users > User > Actions > Edit')
-                                ->validate()
-                                    ->ifTrue(static function ($v) {
-                                        try {
-                                            Assert::uuid($v);
-
-                                            return false;
-                                        } catch (\Exception $e) {
-                                            return true;
-                                        }
-                                    })
-                                    ->thenInvalid('Invalid user guid %s')
-                                ->end()
                             ->end()
                             ->integerNode('ttl')->defaultValue(3600)->info('Token TTL in seconds (default: 3600)')->end()
                         ->end()

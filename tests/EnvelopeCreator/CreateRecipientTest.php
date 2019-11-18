@@ -38,7 +38,7 @@ class CreateRecipientTest extends TestCase
         $viewUrlProphecyMock = $this->prophesize(ViewUrl::class);
         $viewUrlProphecyMock->getUrl()->willReturn('https://website.tld/route');
 
-        $this->envelopeBuilderProphecyMock->getAccountId()->willReturn('accountId');
+        $this->envelopeBuilderProphecyMock->getAccountId()->willReturn(1234567);
         $this->envelopeBuilderProphecyMock->getEnvelopeId()->willReturn('envelopeId');
         $this->envelopeBuilderProphecyMock->getSignerName()->willReturn('Grégoire Hébert');
         $this->envelopeBuilderProphecyMock->getSignerEmail()->willReturn('gregoire@les-tilleuls.coop');

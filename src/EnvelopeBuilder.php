@@ -17,6 +17,7 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
+use DocusignBundle\Exception\ConfigurationException;
 use League\Flysystem\FilesystemInterface;
 use Webmozart\Assert\Assert;
 
@@ -26,7 +27,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public const MODE_REMOTE = 'remote';
     public const MODE_EMBEDDED = 'embedded';
 
-    /** @var string */
+    /** @var int */
     private $accountId;
     /** @var string */
     private $signerName;
@@ -74,7 +75,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public function __construct(
         FilesystemInterface $storage,
         EnvelopeCreatorInterface $envelopeCreator,
-        string $accountId,
+        int $accountId,
         string $defaultSignerName,
         string $defaultSignerEmail,
         string $apiUri,
@@ -96,6 +97,27 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->name = $name;
 
         $this->docReference = time();
+
+        $this->validateConfiguration();
+    }
+
+    private function validateConfiguration(): void
+    {
+        try {
+            Assert::integer($this->accountId);
+            Assert::true(7 === \strlen((string) $this->accountId));
+        } catch (\Exception $e) {
+            throw new ConfigurationException(sprintf(
+                'Your Account Id "%s" is not valid. It must be a 7 long integer. Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture',
+                $this->accountId
+            ));
+        }
+
+        try {
+            Assert::email($this->signerEmail);
+        } catch (\Exception $e) {
+            throw new ConfigurationException('The signer email, is not a valid email.');
+        }
     }
 
     public function setFile(string $filePath): self
@@ -224,7 +246,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->envelopesApi;
     }
 
-    public function getAccountId(): string
+    public function getAccountId(): int
     {
         return $this->accountId;
     }
