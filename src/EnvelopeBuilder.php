@@ -26,7 +26,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public const MODE_REMOTE = 'remote';
     public const MODE_EMBEDDED = 'embedded';
 
-    /** @var string */
+    /** @var int */
     private $accountId;
     /** @var string */
     private $signerName;
@@ -74,7 +74,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public function __construct(
         FilesystemInterface $storage,
         EnvelopeCreatorInterface $envelopeCreator,
-        string $accountId,
+        int $accountId,
         string $defaultSignerName,
         string $defaultSignerEmail,
         string $apiUri,
@@ -115,9 +115,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->envelopeCreator->createEnvelope($this);
     }
 
-    /*
-     * Add a carbon copy to receive the notifications from docusign.
-     */
     public function addCarbonCopy(string $name, string $email): self
     {
         Assert::email($email);
@@ -160,9 +157,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this;
     }
 
-    /*
-     * set an additional signer to the document.
-     */
     public function addSigner(string $name, string $email): self
     {
         if (empty($this->signatureZones)) {
@@ -224,7 +218,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->envelopesApi;
     }
 
-    public function getAccountId(): string
+    public function getAccountId(): int
     {
         return $this->accountId;
     }
@@ -272,7 +266,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
 
     public function getViewUrl(Model\RecipientViewRequest $recipientViewRequest): string
     {
-        return $this->envelopesApi->createRecipientView($this->getAccountId(), $this->getEnvelopeId(), $recipientViewRequest)->getUrl();
+        return $this->envelopesApi->createRecipientView((string) $this->getAccountId(), $this->getEnvelopeId(), $recipientViewRequest)->getUrl();
     }
 
     public function getSignerName(): string

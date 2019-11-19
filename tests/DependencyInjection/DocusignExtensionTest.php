@@ -104,6 +104,8 @@ class DocusignExtensionTest extends TestCase
 
         if (method_exists(ContainerBuilder::class, 'removeBindings')) {
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        } elseif (method_exists(ContainerBuilder::class, 'addRemovedBindingIds')) {
+            $containerBuilderProphecy->addRemovedBindingIds(Argument::type('string'))->will(function (): void {});
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
@@ -197,6 +199,8 @@ class DocusignExtensionTest extends TestCase
 
         if (method_exists(ContainerBuilder::class, 'removeBindings')) {
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        } elseif (method_exists(ContainerBuilder::class, 'addRemovedBindingIds')) {
+            $containerBuilderProphecy->addRemovedBindingIds(Argument::type('string'))->will(function (): void {});
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);

@@ -45,7 +45,7 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
         }
 
         $this->envelopeBuilder->setEnvelopesApi($this->setUpConfiguration($this->envelopeBuilder));
-        $this->envelopeBuilder->setEnvelopeId($this->envelopeBuilder->getEnvelopesApi()->createEnvelope($this->envelopeBuilder->getAccountId(), $this->envelopeBuilder->getEnvelopeDefinition())->getEnvelopeId());
+        $this->envelopeBuilder->setEnvelopeId($this->envelopeBuilder->getEnvelopesApi()->createEnvelope((string) $this->envelopeBuilder->getAccountId(), $this->envelopeBuilder->getEnvelopeDefinition())->getEnvelopeId());
 
         if (EnvelopeBuilder::MODE_REMOTE === $this->envelopeBuilder->getMode()) {
             return CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder);

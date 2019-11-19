@@ -47,10 +47,10 @@ class SendEnvelopeTest extends TestCase
         $envelopeDefinition = $envelopeDefinitionProphecyMock->reveal();
 
         $this->envelopeSummaryProphecyMock->getEnvelopeId()->shouldBeCalled()->willReturn('envelopeId');
-        $this->envelopesApiProphecyMock->createEnvelope('accountId', $envelopeDefinition)->shouldBeCalled()->willReturn($this->envelopeSummaryProphecyMock->reveal());
+        $this->envelopesApiProphecyMock->createEnvelope(1234567, $envelopeDefinition)->shouldBeCalled()->willReturn($this->envelopeSummaryProphecyMock->reveal());
 
         $this->envelopeBuilderProphecyMock->getEnvelopeDefinition()->shouldBeCalled()->willReturn($envelopeDefinition);
-        $this->envelopeBuilderProphecyMock->getAccountId()->shouldBeCalled()->willReturn('accountId');
+        $this->envelopeBuilderProphecyMock->getAccountId()->shouldBeCalled()->willReturn(1234567);
         $this->envelopeBuilderProphecyMock->getMode()->shouldBeCalled()->willReturn('embedded');
         $this->envelopeBuilderProphecyMock->getApiUri()->shouldBeCalled()->willReturn('uri');
         $this->envelopeBuilderProphecyMock->getEnvelopesApi()->shouldBeCalled()->willReturn($this->envelopesApiProphecyMock->reveal());
