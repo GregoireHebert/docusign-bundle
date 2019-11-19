@@ -17,7 +17,6 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
-use DocusignBundle\Exception\ConfigurationException;
 use League\Flysystem\FilesystemInterface;
 use Webmozart\Assert\Assert;
 
@@ -97,24 +96,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->name = $name;
 
         $this->docReference = time();
-
-        $this->validateConfiguration();
-    }
-
-    private function validateConfiguration(): void
-    {
-        try {
-            Assert::integer($this->accountId);
-            Assert::true(7 === \strlen((string) $this->accountId));
-        } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf('Your Account Id "%s" is not valid. It must be a 7 long integer. Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture', $this->accountId));
-        }
-
-        try {
-            Assert::email($this->signerEmail);
-        } catch (\Exception $e) {
-            throw new ConfigurationException('The signer email, is not a valid email.');
-        }
     }
 
     public function setFile(string $filePath): self
@@ -134,9 +115,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->envelopeCreator->createEnvelope($this);
     }
 
-    /*
-     * Add a carbon copy to receive the notifications from docusign.
-     */
     public function addCarbonCopy(string $name, string $email): self
     {
         Assert::email($email);
@@ -179,9 +157,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this;
     }
 
-    /*
-     * set an additional signer to the document.
-     */
     public function addSigner(string $name, string $email): self
     {
         if (empty($this->signatureZones)) {

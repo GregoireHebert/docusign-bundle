@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Grant;
 
-use DocusignBundle\Exception\ConfigurationException;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Webmozart\Assert\Assert;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -51,8 +49,6 @@ final class JwtGrant implements GrantInterface
         $this->userGuid = $userGuid;
         $this->accountApiUri = $accountApiUri;
         $this->ttl = $ttl;
-
-        $this->validateConfiguration();
     }
 
     public function __invoke(): string
@@ -74,21 +70,6 @@ final class JwtGrant implements GrantInterface
             return $response->toArray()['access_token'] ?? '';
         } catch (ExceptionInterface $exception) {
             return '';
-        }
-    }
-
-    private function validateConfiguration(): void
-    {
-        try {
-            Assert::uuid($this->integrationKey);
-        } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf('Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys', $this->integrationKey));
-        }
-
-        try {
-            Assert::uuid($this->userGuid);
-        } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf('Your user guid "%s" is invalid. Obtain your user UID (also called API username) from DocuSign Admin > Users > User > Actions > Edit', $this->userGuid));
         }
     }
 }

@@ -14,11 +14,9 @@ declare(strict_types=1);
 namespace DocusignBundle\Controller;
 
 use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\Exception\ConfigurationException;
 use DocusignBundle\Utils\CallbackRouteGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
-use Webmozart\Assert\Assert;
 
 class Consent
 {
@@ -36,8 +34,6 @@ class Consent
         $this->router = $router;
         $this->consentUri = $consentUri;
         $this->integrationKey = $integrationKey;
-
-        $this->validateConfiguration();
     }
 
     public function __invoke(): RedirectResponse
@@ -48,14 +44,5 @@ class Consent
             $this->integrationKey,
             CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder)
         ), 301);
-    }
-
-    private function validateConfiguration(): void
-    {
-        try {
-            Assert::uuid($this->integrationKey);
-        } catch (\Exception $e) {
-            throw new ConfigurationException(sprintf('Your integration key "%s" is invalid. To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys', $this->integrationKey));
-        }
     }
 }
