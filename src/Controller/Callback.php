@@ -47,7 +47,7 @@ final class Callback implements TranslatorAwareInterface
             )
         ));
 
-        $eventDispatcher->dispatch(DocumentSignatureCompletedEvent::class, $event);
+        $eventDispatcher->dispatch($event, DocumentSignatureCompletedEvent::class);
 
         return $event->getResponse();
     }

@@ -34,7 +34,7 @@ final class Sign
         }
 
         try {
-            $eventDispatcher->dispatch(PreSignEvent::class, new PreSignEvent($envelopeBuilder, $request));
+            $eventDispatcher->dispatch(new PreSignEvent($envelopeBuilder, $request), PreSignEvent::class);
 
             $envelopeBuilder->setFile($path);
             $signatures = $signatureExtractor->getSignatures();

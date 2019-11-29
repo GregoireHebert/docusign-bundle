@@ -29,7 +29,7 @@ final class Webhook
         $logger->info('DocuSign Webhook called.', ['status' => $status]);
 
         $event = WebhookEventFactory::create($status, $data, $request);
-        $eventDispatcher->dispatch(\get_class($event), $event);
+        $eventDispatcher->dispatch($event);
 
         return new Response('', 202);
     }
