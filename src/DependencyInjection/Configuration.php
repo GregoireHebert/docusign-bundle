@@ -50,7 +50,7 @@ final class Configuration implements ConfigurationInterface
                         ->info('Enable the demo mode')
                         ->defaultFalse()
                     ->end()
-                    ->integerNode('account_id')
+                    ->scalarNode('account_id')
                         ->info('Obtain your accountId from DocuSign: the account id is shown in the drop down on the upper right corner of the screen by your picture or the default picture')
                         ->isRequired()
                     ->end()
