@@ -60,12 +60,12 @@ final class Kernel extends BaseKernel
 
     public function getCacheDir()
     {
-        return $this->rootDir.'/var/cache/'.$this->environment;
+        return $this->getProjectDir().'/var/cache/'.$this->environment;
     }
 
     public function getLogDir()
     {
-        return $this->rootDir.'/var/log';
+        return $this->getProjectDir().'/var/log';
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes): void
