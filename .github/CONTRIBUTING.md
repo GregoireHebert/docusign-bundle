@@ -168,7 +168,6 @@ Create the `phpunit.xml` file as following:
         <env name="DOCUSIGN_ACCOUNT_ID" value="your-account-id" />
         <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
         <server name="PANTHER_NO_SANDBOX" value="1" />
-        <server name="PANTHER_CHROME_ARGUMENTS" value="--remote-debugging-port=9222" />
     </php>
 
     <testsuites>
