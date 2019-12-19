@@ -48,6 +48,7 @@ docusign:
         private_key: "Path/To/Your/PrivateKey.pem"
         integration_key: "YourIntegrationKey"
         user_guid: "YourUserId"
+        grant_type: authorization_code # Grant type (authorization_code or implicit)
 ```
 
 Next: [Configure the bundle](configure-the-bundle.md)

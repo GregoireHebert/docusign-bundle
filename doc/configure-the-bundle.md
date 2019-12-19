@@ -18,6 +18,7 @@ docusign:
         private_key: "YourPrivateKey"
         integration_key: "YourIntegrationKey"
         user_guid: "YourUserId"
+        grant_type: authorization_code # Grant type (authorization_code or implicit)
 
     # Your DocuSign account id
     account_id: "YourAccountId"

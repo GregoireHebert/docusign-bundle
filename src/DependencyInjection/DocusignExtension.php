@@ -131,6 +131,7 @@ final class DocusignExtension extends Extension
                     ->setAutowired(true)
                     ->setPublic(true)
                     ->setArguments([
+                        '$grantType' => $value['auth_jwt']['grant_type'],
                         '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                         '$consentUri' => $value['demo'] ? Consent::DEMO_CONSENT_URI : Consent::CONSENT_URI,
                         '$integrationKey' => $value['auth_jwt']['integration_key'],
