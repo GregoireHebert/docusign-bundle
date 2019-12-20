@@ -129,7 +129,7 @@ final class DocusignExtension extends Extension
 
             if (!empty($value['auth_jwt'])) {
                 if (!isset(Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']])) {
-                    throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: authorization_code, implicit.');
+                    throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
                 }
 
                 $container->register("docusign.consent.$name", Consent::class)
