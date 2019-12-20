@@ -149,6 +149,7 @@ final class Kernel extends BaseKernel
                 'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
                 'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
                 'user_guid' => $_SERVER['DOCUSIGN_USER_GUID'],
+                'grant_type' => 'authorization_code',
             ],
             'sign_path' => '/docusign/sign',
             'callback' => 'embedded_callback',

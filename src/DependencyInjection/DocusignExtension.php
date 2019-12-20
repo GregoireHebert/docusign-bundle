@@ -24,6 +24,7 @@ use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\EnvelopeCreator\TraceableEnvelopeBuilderCallable;
+use DocusignBundle\Exception\InvalidGrantTypeException;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
@@ -127,10 +128,15 @@ final class DocusignExtension extends Extension
                 ]);
 
             if (!empty($value['auth_jwt'])) {
+                if (!isset(Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']])) {
+                    throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
+                }
+
                 $container->register("docusign.consent.$name", Consent::class)
                     ->setAutowired(true)
                     ->setPublic(true)
                     ->setArguments([
+                        '$responseType' => Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']],
                         '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                         '$consentUri' => $value['demo'] ? Consent::DEMO_CONSENT_URI : Consent::CONSENT_URI,
                         '$integrationKey' => $value['auth_jwt']['integration_key'],
