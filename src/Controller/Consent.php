@@ -22,22 +22,24 @@ class Consent
 {
     public const DEMO_CONSENT_URI = 'https://account-d.docusign.com/oauth/auth';
     public const CONSENT_URI = 'https://account.docusign.com/oauth/auth';
-    public const GRANT_TYPE_AUTHORIZATION_CODE = 'authorization_code';
-    public const GRANT_TYPE_IMPLICIT = 'implicit';
+    public const RESPONSE_TYPE = [
+        'authorization_code' => 'code',
+        'implicit' => 'token',
+    ];
 
     private $envelopeBuilder;
     private $router;
     private $consentUri;
     private $integrationKey;
-    private $grantType;
+    private $responseType;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router, string $consentUri, string $integrationKey, string $grantType)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router, string $consentUri, string $integrationKey, string $responseType)
     {
         $this->envelopeBuilder = $envelopeBuilder;
         $this->router = $router;
         $this->consentUri = $consentUri;
         $this->integrationKey = $integrationKey;
-        $this->grantType = $grantType;
+        $this->responseType = $responseType;
     }
 
     public function __invoke(): RedirectResponse
@@ -45,7 +47,7 @@ class Consent
         return new RedirectResponse(sprintf(
             '%s?response_type=%s&scope=signature%%20impersonation&client_id=%s&redirect_uri=%s',
             $this->consentUri,
-            self::GRANT_TYPE_AUTHORIZATION_CODE === $this->grantType ? 'code' : 'token',
+            $this->responseType,
             $this->integrationKey,
             CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder)
         ), 301);

@@ -29,7 +29,7 @@ final class ConsentTest extends TestCase
     /**
      * @dataProvider getData
      */
-    public function testItRedirectsToValidUri(string $grantType, string $expected): void
+    public function testItRedirectsToValidUri(string $responseType, string $expected): void
     {
         /** @var EnvelopeBuilderInterface|ObjectProphecy $envelopeBuilderMock */
         $envelopeBuilderMock = $this->prophesize(EnvelopeBuilderInterface::class);
@@ -49,7 +49,7 @@ final class ConsentTest extends TestCase
             $routerMock->reveal(),
             Consent::DEMO_CONSENT_URI,
             'c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b',
-            $grantType
+            $responseType
         );
         $response = $consent();
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -59,8 +59,8 @@ final class ConsentTest extends TestCase
     public function getData(): array
     {
         return [
-            [Consent::GRANT_TYPE_AUTHORIZATION_CODE, Consent::DEMO_CONSENT_URI.'?response_type=code&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com/docusign/callback'],
-            [Consent::GRANT_TYPE_IMPLICIT, Consent::DEMO_CONSENT_URI.'?response_type=token&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com/docusign/callback'],
+            ['code', Consent::DEMO_CONSENT_URI.'?response_type=code&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com/docusign/callback'],
+            ['token', Consent::DEMO_CONSENT_URI.'?response_type=token&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com/docusign/callback'],
         ];
     }
 }
