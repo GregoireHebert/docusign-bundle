@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Controller;
 
-use DocusignBundle\EnvelopeBuilderInterface;
-use DocusignBundle\Utils\CallbackRouteGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class Consent
 {
@@ -27,29 +25,25 @@ class Consent
         'implicit' => 'token',
     ];
 
-    private $envelopeBuilder;
-    private $router;
     private $consentUri;
     private $integrationKey;
     private $responseType;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router, string $consentUri, string $integrationKey, string $responseType)
+    public function __construct(string $consentUri, string $integrationKey, string $responseType)
     {
-        $this->envelopeBuilder = $envelopeBuilder;
-        $this->router = $router;
         $this->consentUri = $consentUri;
         $this->integrationKey = $integrationKey;
         $this->responseType = $responseType;
     }
 
-    public function __invoke(): RedirectResponse
+    public function __invoke(Request $request): RedirectResponse
     {
         return new RedirectResponse(sprintf(
             '%s?response_type=%s&scope=signature%%20impersonation&client_id=%s&redirect_uri=%s',
             $this->consentUri,
             $this->responseType,
             $this->integrationKey,
-            CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder)
-        ), 301);
+            $request->getSchemeAndHttpHost()
+        ), RedirectResponse::HTTP_TEMPORARY_REDIRECT);
     }
 }
