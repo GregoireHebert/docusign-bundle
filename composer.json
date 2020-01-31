@@ -33,7 +33,7 @@
         "symfony/dependency-injection": "^3.4 || ^4.2",
         "symfony/event-dispatcher": "^3.4 || ^4.2",
         "symfony/http-client": "^3.4 || ^4.2",
-        "symfony/http-foundation": "^3.4 || ^4.2",
+        "symfony/http-foundation": "^3.4 || ^4.2.12 || ^4.3.7",
         "symfony/http-kernel": "^3.4 || ^4.2",
         "symfony/options-resolver": "^3.4 || ^4.2",
         "symfony/routing": "^3.4 || ^4.2",
