@@ -29,9 +29,9 @@ class Consent
     private $integrationKey;
     private $responseType;
 
-    public function __construct(string $consentUri, string $integrationKey, string $responseType)
+    public function __construct(bool $demo, string $integrationKey, string $responseType)
     {
-        $this->consentUri = $consentUri;
+        $this->consentUri = $demo ? self::DEMO_CONSENT_URI : self::CONSENT_URI;
         $this->integrationKey = $integrationKey;
         $this->responseType = $responseType;
     }

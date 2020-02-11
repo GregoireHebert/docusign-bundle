@@ -13,6 +13,9 @@ your private key into `%kernel.project_dir%/var/jwt/docusign.pem`. This path is 
 docusign:
     mode: remote # Mode used to sign (remote or embedded)
 
+    # Enable the Symfony Profiler
+    enable_profiler: '%kernel.debug%'
+
     # Authentication credentials to log into docusign.
     auth_jwt:
         private_key: "YourPrivateKey"

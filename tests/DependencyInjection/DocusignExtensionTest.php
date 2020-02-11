@@ -42,6 +42,7 @@ class DocusignExtensionTest extends TestCase
 {
     public const DEFAULT_CONFIG = ['docusign' => [
         'demo' => false,
+        'enable_profiler' => false,
         'mode' => 'embedded',
         'auth_jwt' => [
             'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
@@ -60,6 +61,7 @@ class DocusignExtensionTest extends TestCase
     ]];
     public const DEMO_CONFIG = ['docusign' => [
         'demo' => true,
+        'enable_profiler' => true,
         'mode' => 'embedded',
         'auth_jwt' => [
             'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',

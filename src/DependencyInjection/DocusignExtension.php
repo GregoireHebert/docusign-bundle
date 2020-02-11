@@ -82,13 +82,13 @@ final class DocusignExtension extends Extension
                     '$privateKey' => $value['auth_jwt']['private_key'],
                     '$integrationKey' => $value['auth_jwt']['integration_key'],
                     '$userGuid' => $value['auth_jwt']['user_guid'],
-                    '$accountApiUri' => $value['demo'] ? JwtGrant::DEMO_ACCOUNT_API_URI : JwtGrant::ACCOUNT_API_URI,
+                    '$demo' => $value['demo'],
                     '$ttl' => $value['auth_jwt']['ttl'],
                 ]);
 
             $this->createActions($container, $name);
 
-            if (false !== $value['demo']) {
+            if (false !== $value['enable_profiler']) {
                 $this->setActionsTraceable($container, $name);
             }
 
@@ -112,6 +112,7 @@ final class DocusignExtension extends Extension
                     '$accountId' => $value['account_id'],
                     '$defaultSignerName' => $value['default_signer_name'],
                     '$defaultSignerEmail' => $value['default_signer_email'],
+                    '$demo' => $value['demo'],
                     '$apiUri' => $value['api_uri'],
                     '$callback' => $value['callback'],
                     '$mode' => $value['mode'],
@@ -137,7 +138,7 @@ final class DocusignExtension extends Extension
                     ->setPublic(true)
                     ->setArguments([
                         '$responseType' => Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']],
-                        '$consentUri' => $value['demo'] ? Consent::DEMO_CONSENT_URI : Consent::CONSENT_URI,
+                        '$demo' => $value['demo'],
                         '$integrationKey' => $value['auth_jwt']['integration_key'],
                     ]);
 
