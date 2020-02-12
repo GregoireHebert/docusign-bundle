@@ -52,6 +52,7 @@ class EnvelopeBuilderTest extends TestCase
             1234567,
             'dummyName',
             'dummyemail@domain.tld',
+            true,
             'http://dummy-uri.tld',
             'dummyCallbackRoute',
             $mode,

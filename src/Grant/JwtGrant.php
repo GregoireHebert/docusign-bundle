@@ -39,7 +39,7 @@ final class JwtGrant implements GrantInterface
         string $privateKey,
         string $integrationKey,
         string $userGuid,
-        string $accountApiUri,
+        bool $demo,
         int $ttl,
         HttpClientInterface $client = null
     ) {
@@ -47,7 +47,7 @@ final class JwtGrant implements GrantInterface
         $this->privateKey = $privateKey;
         $this->integrationKey = $integrationKey;
         $this->userGuid = $userGuid;
-        $this->accountApiUri = $accountApiUri;
+        $this->accountApiUri = $demo ? self::DEMO_ACCOUNT_API_URI : self::ACCOUNT_API_URI;
         $this->ttl = $ttl;
     }
 

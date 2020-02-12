@@ -77,6 +77,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         int $accountId,
         string $defaultSignerName,
         string $defaultSignerEmail,
+        bool $demo,
         string $apiUri,
         string $callback,
         string $mode,
@@ -89,7 +90,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->signerName = $defaultSignerName;
         $this->signerEmail = $defaultSignerEmail;
 
-        $this->apiUri = $apiUri;
+        $this->apiUri = $demo ? 'https://demo.docusign.net/restapi' : $apiUri;
         $this->callback = $callback;
 
         $this->mode = $mode;

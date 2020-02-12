@@ -34,7 +34,7 @@ final class ConsentTest extends TestCase
         $requestMock->getSchemeAndHttpHost()->willReturn('https://www.example.com')->shouldBeCalled();
 
         $consent = new Consent(
-            Consent::DEMO_CONSENT_URI,
+            true,
             'c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b',
             $responseType
         );

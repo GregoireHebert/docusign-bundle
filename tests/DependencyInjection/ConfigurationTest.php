@@ -57,6 +57,7 @@ class ConfigurationTest extends TestCase
                 'default_signer_email' => 'gregoire@les-tilleuls.coop',
                 'storage' => 'flysystem.adapter.name',
                 'sign_path' => '/foo/sign',
+                'enable_profiler' => false,
             ],
         ]);
 
@@ -89,6 +90,7 @@ class ConfigurationTest extends TestCase
                     'case_sensitive' => true,
                     'disable_asserts' => false,
                 ],
+                'enable_profiler' => false,
             ],
         ], $config);
     }
@@ -150,6 +152,7 @@ class ConfigurationTest extends TestCase
                     'case_sensitive' => false,
                     'disable_asserts' => false,
                 ],
+                'enable_profiler' => false,
             ],
         ]);
 
@@ -189,6 +192,7 @@ class ConfigurationTest extends TestCase
                     'case_sensitive' => false,
                     'disable_asserts' => false,
                 ],
+                'enable_profiler' => false,
             ],
         ], $config);
     }
