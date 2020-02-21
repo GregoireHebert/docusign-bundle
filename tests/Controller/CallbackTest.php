@@ -35,7 +35,7 @@ class CallbackTest extends TestCase
         $translatorProphecy->trans(Argument::type('string'), [], DocusignBundle::TRANSLATION_DOMAIN)->shouldBeCalled()->willReturn('string');
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(DocumentSignatureCompletedEvent::class, Argument::type(DocumentSignatureCompletedEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::type(DocumentSignatureCompletedEvent::class))->shouldBeCalled();
 
         $callback = new Callback();
         $callback->setTranslator($translatorProphecy->reveal());

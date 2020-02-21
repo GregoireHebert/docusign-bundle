@@ -41,7 +41,7 @@ XML
         )->shouldBeCalled();
         $loggerProphecy->info('DocuSign Webhook called.', ['status' => 'Completed'])->shouldBeCalled();
 
-        $eventDispatcherProphecy->dispatch(CompletedEvent::class, Argument::type(CompletedEvent::class))->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::type(CompletedEvent::class))->shouldBeCalled();
 
         $response = (new Webhook())($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
         $this->assertInstanceOf(Response::class, $response);

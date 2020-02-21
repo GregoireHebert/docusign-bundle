@@ -76,8 +76,8 @@ final class Kernel extends BaseKernel
             $routes->import('@TwigBundle/Resources/config/routing/errors.xml', '/_error');
         }
 
-        $routes->import('.', null, 'docusign');
-        $routes->import('@TestBundle/Controller', null, 'annotation');
+        $routes->import('.', '/', 'docusign');
+        $routes->import('@TestBundle/Controller', '/', 'annotation');
         $routes->addRoute(new Route('/logout'), 'logout');
     }
 

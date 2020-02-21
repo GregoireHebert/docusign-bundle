@@ -15,9 +15,9 @@ namespace DocusignBundle\Controller;
 
 use DocusignBundle\Events\WebhookEventFactory;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Webhook
 {
@@ -28,8 +28,7 @@ final class Webhook
         $status = $data->EnvelopeStatus->Status->__toString();
         $logger->info('DocuSign Webhook called.', ['status' => $status]);
 
-        $event = WebhookEventFactory::create($status, $data, $request);
-        $eventDispatcher->dispatch($event);
+        $eventDispatcher->dispatch(WebhookEventFactory::create($status, $data, $request));
 
         return new Response('', 202);
     }
