@@ -3,6 +3,8 @@ services:
     autowire: true
     autoconfigure: true
     public: false
+    bind:
+      $kernelProjectDir: '%kernel.project_dir%'
 
   DocusignBundle\E2e\TestBundle\:
     resource: '../../*'
@@ -11,8 +13,3 @@ services:
   DocusignBundle\E2e\TestBundle\Controller\:
     resource: '../../Controller/*'
     tags: ['controller.service_arguments']
-
-  DocusignBundle\E2e\TestBundle\Controller\EmbeddedController:
-    tags: ['controller.service_arguments']
-    arguments:
-      $kernelProjectDir: '%kernel.project_dir%'

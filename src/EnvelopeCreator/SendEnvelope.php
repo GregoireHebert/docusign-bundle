@@ -16,10 +16,8 @@ namespace DocusignBundle\EnvelopeCreator;
 use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Configuration;
-use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Grant\GrantInterface;
-use DocusignBundle\Utils\CallbackRouteGenerator;
 use Symfony\Component\Routing\RouterInterface;
 
 final class SendEnvelope implements EnvelopeBuilderCallableInterface
@@ -37,6 +35,8 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
 
     /**
      * @throws \DocuSign\eSign\ApiException
+     *
+     * @return string|void
      */
     public function __invoke(array $context = [])
     {
@@ -44,15 +44,11 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
             return;
         }
 
-        $this->envelopeBuilder->setEnvelopesApi($this->setUpConfiguration($this->envelopeBuilder));
+        $this->envelopeBuilder->setEnvelopesApi($this->setUpConfiguration());
         $this->envelopeBuilder->setEnvelopeId($this->envelopeBuilder->getEnvelopesApi()->createEnvelope((string) $this->envelopeBuilder->getAccountId(), $this->envelopeBuilder->getEnvelopeDefinition())->getEnvelopeId());
-
-        if (EnvelopeBuilder::MODE_REMOTE === $this->envelopeBuilder->getMode()) {
-            return CallbackRouteGenerator::getCallbackRoute($this->router, $this->envelopeBuilder);
-        }
     }
 
-    private function setUpConfiguration(EnvelopeBuilderInterface $envelopeBuilder): EnvelopesApi
+    private function setUpConfiguration(): EnvelopesApi
     {
         $config = new Configuration();
         $config->setHost($this->envelopeBuilder->getApiUri());

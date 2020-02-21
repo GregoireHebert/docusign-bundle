@@ -58,7 +58,7 @@ class SignTest extends TestCase
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
-        $response = (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        $response = (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(307, $response->getStatusCode());
         $this->assertStringContainsString('dummyURL', $response->getContent());
@@ -83,7 +83,7 @@ class SignTest extends TestCase
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
         $this->expectException(MissingMandatoryParameterHttpException::class);
-        (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 
     public function testTheSignControllerCalledWithWrongFilePathThrowAnError(): void
@@ -115,7 +115,7 @@ class SignTest extends TestCase
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
         $this->expectException(NotFoundHttpException::class);
-        (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 
     public function testTheSignControllerCalledWithoutSignaturesThrowsAnError(): void
@@ -140,6 +140,6 @@ class SignTest extends TestCase
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
 
         $this->expectException(\LogicException::class);
-        (new Sign())($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal(), $requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 }

@@ -47,7 +47,7 @@ final class EmbeddedTest extends PantherTestCase
         ]);
         $crawler = $client->waitFor('#container #content ul li');
 
-        $this->assertSame('Embedded documents', $client->getTitle());
+        $this->assertSame('Documents list (embedded mode)', $client->getTitle());
         $this->assertCount(1, $crawler->filter('#container #content ul li'));
         $this->assertSame('dummy.pdf', $crawler->filter('#container #content ul li a')->first()->text());
     }

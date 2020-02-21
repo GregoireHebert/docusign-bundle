@@ -53,23 +53,23 @@ final class DocusignLoaderTest extends TestCase
 
         $this->assertNotNull($route = $routeCollection->get('docusign_callback'));
         $this->assertEquals('/docusign/callback', $route->getPath());
-        $this->assertEquals('docusign_callback', $route->getDefault('_controller'));
+        $this->assertEquals('docusign.callback', $route->getDefault('_controller'));
         $this->assertEquals(['GET'], $route->getMethods());
 
         $this->assertNotNull($route = $routeCollection->get('docusign_webhook'));
         $this->assertEquals('/docusign/webhook', $route->getPath());
-        $this->assertEquals('docusign_webhook', $route->getDefault('_controller'));
+        $this->assertEquals('docusign.webhook', $route->getDefault('_controller'));
         $this->assertEquals(['POST'], $route->getMethods());
 
         $this->assertNotNull($route = $routeCollection->get('docusign_sign_foo'));
         $this->assertEquals('/docusign/sign/foo', $route->getPath());
-        $this->assertEquals('docusign_sign', $route->getDefault('_controller'));
+        $this->assertEquals('docusign.sign.foo', $route->getDefault('_controller'));
         $this->assertEquals('foo', $route->getDefault('_docusign_name'));
         $this->assertEquals(['GET'], $route->getMethods());
 
         $this->assertNotNull($route = $routeCollection->get('docusign_sign_bar'));
         $this->assertEquals('/docusign/sign/bar/{key}', $route->getPath());
-        $this->assertEquals('docusign_sign', $route->getDefault('_controller'));
+        $this->assertEquals('docusign.sign.bar', $route->getDefault('_controller'));
         $this->assertEquals('bar', $route->getDefault('_docusign_name'));
         $this->assertEquals(['GET'], $route->getMethods());
 

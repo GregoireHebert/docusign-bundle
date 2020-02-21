@@ -166,12 +166,18 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
 
         Assert::email($email);
 
-        $signer = new Model\Signer([
+        $data = [
             'email' => $email,
             'name' => $name,
             'recipient_id' => $this->docReference,
-            'client_user_id' => $this->accountId, // Setting the client_user_id marks the signer as embedded
-        ]);
+        ];
+
+        if (self::MODE_EMBEDDED === $this->getMode()) {
+            // Setting the client_user_id marks the signer as embedded
+            $data['client_user_id'] = $this->accountId;
+        }
+
+        $signer = new Model\Signer($data);
 
         $signer->setTabs(new Model\Tabs(['sign_here_tabs' => $this->signatureZones]));
 

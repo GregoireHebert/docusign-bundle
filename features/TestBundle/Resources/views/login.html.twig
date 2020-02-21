@@ -15,8 +15,8 @@
     {% endif %}
 
     <form action="{{ path('login') }}" method="post">
-        <input placeholder="Username" type="text" id="username" name="_username" value="{{ last_username }}"/>
-        <input placeholder="Password" type="password" id="password" name="_password"/>
+        <input placeholder="Username (admin)" type="text" id="username" name="_username" value="{{ last_username }}"/>
+        <input placeholder="Password (4dm1n)" type="password" id="password" name="_password"/>
 
         <button type="submit">Login</button>
     </form>

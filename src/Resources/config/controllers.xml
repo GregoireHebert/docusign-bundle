@@ -4,19 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
         https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="docusign_callback" class="DocusignBundle\Controller\Callback" public="true">
+        <service id="docusign.callback" class="DocusignBundle\Controller\Callback" public="true">
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="DocusignBundle\Controller\Callback" alias="docusign_callback" public="true" />
+        <service id="DocusignBundle\Controller\Callback" alias="docusign.callback" public="true" />
 
-        <service id="docusign_sign" class="DocusignBundle\Controller\Sign" public="true">
+        <service id="docusign.webhook" class="DocusignBundle\Controller\Webhook" public="true">
             <tag name="controller.service_arguments"/>
         </service>
-        <service id="DocusignBundle\Controller\Sign" alias="docusign_sign" public="true" />
-
-        <service id="docusign_webhook" class="DocusignBundle\Controller\Webhook" public="true">
-            <tag name="controller.service_arguments"/>
-        </service>
-        <service id="DocusignBundle\Controller\Webhook" alias="docusign_webhook" public="true" />
+        <service id="DocusignBundle\Controller\Webhook" alias="docusign.webhook" public="true" />
     </services>
 </container>

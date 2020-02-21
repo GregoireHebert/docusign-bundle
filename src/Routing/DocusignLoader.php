@@ -38,10 +38,10 @@ final class DocusignLoader extends Loader
 
         // Load static routes: callback & webhook
         $routeCollection->add('docusign_callback', (new Route('docusign/callback', [
-            '_controller' => 'docusign_callback',
+            '_controller' => 'docusign.callback',
         ]))->setMethods('GET'));
         $routeCollection->add('docusign_webhook', (new Route('docusign/webhook', [
-            '_controller' => 'docusign_webhook',
+            '_controller' => 'docusign.webhook',
         ]))->setMethods('POST'));
 
         // Load dynamic routes: sign per document
@@ -55,7 +55,7 @@ final class DocusignLoader extends Loader
                 ]))->setMethods('GET'));
             }
             $routeCollection->add("docusign_sign_$name", (new Route($config['sign_path'], [
-                '_controller' => 'docusign_sign',
+                '_controller' => "docusign.sign.$name",
                 '_docusign_name' => $name,
             ]))->setMethods('GET'));
 

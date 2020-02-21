@@ -27,27 +27,36 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Sign
 {
-    public function __invoke(EnvelopeBuilderInterface $envelopeBuilder, SignatureExtractor $signatureExtractor, Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
+    private $envelopeBuilder;
+    private $signatureExtractor;
+
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, SignatureExtractor $signatureExtractor)
+    {
+        $this->envelopeBuilder = $envelopeBuilder;
+        $this->signatureExtractor = $signatureExtractor;
+    }
+
+    public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
     {
         if (empty($path = $request->query->get('path'))) {
             throw new MissingMandatoryParameterHttpException('You must define a `path` query parameter.');
         }
 
         try {
-            $eventDispatcher->dispatch(new PreSignEvent($envelopeBuilder, $request));
+            $eventDispatcher->dispatch(new PreSignEvent($this->envelopeBuilder, $request));
 
-            $envelopeBuilder->setFile($path);
-            $signatures = $signatureExtractor->getSignatures();
+            $this->envelopeBuilder->setFile($path);
+            $signatures = $this->signatureExtractor->getSignatures();
 
             if (empty($signatures)) {
                 throw new \LogicException('No signatures defined. Check your `signatures` configuration and query parameter.');
             }
 
             foreach ($signatures as $signature) {
-                $envelopeBuilder->addSignatureZone($signature['page'], $signature['x_position'], $signature['y_position']);
+                $this->envelopeBuilder->addSignatureZone($signature['page'], $signature['x_position'], $signature['y_position']);
             }
 
-            return new RedirectResponse($envelopeBuilder->createEnvelope(), 307);
+            return new RedirectResponse($this->envelopeBuilder->createEnvelope(), 307);
         } catch (FileNotFoundException $exception) {
             $logger->error('Document to sign not found.', ['message' => $exception->getMessage()]);
 

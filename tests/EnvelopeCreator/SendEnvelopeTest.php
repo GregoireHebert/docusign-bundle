@@ -51,7 +51,6 @@ class SendEnvelopeTest extends TestCase
 
         $this->envelopeBuilderProphecyMock->getEnvelopeDefinition()->shouldBeCalled()->willReturn($envelopeDefinition);
         $this->envelopeBuilderProphecyMock->getAccountId()->shouldBeCalled()->willReturn(1234567);
-        $this->envelopeBuilderProphecyMock->getMode()->shouldBeCalled()->willReturn('embedded');
         $this->envelopeBuilderProphecyMock->getApiUri()->shouldBeCalled()->willReturn('uri');
         $this->envelopeBuilderProphecyMock->getEnvelopesApi()->shouldBeCalled()->willReturn($this->envelopesApiProphecyMock->reveal());
         $this->envelopeBuilderProphecyMock->getName()->willReturn('default');
