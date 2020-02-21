@@ -78,7 +78,6 @@ final class DocusignExtension extends Extension
 
             // Token encoder
             $container->register("docusign.token_encoder.$name", TokenEncoder::class)
-                ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
                     '$integrationKey' => $value['auth_jwt']['integration_key'],

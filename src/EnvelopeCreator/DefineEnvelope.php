@@ -75,7 +75,6 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
         ];
 
         // Add WebHook security parameter
-        $this->envelopeBuilder->addWebhookParameter('_key', time());
         $this->envelopeBuilder->addWebhookParameter('_token', $this->tokenEncoder->encode($this->envelopeBuilder->getWebhookParameters()));
 
         $eventNotification = new Model\EventNotification();

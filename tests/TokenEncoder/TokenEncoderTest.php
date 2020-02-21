@@ -21,30 +21,15 @@ use PHPUnit\Framework\TestCase;
  */
 final class TokenEncoderTest extends TestCase
 {
-    private $tokenEncoder;
-
-    protected function setUp(): void
-    {
-        $this->tokenEncoder = new TokenEncoder('foo', 'bar');
-    }
-
-    public function testItEncodesTheTokenFromParameters(): void
-    {
-        $this->assertEquals('c51f94d8a9aa9226fe03661c74aaf3641cd101dc811b349a3852b7ecbfd94ef6', $this->tokenEncoder->encode([
-            'foo' => 'bar',
-            'lorem' => 'ipsum',
-        ]));
-    }
-
     public function testItChecksIfTheTokenIsValid(): void
     {
-        $this->assertTrue($this->tokenEncoder->isTokenValid([
+        $parameters = [
             'foo' => 'bar',
             'lorem' => 'ipsum',
-        ], 'c51f94d8a9aa9226fe03661c74aaf3641cd101dc811b349a3852b7ecbfd94ef6'));
-        $this->assertFalse($this->tokenEncoder->isTokenValid([
-            'lorem' => 'ipsum',
-            'foo' => 'bar',
-        ], 'c51f94d8a9aa9226fe03661c74aaf3641cd101dc811b349a3852b7ecbfd94ef6'));
+        ];
+
+        $tokenEncoder = new TokenEncoder('foo', 'bar');
+
+        $this->assertTrue($tokenEncoder->isTokenValid($parameters, $tokenEncoder->encode($parameters)));
     }
 }

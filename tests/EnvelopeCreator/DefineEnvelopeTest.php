@@ -56,7 +56,6 @@ class DefineEnvelopeTest extends TestCase
 
         $this->translatorProphecyMock->trans(Argument::type('string'), [], DocusignBundle::TRANSLATION_DOMAIN)->shouldBeCalled()->willReturn(DefineEnvelope::EMAIL_SUBJECT);
 
-        $this->envelopeBuilderProphecyMock->addWebhookParameter('_key', Argument::any())->shouldBeCalled();
         $this->tokenEncoderProphecyMock->encode(['parameter' => 'value'])->willReturn('token')->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->addWebhookParameter('_token', 'token')->shouldBeCalled();
 

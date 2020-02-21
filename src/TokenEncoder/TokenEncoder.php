@@ -29,16 +29,19 @@ final class TokenEncoder implements TokenEncoderInterface
 
     public function encode(array $parameters): string
     {
-        return hash('sha256', http_build_query($parameters + [
+        return password_hash(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
             'user_guid' => $this->userGuid,
-        ]));
+        ]), PASSWORD_DEFAULT);
     }
 
     public function isTokenValid(array $parameters, ?string $token): bool
     {
         unset($parameters['_token']);
 
-        return !empty($token) && $this->encode($parameters) === $token;
+        return !empty($token) && password_verify(http_build_query($parameters + [
+            'integration_key' => $this->integrationKey,
+            'user_guid' => $this->userGuid,
+        ]), $token);
     }
 }
