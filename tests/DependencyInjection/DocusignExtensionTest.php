@@ -24,6 +24,8 @@ use DocusignBundle\EnvelopeCreator;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
+use DocusignBundle\TokenEncoder\TokenEncoder;
+use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\PluginInterface;
@@ -174,6 +176,8 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.signature_extractor.default', SignatureExtractor::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(SignatureExtractor::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->register('docusign.grant.default', JwtGrant::class)->willReturn($definitionProphecy->reveal())->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.token_encoder.default', TokenEncoder::class)->willReturn($definitionProphecy->reveal())->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(TokenEncoderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
@@ -284,7 +288,9 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.signature_extractor.default', SignatureExtractor::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(SignatureExtractor::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->register('docusign.grant.default', JwtGrant::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.token_encoder.default', TokenEncoder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(JwtGrant::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(TokenEncoderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setDefinition('flysystem.storage.default', Argument::type(Definition::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();

@@ -14,15 +14,21 @@ declare(strict_types=1);
 namespace DocusignBundle\Controller;
 
 use DocusignBundle\Events\WebhookEventFactory;
+use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Webhook
 {
-    public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
+    public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger, TokenEncoderInterface $tokenEncoder): Response
     {
+        if (!$tokenEncoder->isTokenValid($request->query->all(), $request->query->get('_token'))) {
+            throw new AccessDeniedHttpException();
+        }
+
         $data = simplexml_load_string($request->getContent());
 
         $status = $data->EnvelopeStatus->Status->__toString();

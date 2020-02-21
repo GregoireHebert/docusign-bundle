@@ -28,6 +28,8 @@ use DocusignBundle\Exception\InvalidGrantTypeException;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
+use DocusignBundle\TokenEncoder\TokenEncoder;
+use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
@@ -73,6 +75,15 @@ final class DocusignExtension extends Extension
             if (!isset($value['storage']['storage'])) {
                 $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
             }
+
+            // Token encoder
+            $container->register("docusign.token_encoder.$name", TokenEncoder::class)
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArguments([
+                    '$integrationKey' => $value['auth_jwt']['integration_key'],
+                    '$userGuid' => $value['auth_jwt']['user_guid'],
+                ]);
 
             // Grant
             $container->register("docusign.grant.$name", JwtGrant::class)
@@ -158,6 +169,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $container->setAlias(CreateRecipient::class, new Alias("docusign.create_recipient.$name"));
                 $container->setAlias(EnvelopeCreator::class, new Alias("docusign.envelope_creator.$name"));
+                $container->setAlias(TokenEncoderInterface::class, new Alias("docusign.token_encoder.$name"));
 
                 $default = $name;
             }
@@ -232,6 +244,7 @@ final class DocusignExtension extends Extension
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                '$tokenEncoder' => new Reference("docusign.token_encoder.$name"),
             ])
             ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
 
