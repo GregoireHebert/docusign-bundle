@@ -16,6 +16,7 @@ namespace DocusignBundle\EnvelopeCreator;
 use DocuSign\eSign\Model;
 use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilderInterface;
+use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Translator\TranslatorAwareTrait;
 use Symfony\Component\Routing\Router;
@@ -30,11 +31,13 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
 
     private $router;
     private $envelopeBuilder;
+    private $tokenEncoder;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, RouterInterface $router, TokenEncoderInterface $tokenEncoder)
     {
         $this->router = $router;
         $this->envelopeBuilder = $envelopeBuilder;
+        $this->tokenEncoder = $tokenEncoder;
     }
 
     public function __invoke(array $context = []): void
@@ -70,6 +73,9 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
             (new Model\RecipientEvent())->setRecipientEventStatusCode('AuthenticationFailed'),
             (new Model\RecipientEvent())->setRecipientEventStatusCode('AutoResponded'),
         ];
+
+        // Add WebHook security parameter
+        $this->envelopeBuilder->addWebhookParameter('_token', $this->tokenEncoder->encode($this->envelopeBuilder->getWebhookParameters()));
 
         $eventNotification = new Model\EventNotification();
         $eventNotification->setUrl($this->router->generate(self::WEBHOOK_ROUTE_NAME, $this->envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
