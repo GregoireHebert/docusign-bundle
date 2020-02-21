@@ -4,8 +4,4 @@ parameters:
         - src
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
-        - "#Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component.+' and 'getRootNode' will always evaluate to false\\.#"
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
-
-        - '#Parameter \#1 \$event of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects object, string given\.#'
-        - '#Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.#'

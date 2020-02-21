@@ -17,9 +17,9 @@ use DocusignBundle\DocusignBundle;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use DocusignBundle\Translator\TranslatorAwareInterface;
 use DocusignBundle\Translator\TranslatorAwareTrait;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Callback implements TranslatorAwareInterface
 {
@@ -47,7 +47,7 @@ final class Callback implements TranslatorAwareInterface
             )
         ));
 
-        $eventDispatcher->dispatch(DocumentSignatureCompletedEvent::class, $event);
+        $eventDispatcher->dispatch($event);
 
         return $event->getResponse();
     }

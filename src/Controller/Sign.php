@@ -19,11 +19,11 @@ use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Sign
 {
@@ -34,7 +34,7 @@ final class Sign
         }
 
         try {
-            $eventDispatcher->dispatch(PreSignEvent::class, new PreSignEvent($envelopeBuilder, $request));
+            $eventDispatcher->dispatch(new PreSignEvent($envelopeBuilder, $request));
 
             $envelopeBuilder->setFile($path);
             $signatures = $signatureExtractor->getSignatures();

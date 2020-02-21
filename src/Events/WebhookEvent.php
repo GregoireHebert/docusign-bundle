@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Events;
 
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class WebhookEvent extends Event
 {

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Events;
 
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\EventDispatcher\Event;
 
 final class DocumentSignatureCompletedEvent extends Event
 {

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Translator;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 interface TranslatorAwareInterface
 {

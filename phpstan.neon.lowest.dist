@@ -4,9 +4,7 @@ parameters:
         - src
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
-        - "#Call to function method_exists\\(\\) with 'Symfony\\\\\\\\Component.+' and 'getRootNode' will always evaluate to false\\.#"
-        - "#Class Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\TreeBuilder does not have a constructor and must be instantiated without any parameters\\.#"
-        - "#Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\TreeBuilder::getRootNode\\(\\)\\.#"
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
         # known bug of phpstan
         - "#Class League\\\\FlysystemBundle\\\\FlysystemBundle not found\\.#"
