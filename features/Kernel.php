@@ -105,25 +105,18 @@ final class Kernel extends BaseKernel
                         'users' => [
                             'admin' => [
                                 'password' => '4dm1n',
-                                'roles' => 'ROLE_EMBEDDED',
-                            ],
-                            'john_doe' => [
-                                'password' => 'j0hnd0E',
                                 'roles' => 'ROLE_USER',
                             ],
                         ],
                     ],
                 ],
             ],
-            'role_hierarchy' => [
-                'ROLE_EMBEDDED' => 'ROLE_USER',
-            ],
             'firewalls' => [
                 'dev' => [
                     'pattern' => '^/(_(profiler|wdt|error)|css|images|js)/',
                     'security' => false,
                 ],
-                'embedded' => [
+                'test' => [
                     'pattern' => '^/',
                     'form_login' => [
                         'login_path' => 'login',
@@ -137,33 +130,59 @@ final class Kernel extends BaseKernel
                 ],
             ],
             'access_control' => [
-                ['path' => '/embedded', 'roles' => 'ROLE_EMBEDDED'],
+                ['path' => '/embedded', 'roles' => 'IS_AUTHENTICATED_FULLY'],
+                ['path' => '/remote', 'roles' => 'IS_AUTHENTICATED_FULLY'],
                 ['path' => '/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ],
         ]);
 
         $c->loadFromExtension('docusign', [
-            'demo' => true,
-            'mode' => 'embedded',
-            'auth_jwt' => [
-                'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
-                'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
-                'user_guid' => $_SERVER['DOCUSIGN_USER_GUID'],
-                'grant_type' => 'authorization_code',
-            ],
-            'sign_path' => '/docusign/sign',
-            'callback' => 'embedded_callback',
-            'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
-            'default_signer_name' => 'Grégoire Hébert',
-            'default_signer_email' => 'gregoire@les-tilleuls.coop',
-            'signatures' => [
-                [
-                    'page' => 1,
-                    'x_position' => 200,
-                    'y_position' => 400,
+            'default' => [
+                'demo' => true,
+                'mode' => 'embedded',
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
+                    'user_guid' => $_SERVER['DOCUSIGN_USER_GUID'],
+                    'grant_type' => 'authorization_code',
                 ],
+                'sign_path' => '/embedded/sign',
+                'callback' => 'embedded_callback',
+                'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'signatures' => [
+                    [
+                        'page' => 1,
+                        'x_position' => 200,
+                        'y_position' => 400,
+                    ],
+                ],
+                'storage' => 'docusign.storage',
             ],
-            'storage' => 'docusign.storage',
+            'remote' => [
+                'demo' => true,
+                'mode' => 'remote',
+                'auth_jwt' => [
+                    'private_key' => '%kernel.project_dir%/var/jwt/docusign.pem',
+                    'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
+                    'user_guid' => $_SERVER['DOCUSIGN_USER_GUID'],
+                    'grant_type' => 'authorization_code',
+                ],
+                'sign_path' => '/remote/sign',
+                'callback' => 'remote_callback',
+                'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'signatures' => [
+                    [
+                        'page' => 1,
+                        'x_position' => 200,
+                        'y_position' => 400,
+                    ],
+                ],
+                'storage' => 'docusign.storage',
+            ],
         ]);
 
         if (class_exists(FlysystemBundle::class)) {

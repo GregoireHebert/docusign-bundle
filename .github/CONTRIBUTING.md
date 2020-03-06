@@ -119,7 +119,7 @@ return [
     'DOCUSIGN_INTEGRATION_KEY' => 'your-personal-integration-key',
     'DOCUSIGN_USER_GUID' => 'your-personal-user-guid',
     'DOCUSIGN_ACCOUNT_ID' => your-personal-account-id,
-    'APP_ENV' => 'embedded',
+    'APP_ENV' => 'test',
     'APP_DEBUG' => true,
 ];
 ```
@@ -139,9 +139,9 @@ Then go to http://localhost:8000.
 
 The [WebProfilerBundle](https://symfony.com/web-profiler-bundle) is available at http://localhost:8000/_profiler/.
 
-## List of embedded documents
+## List of documents
 
-To access the list of embedded documents, you'll need to login as `admin:4dm1n`: http://localhost:8000/embedded.
+To access the list of documents, you'll need to login as `admin:4dm1n` on http://localhost:8000/.
 
 ## Running tests
 
@@ -159,7 +159,7 @@ Create the `phpunit.xml` file as following:
 >
     <php>
         <ini name="error_reporting" value="-1" />
-        <env name="APP_ENV" value="embedded" />
+        <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="true" />
         <env name="KERNEL_DIR" value="features/" />
         <env name="KERNEL_CLASS" value="Kernel" />

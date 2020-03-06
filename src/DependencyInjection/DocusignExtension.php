@@ -15,6 +15,7 @@ namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
 use DocusignBundle\Controller\Consent;
+use DocusignBundle\Controller\Sign;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
@@ -22,6 +23,7 @@ use DocusignBundle\EnvelopeCreator\CreateRecipient;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\EnvelopeCreator\GetViewUrl;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\EnvelopeCreator\TraceableEnvelopeBuilderCallable;
 use DocusignBundle\Exception\InvalidGrantTypeException;
@@ -67,6 +69,14 @@ final class DocusignExtension extends Extension
         $container
             ->registerForAutoconfiguration(TranslatorAwareInterface::class)
             ->addTag('docusign.translator.aware');
+
+        $container->register('docusign.route_loader', DocusignLoader::class)
+            ->setArgument('$config', $config)
+            ->setPublic(false)
+            ->addTag('routing.loader');
+
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('controllers.xml');
 
         $default = null;
 
@@ -138,19 +148,26 @@ final class DocusignExtension extends Extension
                     '$signatures' => $value['signatures'],
                 ]);
 
+            // Update Sign controller
+            $container->register("docusign.sign.$name", Sign::class)
+                ->setPublic(true)
+                ->setArguments([
+                    '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                    '$signatureExtractor' => new Reference("docusign.signature_extractor.$name"),
+                ])->addTag('controller.service_arguments');
+
             if (!empty($value['auth_jwt'])) {
                 if (!isset(Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']])) {
                     throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
                 }
 
                 $container->register("docusign.consent.$name", Consent::class)
-                    ->setAutowired(true)
                     ->setPublic(true)
                     ->setArguments([
                         '$responseType' => Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']],
                         '$demo' => $value['demo'],
                         '$integrationKey' => $value['auth_jwt']['integration_key'],
-                    ]);
+                    ])->addTag('controller.service_arguments');
 
                 if (null === $default) {
                     $container->setAlias(Consent::class, new Alias("docusign.consent.$name"));
@@ -158,6 +175,7 @@ final class DocusignExtension extends Extension
             }
 
             if (null === $default) {
+                $container->setAlias(Sign::class, new Alias("docusign.sign.$name"));
                 $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
@@ -166,6 +184,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(CreateDocument::class, new Alias("docusign.create_document.$name"));
                 $container->setAlias(DefineEnvelope::class, new Alias("docusign.define_envelope.$name"));
                 $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
+                $container->setAlias(GetViewUrl::class, new Alias("docusign.get_view_url.$name"));
                 $container->setAlias(CreateRecipient::class, new Alias("docusign.create_recipient.$name"));
                 $container->setAlias(EnvelopeCreator::class, new Alias("docusign.envelope_creator.$name"));
                 $container->setAlias(TokenEncoderInterface::class, new Alias("docusign.token_encoder.$name"));
@@ -173,14 +192,6 @@ final class DocusignExtension extends Extension
                 $default = $name;
             }
         }
-
-        $container->register('docusign.route_loader', DocusignLoader::class)
-            ->setArgument('$config', $config)
-            ->setPublic(false)
-            ->addTag('routing.loader');
-
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('controllers.xml');
     }
 
     /*
@@ -237,7 +248,7 @@ final class DocusignExtension extends Extension
             ])
             ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
 
-        // DefineEnvelpe
+        // DefineEnvelope
         $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
             ->setAutowired(true)
             ->setPublic(false)
@@ -256,14 +267,15 @@ final class DocusignExtension extends Extension
             ])
             ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
 
-        // CreateRecipient
-        $container->register("docusign.create_recipient.$name", CreateRecipient::class)
+        // GetViewUrl
+        $container->register("docusign.get_view_url.$name", GetViewUrl::class)
             ->setAutowired(true)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
             ])
             ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
+        $container->setAlias("docusign.create_recipient.$name", new Alias("docusign.get_view_url.$name"));
     }
 
     private function setActionsTraceable(ContainerBuilder $container, string $name): void
@@ -291,7 +303,7 @@ final class DocusignExtension extends Extension
 
         $container->register("docusign.decorated_create_recipient.$name", TraceableEnvelopeBuilderCallable::class)
             ->setAutowired(true)
-            ->setDecoratedService("docusign.create_recipient.$name")
+            ->setDecoratedService("docusign.get_view_url.$name")
             ->addArgument(new Reference("docusign.decorated_create_recipient.$name.inner"))
             ->setPublic(false)
         ;

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Embedded documents{% endblock %}
+{% block title %}Documents list ({{ mode }} mode){% endblock %}
 
 {% block content %}
     <ul>
         {% for name, path in documents %}
-            <li><a href="{{ path('docusign_sign_default', {'path': path}) }}">{{ name }}</a></li>
+            <li><a href="{{ path(route_name, {'path': path}) }}">{{ name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
