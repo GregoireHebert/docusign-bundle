@@ -98,7 +98,7 @@ class ConfigurationTest extends TestCase
     public function testItThrowsAnErrorOnInvalidModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The value "invalid" is not allowed for path "docusign.default.mode". Permissible values: "remote", "embedded"');
+        $this->expectExceptionMessage('The value "invalid" is not allowed for path "docusign.default.mode". Permissible values: "embedded", "remote", "clickwrap"');
         $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'mode' => 'invalid',

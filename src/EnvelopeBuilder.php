@@ -25,6 +25,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public const EMBEDDED_AUTHENTICATION_METHOD = 'NONE';
     public const MODE_REMOTE = 'remote';
     public const MODE_EMBEDDED = 'embedded';
+    public const MODE_CLICKWRAP = 'clickwrap';
 
     /** @var int */
     private $accountId;

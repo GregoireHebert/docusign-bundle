@@ -27,6 +27,7 @@ use DocusignBundle\Routing\DocusignLoader;
 use DocusignBundle\TokenEncoder\TokenEncoder;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
+use DocusignBundle\Twig\Extension\ClickwrapExtension;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
@@ -79,6 +80,16 @@ class DocusignExtensionTest extends TestCase
             'options' => [],
         ],
         'sign_path' => '/foo/sign',
+    ]];
+    public const CLICKWRAP_CONFIG = ['docusign' => [
+        'demo' => true,
+        'enable_profiler' => true,
+        'mode' => 'clickwrap',
+        'auth_clickwrap' => [
+            'clickwrap_id' => 'f5de48b3-b323-48a3-bfb1-fa375a7db67b',
+            'api_account_id' => '797a9f49-cb98-4b0d-85f9-3509bc9cc453',
+            'user_guid' => 'c6a6b2f7-40be-4d7d-a4b1-ca438906b77e',
+        ],
     ]];
 
     private $extension;
@@ -171,6 +182,9 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.define_envelope.default', EnvelopeCreator\DefineEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.send_envelope.default', EnvelopeCreator\SendEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.envelope_creator.default', EnvelopeCreator\EnvelopeCreator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+
+        $containerBuilderProphecy->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $definitionProphecy->addTag('twig.extension')->shouldBeCalled()->willReturn($definitionProphecy->reveal());
 
         $containerBuilderProphecy->register('docusign.envelope_builder.default', EnvelopeBuilder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
@@ -282,6 +296,9 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.send_envelope.default', EnvelopeCreator\SendEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.envelope_creator.default', EnvelopeCreator\EnvelopeCreator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
 
+        $containerBuilderProphecy->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $definitionProphecy->addTag('twig.extension')->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+
         $containerBuilderProphecy->register('docusign.decorated_create_document.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.decorated_create_recipient.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.decorated_define_envelope.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
@@ -309,5 +326,76 @@ class DocusignExtensionTest extends TestCase
         $containerBuilder = $containerBuilderProphecy->reveal();
 
         $this->extension->load(self::DEMO_CONFIG, $containerBuilder);
+    }
+
+    public function testItLoadsClickwrapConfig(): void
+    {
+        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+
+        $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
+
+        $parameterBag = new EnvPlaceholderParameterBag();
+        $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
+
+        $containerBuilderProphecy->fileExists(Argument::type('string'))->will(function ($args) {
+            return file_exists($args[0]);
+        })->shouldBeCalled();
+
+        if (method_exists(ContainerBuilder::class, 'removeBindings')) {
+            $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
+        } elseif (method_exists(ContainerBuilder::class, 'addRemovedBindingIds')) {
+            $containerBuilderProphecy->addRemovedBindingIds(Argument::type('string'))->will(function (): void {});
+        }
+
+        $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
+        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
+
+        $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
+        $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
+
+        if (!class_exists(FlysystemBundle::class)) {
+            $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
+            $childDefinitionProphecyMock->addTag('flysystem.plugin')->shouldBeCalled();
+        }
+
+        /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
+        $loaderDefinitionProphecy = $this->prophesize(Definition::class);
+        $containerBuilderProphecy
+            ->register('docusign.route_loader', DocusignLoader::class)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setArgument('$config', Argument::type('array'))
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->setPublic(false)
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+        $loaderDefinitionProphecy
+            ->addTag('routing.loader')
+            ->willReturn($loaderDefinitionProphecy->reveal())
+            ->shouldBeCalled();
+
+        $definitionProphecy = $this->prophesize(Definition::class);
+        $containerBuilderProphecy->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->addTag('twig.extension')->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->addMethodCall('addConfig', ['default', true, [
+            'environment' => 'https://www.docusign.net',
+            'accountId' => '797a9f49-cb98-4b0d-85f9-3509bc9cc453',
+            'clientUserId' => 'c6a6b2f7-40be-4d7d-a4b1-ca438906b77e',
+            'clickwrapId' => 'f5de48b3-b323-48a3-bfb1-fa375a7db67b',
+        ]])->shouldBeCalled()->willReturn($definitionProphecy);
+
+        $containerBuilderProphecy->setDefinition('docusign.callback', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setDefinition('docusign.webhook', Argument::type(Definition::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
+
+        $containerBuilder = $containerBuilderProphecy->reveal();
+
+        $this->extension->load(self::CLICKWRAP_CONFIG, $containerBuilder);
     }
 }

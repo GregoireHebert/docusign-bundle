@@ -1,0 +1,11 @@
+{% set id = ('ds-clickwrap-' ~ random()) %}
+<div id="{{ id }}"></div>
+<script src="{{ environment }}/clickapi/sdk/latest/docusign-click.js"></script>
+<script>
+    docuSignClick.Clickwrap.render({
+        environment: '{{ environment }}',
+        accountId: '{{ accountId }}',
+        clientUserId: '{{ clientUserId }}',
+        clickwrapId: '{{ clickwrapId }}'
+    }, '#{{ id }}');
+</script>

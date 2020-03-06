@@ -62,7 +62,8 @@
         "symfony/web-server-bundle": "^4.4"
     },
     "suggest": {
-        "league/flysystem-bundle": "For Symfony >4.2 - Allow the use of the official adapter system instead of the compat layer."
+        "league/flysystem-bundle": "For Symfony >4.2 - Allow the use of the official adapter system instead of the compat layer.",
+        "symfony/twig-bundle": "To use the Clickwrap integration."
     },
     "autoload": {
         "psr-4": {

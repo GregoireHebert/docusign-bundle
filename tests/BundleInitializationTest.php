@@ -34,8 +34,8 @@ final class BundleInitializationTest extends BaseBundleTestCase
 
         $container = $this->getContainer();
 
-        $this->assertFalse($container->has('docusign.grant.default'));
-        $this->assertFalse($container->has('docusign.signature_extractor.default'));
-        $this->assertFalse($container->has('docusign.envelope_builder.default'));
+        $this->assertFalse($container->has('docusign.grant.embedded'));
+        $this->assertFalse($container->has('docusign.signature_extractor.embedded'));
+        $this->assertFalse($container->has('docusign.envelope_builder.embedded'));
     }
 }

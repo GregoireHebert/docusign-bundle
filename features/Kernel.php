@@ -130,9 +130,9 @@ final class Kernel extends BaseKernel
                 ],
             ],
             'access_control' => [
-                ['path' => '/embedded', 'roles' => 'IS_AUTHENTICATED_FULLY'],
-                ['path' => '/remote', 'roles' => 'IS_AUTHENTICATED_FULLY'],
-                ['path' => '/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/login$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/', 'roles' => 'IS_AUTHENTICATED_FULLY'],
             ],
         ]);
 
@@ -182,6 +182,15 @@ final class Kernel extends BaseKernel
                     ],
                 ],
                 'storage' => 'docusign.storage',
+            ],
+            'terms' => [
+                'demo' => true,
+                'mode' => 'clickwrap',
+                'auth_clickwrap' => [
+                    'api_account_id' => $_SERVER['DOCUSIGN_API_ACCOUNT_ID'],
+                    'clickwrap_id' => $_SERVER['DOCUSIGN_CLICKWRAP_ID'],
+                    'user_guid' => $_SERVER['DOCUSIGN_USER_GUID'],
+                ],
             ],
         ]);
 
