@@ -17,7 +17,6 @@ use DocusignBundle\Controller\Sign;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
-use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -35,15 +34,6 @@ class SignTest extends TestCase
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
 
-        $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
-        $signatureExtractorProphecy->getSignatures()->willReturn([
-            [
-                'page' => 1,
-                'x_position' => 200,
-                'y_position' => 300,
-            ],
-        ]);
-
         $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
         $envelopeBuilderProphecy->createEnvelope()->willReturn('dummyURL');
         $envelopeBuilderProphecy->addSignatureZone(1, 200, 300)->willReturn($envelopeBuilderProphecy->reveal());
@@ -58,7 +48,7 @@ class SignTest extends TestCase
         $loggerProphecy = $this->prophesize(LoggerInterface::class);
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
-        $response = (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        $response = (new Sign($envelopeBuilderProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(307, $response->getStatusCode());
         $this->assertStringContainsString('dummyURL', $response->getContent());
@@ -68,8 +58,6 @@ class SignTest extends TestCase
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldNotBeCalled();
-
-        $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
 
         $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
 
@@ -83,22 +71,13 @@ class SignTest extends TestCase
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldNotBeCalled();
 
         $this->expectException(MissingMandatoryParameterHttpException::class);
-        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        (new Sign($envelopeBuilderProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 
     public function testTheSignControllerCalledWithWrongFilePathThrowAnError(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
-
-        $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
-        $signatureExtractorProphecy->getSignatures()->willReturn([
-            [
-                'page' => 1,
-                'x_position' => 200,
-                'y_position' => 300,
-            ],
-        ]);
 
         $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
         $envelopeBuilderProphecy->setFile('dummyPath')->willReturn($envelopeBuilderProphecy->reveal());
@@ -115,31 +94,6 @@ class SignTest extends TestCase
         $loggerProphecy->error(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
         $this->expectException(NotFoundHttpException::class);
-        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
-    }
-
-    public function testTheSignControllerCalledWithoutSignaturesThrowsAnError(): void
-    {
-        $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::type(PreSignEvent::class))->shouldBeCalled();
-
-        $signatureExtractorProphecy = $this->prophesize(SignatureExtractor::class);
-        $signatureExtractorProphecy->getSignatures()->willReturn([]);
-
-        $envelopeBuilderProphecy = $this->prophesize(EnvelopeBuilderInterface::class);
-        $envelopeBuilderProphecy->setFile('dummyPath')->willReturn($envelopeBuilderProphecy->reveal());
-        $envelopeBuilderProphecy->addSignatureZone()->shouldNotBeCalled();
-        $envelopeBuilderProphecy->createEnvelope()->shouldNotBeCalled();
-
-        $parameterBagProphecy = $this->prophesize(ParameterBag::class);
-        $parameterBagProphecy->get('path')->willReturn('dummyPath');
-
-        $requestProphecy = $this->prophesize(Request::class);
-        $requestProphecy->query = $parameterBagProphecy->reveal();
-
-        $loggerProphecy = $this->prophesize(LoggerInterface::class);
-
-        $this->expectException(\LogicException::class);
-        (new Sign($envelopeBuilderProphecy->reveal(), $signatureExtractorProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
+        (new Sign($envelopeBuilderProphecy->reveal()))($requestProphecy->reveal(), $eventDispatcherProphecy->reveal(), $loggerProphecy->reveal());
     }
 }

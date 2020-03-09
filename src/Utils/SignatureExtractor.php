@@ -37,22 +37,25 @@ class SignatureExtractor
 
     private function getDefaultSignature(): ?array
     {
-        $documentType = $this->requestStack->getCurrentRequest()->query->get('document_type');
         $signaturesDefined = \count($this->defaultSignatures);
 
         if (0 === $signaturesDefined) {
             return null;
         }
 
-        if (null !== $documentType) {
+        if ($request = $this->requestStack->getCurrentRequest()) {
+            $documentType = $request->query->get('document_type');
+        }
+
+        if (!empty($documentType)) {
             return $this->defaultSignatures[$documentType] ?? null;
         }
 
-        if (null === $documentType && 1 === $signaturesDefined) {
-            return array_shift($this->defaultSignatures) ?? null;
+        if (1 === $signaturesDefined) {
+            return $this->defaultSignatures[array_keys($this->defaultSignatures)[0]] ?? null;
         }
 
-        if (null === $documentType && 1 < $signaturesDefined) {
+        if (1 < $signaturesDefined) {
             throw new AmbiguousDocumentSelectionException(sprintf('The document type is ambiguous. It should be one of %s', implode(' or ', array_keys($this->defaultSignatures))));
         }
 
@@ -61,11 +64,11 @@ class SignatureExtractor
 
     private function extractSignatureFromRequest(): ?array
     {
-        if (false === $this->signaturesOverridable) {
+        if (false === $this->signaturesOverridable || !($request = $this->requestStack->getCurrentRequest())) {
             return null;
         }
 
-        $signatures = $this->requestStack->getCurrentRequest()->query->get('signatures');
+        $signatures = $request->query->get('signatures');
 
         if (null === $signatures) {
             return null;

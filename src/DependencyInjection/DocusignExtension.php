@@ -20,6 +20,7 @@ use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
 use DocusignBundle\EnvelopeCreator\CreateRecipient;
+use DocusignBundle\EnvelopeCreator\CreateSignature;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
@@ -171,7 +172,6 @@ final class DocusignExtension extends Extension
                 ->setPublic(true)
                 ->setArguments([
                     '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-                    '$signatureExtractor' => new Reference("docusign.signature_extractor.$name"),
                 ])->addTag('controller.service_arguments');
 
             if (!empty($value['auth_jwt'])) {
@@ -200,6 +200,7 @@ final class DocusignExtension extends Extension
                 $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(CreateDocument::class, new Alias("docusign.create_document.$name"));
+                $container->setAlias(CreateSignature::class, new Alias("docusign.create_signature.$name"));
                 $container->setAlias(DefineEnvelope::class, new Alias("docusign.define_envelope.$name"));
                 $container->setAlias(SendEnvelope::class, new Alias("docusign.send_envelope.$name"));
                 $container->setAlias(GetViewUrl::class, new Alias("docusign.get_view_url.$name"));
@@ -257,6 +258,16 @@ final class DocusignExtension extends Extension
 
     private function createActions(ContainerBuilder $container, string $name): void
     {
+        // CreateSignature
+        $container->register("docusign.create_signature.$name", CreateSignature::class)
+            ->setAutowired(true)
+            ->setPublic(false)
+            ->setArguments([
+                '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                '$signatureExtractor' => new Reference("docusign.signature_extractor.$name"),
+            ])
+            ->addTag('docusign.envelope_builder.action', ['priority' => -1]);
+
         // CreateDocument
         $container->register("docusign.create_document.$name", CreateDocument::class)
             ->setAutowired(true)
@@ -302,6 +313,13 @@ final class DocusignExtension extends Extension
             ->setAutowired(true)
             ->setDecoratedService("docusign.create_document.$name")
             ->addArgument(new Reference("docusign.decorated_create_document.$name.inner"))
+            ->setPublic(false)
+        ;
+
+        $container->register("docusign.decorated_create_signature.$name", TraceableEnvelopeBuilderCallable::class)
+            ->setAutowired(true)
+            ->setDecoratedService("docusign.create_signature.$name")
+            ->addArgument(new Reference("docusign.decorated_create_signature.$name.inner"))
             ->setPublic(false)
         ;
 
