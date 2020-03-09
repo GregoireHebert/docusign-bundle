@@ -1,0 +1,8 @@
+services:
+  docusign.storage:
+    class: \stdClass
+
+docusign:
+  demo: true
+  enable_profiler: true
+  mode: clickwrap

@@ -33,6 +33,7 @@ use DocusignBundle\Routing\DocusignLoader;
 use DocusignBundle\TokenEncoder\TokenEncoder;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
+use DocusignBundle\Twig\Extension\ClickwrapExtension;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
@@ -75,12 +76,29 @@ final class DocusignExtension extends Extension
             ->setPublic(false)
             ->addTag('routing.loader');
 
+        $clickwrapExtensionDefinition = $container->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)
+            ->setPublic(false)
+            ->addTag('twig.extension');
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('controllers.xml');
 
         $default = null;
 
         foreach ($config as $name => $value) {
+            // Clickwrap mode
+            if (EnvelopeBuilder::MODE_CLICKWRAP === $value['mode']) {
+                $clickwrapExtensionDefinition->addMethodCall('addConfig', [$name, $value['demo'], [
+                    'environment' => pathinfo($value['api_uri'], PATHINFO_DIRNAME),
+                    'accountId' => $value['auth_clickwrap']['api_account_id'],
+                    'clientUserId' => $value['auth_clickwrap']['user_guid'],
+                    'clickwrapId' => $value['auth_clickwrap']['clickwrap_id'],
+                ]]);
+                continue;
+            }
+
+            // Embedded/Remote mode
+
             // Storage (FlySystem compatibility)
             if (!isset($value['storage']['storage'])) {
                 $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);

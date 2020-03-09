@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Routing;
 
+use DocusignBundle\EnvelopeBuilder;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -46,6 +47,10 @@ final class DocusignLoader extends Loader
 
         // Load dynamic routes: sign per document
         foreach ($this->config as $name => $config) {
+            if (!\in_array($config['mode'], [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true)) {
+                continue;
+            }
+
             if (preg_match('/^https?:\/\//', $config['callback'])) {
                 $routeCollection->add("docusign_callback_$name", (new Route("docusign/callback/$name", [
                     '_controller' => 'FrameworkBundle:Redirect:urlRedirect',

@@ -100,6 +100,8 @@ jobs:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
           DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
+          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
+          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
         run: vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
 
       - name: Run PHPUnit tests

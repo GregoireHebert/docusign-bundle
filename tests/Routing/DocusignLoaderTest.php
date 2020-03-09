@@ -27,12 +27,17 @@ final class DocusignLoaderTest extends TestCase
     {
         $this->loader = new DocusignLoader([
             'foo' => [
+                'mode' => 'embedded',
                 'sign_path' => '/docusign/sign/foo',
                 'callback' => 'docusign_callback',
             ],
             'bar' => [
+                'mode' => 'embedded',
                 'sign_path' => '/docusign/sign/bar/{key}',
                 'callback' => 'http://www.example.com',
+            ],
+            'terms' => [
+                'mode' => 'clickwrap',
             ],
         ]);
     }

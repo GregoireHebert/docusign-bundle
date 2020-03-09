@@ -23,6 +23,12 @@ If you have a named signature:
 <a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf'}) }}">sign</a>
 ```
 
+If you have a clickwrap signature:
+
+```twig
+{{ renderClickwrap('SIGNATURENAME') }}
+```
+
 **Embedded signature**
 - You'll get redirected to DocuSign website.
 - DocuSign will redirect you to `docusign_callback` route.
@@ -31,6 +37,9 @@ If you have a named signature:
 **Remote signature**
 - You'll get redirected to `docusign_callback` route.
 - DocuSign will asynchronously send the result to `docusign_webhook` route.
+
+**Clickwrap signature**
+- DocuSign will show an iframe to sign the document by a single click.
 
 Next: [Events](events.md)
 

@@ -1,0 +1,25 @@
+services:
+  docusign.storage:
+    class: \stdClass
+
+docusign:
+  demo: true
+  enable_profiler: true
+  mode: embedded
+  auth_jwt:
+    private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
+    integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
+    user_guid: '8fa60e09-0cb8-40ca-af5d-3e25f62e262b'
+    grant_type: authorization_code
+  default_signer_name: 'Grégoire Hébert'
+  default_signer_email: 'gregoire@les-tilleuls.coop'
+  api_uri: 'https://eu.docusign.net/restapi'
+  callback: 'docusign_callback'
+  sign_path: '/foo/sign'
+  signatures_overridable: false
+  signatures:
+    default_document_type:
+      - page: 1
+        x_position: 200
+        y_position: 400
+  storage: 'docusign.storage'

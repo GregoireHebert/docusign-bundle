@@ -11,7 +11,7 @@ your private key into `%kernel.project_dir%/var/jwt/docusign.pem`. This path is 
 # config/packages/docusign.yml
 
 docusign:
-    mode: remote # Mode used to sign (remote or embedded)
+    mode: remote # Mode used to sign (remote, embedded or clickwrap)
 
     # Enable the Symfony Profiler
     enable_profiler: '%kernel.debug%'
@@ -132,7 +132,22 @@ docusign:
     contracts:
         # Storage declared by a previous signature definition
         storage: 'docusign.storage.quotes'
+```
 
+### Configure clickwrap
+
+Clickwrap mode requires less configuration:
+
+```yml
+# config/packages/docusign.yml
+
+docusign:
+    terms:
+        mode: clickwrap
+        auth_clickwrap:
+            api_account_id: "YourApiAccountId"
+            clickwrap_id: "YourClickwrapId"
+            user_guid: "YourUserId"
 ```
 
 Next: [Basic usage](usage.md)
