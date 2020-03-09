@@ -15,6 +15,7 @@ namespace DocusignBundle\Tests;
 
 use DocusignBundle\DocusignBundle;
 use Nyholm\BundleTest\BaseBundleTestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -37,5 +38,28 @@ final class BundleInitializationTest extends BaseBundleTestCase
         $this->assertFalse($container->has('docusign.grant.embedded'));
         $this->assertFalse($container->has('docusign.signature_extractor.embedded'));
         $this->assertFalse($container->has('docusign.envelope_builder.embedded'));
+    }
+
+    /**
+     * @dataProvider getInvalidConfigurationFiles
+     */
+    public function testTheBundleIsNotBootable(string $configFile): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        $kernel = $this->createKernel();
+        $kernel->addConfigFile($configFile);
+        $this->bootKernel();
+    }
+
+    public function getInvalidConfigurationFiles(): array
+    {
+        return [
+            [__DIR__.'/config/invalidAccountId.yml'],
+            [__DIR__.'/config/invalidAuthClickwrap.yml'],
+            [__DIR__.'/config/invalidAuthJwt.yml'],
+            [__DIR__.'/config/invalidSignPath.yml'],
+            [__DIR__.'/config/invalidStorage.yml'],
+        ];
     }
 }

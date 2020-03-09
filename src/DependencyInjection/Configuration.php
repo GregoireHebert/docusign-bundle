@@ -50,6 +50,14 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->validate()
                     ->ifTrue(function ($v) {
+                        return \in_array($v['mode'] ?? null, [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true) && !\array_key_exists('auth_jwt', $v);
+                    })
+                    ->then(function ($v): void {
+                        throw new InvalidConfigurationException("The child node \"auth_jwt\" must be configured on \"$v[mode]\" mode.");
+                    })
+                ->end()
+                ->validate()
+                    ->ifTrue(function ($v) {
                         return \in_array($v['mode'] ?? null, [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true) && !\array_key_exists('storage', $v);
                     })
                     ->then(function ($v): void {
