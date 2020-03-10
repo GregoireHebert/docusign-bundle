@@ -15,17 +15,29 @@ namespace DocusignBundle\Events;
 
 use DocusignBundle\EnvelopeBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\Event;
 
 final class PreSignEvent extends Event
 {
     private $envelopeBuilder;
     private $request;
+    private $response;
 
     public function __construct(EnvelopeBuilderInterface $envelopeBuilder, Request $request)
     {
         $this->envelopeBuilder = $envelopeBuilder;
         $this->request = $request;
+    }
+
+    public function getResponse(): ?Response
+    {
+        return $this->response;
+    }
+
+    public function setResponse(?Response $response): void
+    {
+        $this->response = $response;
     }
 
     public function getEnvelopeBuilder(): EnvelopeBuilderInterface

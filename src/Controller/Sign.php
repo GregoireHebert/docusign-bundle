@@ -39,8 +39,13 @@ final class Sign
             throw new MissingMandatoryParameterHttpException('You must define a `path` query parameter.');
         }
 
+
         try {
-            $eventDispatcher->dispatch(new PreSignEvent($this->envelopeBuilder, $request));
+            $eventDispatcher->dispatch($preSignEvent = new PreSignEvent($this->envelopeBuilder, $request));
+            if (null !== $response = $preSignEvent->getResponse()) {
+                return $response;
+            }
+
             $this->envelopeBuilder->setFile($path);
 
             return new RedirectResponse($this->envelopeBuilder->createEnvelope(), 307);
