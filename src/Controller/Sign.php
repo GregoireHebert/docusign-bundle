@@ -16,7 +16,6 @@ namespace DocusignBundle\Controller;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
-use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,12 +27,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class Sign
 {
     private $envelopeBuilder;
-    private $signatureExtractor;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, SignatureExtractor $signatureExtractor)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder)
     {
         $this->envelopeBuilder = $envelopeBuilder;
-        $this->signatureExtractor = $signatureExtractor;
     }
 
     public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
@@ -44,17 +41,7 @@ final class Sign
 
         try {
             $eventDispatcher->dispatch(new PreSignEvent($this->envelopeBuilder, $request));
-
             $this->envelopeBuilder->setFile($path);
-            $signatures = $this->signatureExtractor->getSignatures();
-
-            if (empty($signatures)) {
-                throw new \LogicException('No signatures defined. Check your `signatures` configuration and query parameter.');
-            }
-
-            foreach ($signatures as $signature) {
-                $this->envelopeBuilder->addSignatureZone($signature['page'], $signature['x_position'], $signature['y_position']);
-            }
 
             return new RedirectResponse($this->envelopeBuilder->createEnvelope(), 307);
         } catch (FileNotFoundException $exception) {

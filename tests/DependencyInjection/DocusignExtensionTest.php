@@ -139,9 +139,11 @@ class DocusignExtensionTest extends TestCase
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setAutowired(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
@@ -178,6 +180,7 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilderProphecy->register('docusign.create_document.default', EnvelopeCreator\CreateDocument::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.create_signature.default', EnvelopeCreator\CreateSignature::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.get_view_url.default', EnvelopeCreator\GetViewUrl::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.define_envelope.default', EnvelopeCreator\DefineEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.send_envelope.default', EnvelopeCreator\SendEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
@@ -199,6 +202,7 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(GrantInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateDocument::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateSignature::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\DefineEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\SendEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\GetViewUrl::class, Argument::type(Alias::class))->shouldBeCalled();
@@ -245,10 +249,12 @@ class DocusignExtensionTest extends TestCase
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setAutowired(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->addArgument(Argument::type(Reference::class))->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
@@ -257,6 +263,7 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->addTag('controller.service_arguments')->shouldBeCalled();
 
         $definitionProphecy->setDecoratedService('docusign.create_document.default')->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setDecoratedService('docusign.create_signature.default')->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setDecoratedService('docusign.define_envelope.default')->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setDecoratedService('docusign.send_envelope.default')->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setDecoratedService('docusign.get_view_url.default')->shouldBeCalled()->willReturn($definitionProphecy);
@@ -291,6 +298,7 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
 
         $containerBuilderProphecy->register('docusign.create_document.default', EnvelopeCreator\CreateDocument::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.create_signature.default', EnvelopeCreator\CreateSignature::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.get_view_url.default', EnvelopeCreator\GetViewUrl::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.define_envelope.default', EnvelopeCreator\DefineEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.send_envelope.default', EnvelopeCreator\SendEnvelope::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
@@ -300,6 +308,7 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->addTag('twig.extension')->shouldBeCalled()->willReturn($definitionProphecy->reveal());
 
         $containerBuilderProphecy->register('docusign.decorated_create_document.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->register('docusign.decorated_create_signature.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.decorated_create_recipient.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.decorated_define_envelope.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->register('docusign.decorated_send_envelope.default', EnvelopeCreator\TraceableEnvelopeBuilderCallable::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
@@ -317,6 +326,7 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias('docusign.create_recipient.default', Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeBuilderInterface::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateDocument::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateSignature::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\DefineEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\SendEnvelope::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\GetViewUrl::class, Argument::type(Alias::class))->shouldBeCalled();
