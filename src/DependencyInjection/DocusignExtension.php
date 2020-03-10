@@ -260,17 +260,17 @@ final class DocusignExtension extends Extension
     {
         // CreateSignature
         $container->register("docusign.create_signature.$name", CreateSignature::class)
-            ->setAutowired(true)
+            ->setAutowired(false)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 '$signatureExtractor' => new Reference("docusign.signature_extractor.$name"),
             ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => -1]);
+            ->addTag('docusign.envelope_builder.action', ['priority' => 0]);
 
         // CreateDocument
         $container->register("docusign.create_document.$name", CreateDocument::class)
-            ->setAutowired(true)
+            ->setAutowired(false)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),

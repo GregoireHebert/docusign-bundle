@@ -139,10 +139,11 @@ class DocusignExtensionTest extends TestCase
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setAutowired(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -1])->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
@@ -248,11 +249,12 @@ class DocusignExtensionTest extends TestCase
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
+        $definitionProphecy->setAutowired(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->addArgument(Argument::type(Reference::class))->shouldBeCalled()->willReturn($definitionProphecy);
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -1])->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
         $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
