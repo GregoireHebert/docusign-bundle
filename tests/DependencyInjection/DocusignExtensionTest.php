@@ -115,10 +115,6 @@ class DocusignExtensionTest extends TestCase
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
 
-        $containerBuilderProphecy->fileExists(Argument::type('string'))->will(function ($args) {
-            return file_exists($args[0]);
-        })->shouldBeCalled();
-
         if (method_exists(ContainerBuilder::class, 'removeBindings')) {
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
         } elseif (method_exists(ContainerBuilder::class, 'addRemovedBindingIds')) {
@@ -170,12 +166,12 @@ class DocusignExtensionTest extends TestCase
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
 
-        $containerBuilderProphecy->setDefinition('docusign.callback', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.webhook', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->register('docusign.consent.default', Consent::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(Consent::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.webhook.default', Webhook::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
+        $containerBuilderProphecy->register('docusign.callback.default', Callback::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->register('docusign.sign.default', Sign::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled();
 
@@ -221,10 +217,6 @@ class DocusignExtensionTest extends TestCase
 
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
-
-        $containerBuilderProphecy->fileExists(Argument::type('string'))->will(function ($args) {
-            return file_exists($args[0]);
-        })->shouldBeCalled();
 
         if (method_exists(ContainerBuilder::class, 'removeBindings')) {
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
@@ -287,13 +279,13 @@ class DocusignExtensionTest extends TestCase
             ->willReturn($loaderDefinitionProphecy->reveal())
             ->shouldBeCalled();
 
-        $containerBuilderProphecy->setDefinition('docusign.callback', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.webhook', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias('flysystem.adapter.default', Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
         $containerBuilderProphecy->register('docusign.consent.default', Consent::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(Consent::class, Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
+        $containerBuilderProphecy->register('docusign.webhook.default', Webhook::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
+        $containerBuilderProphecy->register('docusign.callback.default', Callback::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
         $containerBuilderProphecy->register('docusign.sign.default', Sign::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(Sign::class, Argument::type(Alias::class))->shouldBeCalled()->willReturn($aliasDefinition->reveal());
 
@@ -347,10 +339,6 @@ class DocusignExtensionTest extends TestCase
         $parameterBag = new EnvPlaceholderParameterBag();
         $containerBuilderProphecy->getParameterBag()->willReturn($parameterBag);
 
-        $containerBuilderProphecy->fileExists(Argument::type('string'))->will(function ($args) {
-            return file_exists($args[0]);
-        })->shouldBeCalled();
-
         if (method_exists(ContainerBuilder::class, 'removeBindings')) {
             $containerBuilderProphecy->removeBindings(Argument::type('string'))->will(function (): void {});
         } elseif (method_exists(ContainerBuilder::class, 'addRemovedBindingIds')) {
@@ -398,11 +386,6 @@ class DocusignExtensionTest extends TestCase
             'clientUserId' => 'c6a6b2f7-40be-4d7d-a4b1-ca438906b77e',
             'clickwrapId' => 'f5de48b3-b323-48a3-bfb1-fa375a7db67b',
         ]])->shouldBeCalled()->willReturn($definitionProphecy);
-
-        $containerBuilderProphecy->setDefinition('docusign.callback', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Callback::class, Argument::type(Alias::class))->shouldBeCalled();
-        $containerBuilderProphecy->setDefinition('docusign.webhook', Argument::type(Definition::class))->shouldBeCalled();
-        $containerBuilderProphecy->setAlias(Webhook::class, Argument::type(Alias::class))->shouldBeCalled();
 
         $containerBuilder = $containerBuilderProphecy->reveal();
 

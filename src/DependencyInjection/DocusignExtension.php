@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
+use DocusignBundle\Controller\Callback;
 use DocusignBundle\Controller\Consent;
 use DocusignBundle\Controller\Sign;
+use DocusignBundle\Controller\Webhook;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
@@ -39,13 +41,11 @@ use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class DocusignExtension extends Extension
@@ -80,9 +80,6 @@ final class DocusignExtension extends Extension
         $clickwrapExtensionDefinition = $container->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)
             ->setPublic(false)
             ->addTag('twig.extension');
-
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('controllers.xml');
 
         $default = null;
 
@@ -174,6 +171,18 @@ final class DocusignExtension extends Extension
                     '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 ])->addTag('controller.service_arguments');
 
+            $container->register("docusign.webhook.$name", Webhook::class)
+                ->setPublic(true)
+                ->setArguments([
+                    '$tokenEncoder' => new Reference("docusign.token_encoder.$name"),
+                ])->addTag('controller.service_arguments');
+
+            if (!preg_match('/^https?:\/\//', $value['callback'])) {
+                $container->register("docusign.callback.$name", Callback::class)
+                    ->setPublic(true)
+                    ->addTag('controller.service_arguments');
+            }
+
             if (!empty($value['auth_jwt'])) {
                 if (!isset(Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']])) {
                     throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
@@ -194,6 +203,8 @@ final class DocusignExtension extends Extension
 
             if (null === $default) {
                 $container->setAlias(Sign::class, new Alias("docusign.sign.$name"));
+                $container->setAlias(Webhook::class, new Alias("docusign.webhook.$name"));
+                $container->setAlias(Callback::class, new Alias("docusign.callback.$name"));
                 $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));

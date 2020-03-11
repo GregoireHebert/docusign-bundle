@@ -37,14 +37,6 @@ final class DocusignLoader extends Loader
     {
         $routeCollection = new RouteCollection();
 
-        // Load static routes: callback & webhook
-        $routeCollection->add('docusign_callback', (new Route('docusign/callback', [
-            '_controller' => 'docusign.callback',
-        ]))->setMethods('GET'));
-        $routeCollection->add('docusign_webhook', (new Route('docusign/webhook', [
-            '_controller' => 'docusign.webhook',
-        ]))->setMethods('POST'));
-
         // Load dynamic routes: sign per document
         foreach ($this->config as $name => $config) {
             if (!\in_array($config['mode'], [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true)) {
@@ -58,11 +50,22 @@ final class DocusignLoader extends Loader
                     'permanent' => true,
                     '_docusign_name' => $name,
                 ]))->setMethods('GET'));
+            } else {
+                $routeCollection->add("docusign_callback_$name", (new Route("docusign/callback/$name", [
+                    '_controller' => "docusign.callback.$name",
+                    '_docusign_name' => $name,
+                ]))->setMethods('GET'));
             }
+
             $routeCollection->add("docusign_sign_$name", (new Route($config['sign_path'], [
                 '_controller' => "docusign.sign.$name",
                 '_docusign_name' => $name,
             ]))->setMethods('GET'));
+
+            $routeCollection->add("docusign_webhook_$name", (new Route("docusign/webhook/$name", [
+                '_controller' => "docusign.webhook.$name",
+                '_docusign_name' => $name,
+            ]))->setMethods('POST'));
 
             if (!empty($config['auth_jwt'])) {
                 $routeCollection->add("docusign_consent_$name", (new Route("docusign/consent/$name", [

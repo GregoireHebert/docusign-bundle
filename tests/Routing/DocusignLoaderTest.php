@@ -56,14 +56,14 @@ final class DocusignLoaderTest extends TestCase
     {
         $routeCollection = $this->loader->load(null, 'invalid');
 
-        $this->assertNotNull($route = $routeCollection->get('docusign_callback'));
-        $this->assertEquals('/docusign/callback', $route->getPath());
-        $this->assertEquals('docusign.callback', $route->getDefault('_controller'));
+        $this->assertNotNull($route = $routeCollection->get('docusign_callback_foo'));
+        $this->assertEquals('/docusign/callback/foo', $route->getPath());
+        $this->assertEquals('docusign.callback.foo', $route->getDefault('_controller'));
         $this->assertEquals(['GET'], $route->getMethods());
 
-        $this->assertNotNull($route = $routeCollection->get('docusign_webhook'));
-        $this->assertEquals('/docusign/webhook', $route->getPath());
-        $this->assertEquals('docusign.webhook', $route->getDefault('_controller'));
+        $this->assertNotNull($route = $routeCollection->get('docusign_webhook_foo'));
+        $this->assertEquals('/docusign/webhook/foo', $route->getPath());
+        $this->assertEquals('docusign.webhook.foo', $route->getDefault('_controller'));
         $this->assertEquals(['POST'], $route->getMethods());
 
         $this->assertNotNull($route = $routeCollection->get('docusign_sign_foo'));
