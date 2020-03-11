@@ -50,10 +50,10 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->validate()
                     ->ifTrue(function ($v) {
-                        return \in_array($v['mode'] ?? null, [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true) && !\array_key_exists('auth_jwt', $v);
+                        return \in_array($v['mode'] ?? null, [EnvelopeBuilder::MODE_EMBEDDED, EnvelopeBuilder::MODE_REMOTE], true) && !(\array_key_exists('auth_jwt', $v) || \array_key_exists('auth_code', $v));
                     })
                     ->then(function ($v): void {
-                        throw new InvalidConfigurationException("The child node \"auth_jwt\" must be configured on \"$v[mode]\" mode.");
+                        throw new InvalidConfigurationException("The child node \"auth_jwt\" or \"auth_code\" must be configured on \"$v[mode]\" mode.");
                     })
                 ->end()
                 ->validate()
@@ -156,6 +156,25 @@ final class Configuration implements ConfigurationInterface
                                 ->info('Grant type to use: authorization_code or implicit.')
                                 ->cannotBeEmpty()
                                 ->defaultValue('authorization_code')
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('auth_code')
+                        // isRequired is done dynamically through global validate method
+                        ->info('Configure Authorization Code Grant: https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-code-grant')
+                        ->children()
+                            ->scalarNode('integration_key')
+                                ->isRequired()
+                                ->info('To generate your integration key, follow this documentation: https://developers.docusign.com/esign-soap-api/reference/Introduction-Changes/Integration-Keys')
+                            ->end()
+                            ->scalarNode('secret')
+                                ->isRequired()
+                                ->info('Generate your secret from DocuSign admin')
+                            ->end()
+                            ->scalarNode('strategy')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                                ->info('The service used to store the authorization_code, must be an instance of AuthorizationCodeHandlerInterface')
                             ->end()
                         ->end()
                     ->end()

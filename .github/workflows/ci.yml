@@ -102,6 +102,11 @@ jobs:
           DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
           DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
           DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
+          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
+          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
+          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
+          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
+          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
         run: vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
 
       - name: Run PHPUnit tests
@@ -110,6 +115,13 @@ jobs:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
           DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
+          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
+          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
+          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
+          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
+          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
+          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
+          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
         run: vendor/bin/phpunit --colors=always --testdox
 
       - name: Upload test artifacts

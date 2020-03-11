@@ -95,6 +95,59 @@ class ConfigurationTest extends TestCase
         ], $config);
     }
 
+    public function testItLoadsAuthCodeConfig(): void
+    {
+        $treeBuilder = $this->configuration->getConfigTreeBuilder();
+        $config = $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'mode' => 'embedded',
+                'demo' => false,
+                'auth_code' => [
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'secret' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
+                    'strategy' => 'docusign.authorization_code.fake',
+                ],
+                'account_id' => 1234567,
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'storage' => 'flysystem.adapter.name',
+                'sign_path' => '/foo/sign',
+                'enable_profiler' => false,
+            ],
+        ]);
+
+        $this->assertInstanceOf(ConfigurationInterface::class, $this->configuration);
+        $this->assertInstanceOf(TreeBuilder::class, $treeBuilder);
+
+        $this->assertEquals([
+            'default' => [
+                'mode' => 'embedded',
+                'demo' => false,
+                'auth_code' => [
+                    'integration_key' => 'e6a5e84b-8f67-4f18-ad35-2cce6a5814c6',
+                    'secret' => 'be385011-09a7-4bbf-bfb4-9f9f06f9c8d9',
+                    'strategy' => 'docusign.authorization_code.fake',
+                ],
+                'account_id' => 1234567,
+                'default_signer_name' => 'Grégoire Hébert',
+                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'api_uri' => 'https://www.docusign.net/restapi',
+                'callback' => 'docusign_callback',
+                'sign_path' => '/foo/sign',
+                'signatures_overridable' => false,
+                'signatures' => [],
+                'storage' => [
+                    'storage' => 'flysystem.adapter.name',
+                    'options' => [],
+                    'visibility' => null,
+                    'case_sensitive' => true,
+                    'disable_asserts' => false,
+                ],
+                'enable_profiler' => false,
+            ],
+        ], $config);
+    }
+
     public function testItThrowsAnErrorOnInvalidModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
@@ -113,6 +166,45 @@ class ConfigurationTest extends TestCase
         $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'demo' => true,
+            ],
+        ]);
+    }
+
+    public function testItThrowsAnErrorOnMissingAccountIdConfig(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The child node "account_id" must be configured on "embedded" mode.');
+        $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'demo' => true,
+                'mode' => 'embedded',
+            ],
+        ]);
+    }
+
+    public function testItThrowsAnErrorOnMissingSignPathConfig(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The child node "sign_path" must be configured on "embedded" mode.');
+        $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'demo' => true,
+                'mode' => 'embedded',
+                'account_id' => 12345,
+            ],
+        ]);
+    }
+
+    public function testItThrowsAnErrorOnMissingAuthConfig(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The child node "auth_jwt" or "auth_code" must be configured on "embedded" mode.');
+        $this->processor->processConfiguration($this->configuration, [
+            'docusign' => [
+                'demo' => true,
+                'mode' => 'embedded',
+                'account_id' => 12345,
+                'sign_path' => '/sign',
             ],
         ]);
     }

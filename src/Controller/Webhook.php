@@ -32,7 +32,10 @@ final class Webhook
 
     public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
     {
-        if (!$this->tokenEncoder->isTokenValid($request->query->all(), $request->query->get('_token'))) {
+        // Security
+        $parameters = $request->query->all();
+        unset($parameters['_token']);
+        if (!$this->tokenEncoder->isTokenValid($parameters, $request->query->get('_token'))) {
             throw new AccessDeniedHttpException();
         }
 

@@ -56,6 +56,7 @@ class EnvelopeBuilderTest extends TestCase
             'http://dummy-uri.tld',
             'dummyCallbackRoute',
             $mode,
+            EnvelopeBuilder::AUTH_MODE_JWT,
             'default'
         );
     }

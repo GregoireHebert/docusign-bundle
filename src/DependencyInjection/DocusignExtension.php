@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace DocusignBundle\DependencyInjection;
 
 use DocusignBundle\Adapter\AdapterDefinitionFactory;
+use DocusignBundle\Controller\AuthorizationCode;
 use DocusignBundle\Controller\Callback;
 use DocusignBundle\Controller\Consent;
 use DocusignBundle\Controller\Sign;
@@ -29,7 +30,9 @@ use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
 use DocusignBundle\EnvelopeCreator\GetViewUrl;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\EnvelopeCreator\TraceableEnvelopeBuilderCallable;
+use DocusignBundle\EventSubscriber\AuthorizationCodeEventSubscriber;
 use DocusignBundle\Exception\InvalidGrantTypeException;
+use DocusignBundle\Grant\AuthorizationCodeGrant;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
@@ -97,6 +100,9 @@ final class DocusignExtension extends Extension
 
             // Embedded/Remote mode
 
+            $auth = $value['auth_jwt'] ?? $value['auth_code'];
+            $isAuthJwt = \array_key_exists('auth_jwt', $value);
+
             // Storage (FlySystem compatibility)
             if (!isset($value['storage']['storage'])) {
                 $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
@@ -106,21 +112,51 @@ final class DocusignExtension extends Extension
             $container->register("docusign.token_encoder.$name", TokenEncoder::class)
                 ->setPublic(false)
                 ->setArguments([
-                    '$integrationKey' => $value['auth_jwt']['integration_key'],
-                    '$userGuid' => $value['auth_jwt']['user_guid'],
+                    '$integrationKey' => $auth['integration_key'],
                 ]);
 
             // Grant
-            $container->register("docusign.grant.$name", JwtGrant::class)
-                ->setAutowired(true)
-                ->setPublic(false)
-                ->setArguments([
-                    '$privateKey' => $value['auth_jwt']['private_key'],
-                    '$integrationKey' => $value['auth_jwt']['integration_key'],
-                    '$userGuid' => $value['auth_jwt']['user_guid'],
-                    '$demo' => $value['demo'],
-                    '$ttl' => $value['auth_jwt']['ttl'],
-                ]);
+            if ($isAuthJwt) {
+                $container->register("docusign.grant.$name", JwtGrant::class)
+                    ->setAutowired(true)
+                    ->setPublic(false)
+                    ->setArguments([
+                        '$privateKey' => $auth['private_key'],
+                        '$integrationKey' => $auth['integration_key'],
+                        '$userGuid' => $auth['user_guid'],
+                        '$demo' => $value['demo'],
+                        '$ttl' => $auth['ttl'],
+                    ]);
+
+                if (null === $default) {
+                    $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
+                }
+            } else {
+                $container->register("docusign.grant.$name", AuthorizationCodeGrant::class)
+                    ->setAutowired(true)
+                    ->setPublic(false)
+                    ->setArguments([
+                        '$authorizationCodeHandler' => new Reference($auth['strategy']),
+                        '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                    ]);
+
+                $container->register("docusign.event_subscriber.authorization_code.$name", AuthorizationCodeEventSubscriber::class)
+                    ->setAutowired(true)
+                    ->setPublic(false)
+                    ->setArguments([
+                        '$authorizationCodeHandler' => new Reference($auth['strategy']),
+                        '$tokenEncoder' => new Reference("docusign.token_encoder.$name"),
+                        '$integrationKey' => $auth['integration_key'],
+                        '$secret' => $auth['secret'],
+                        '$demo' => $value['demo'],
+                    ])
+                    ->addTag('kernel.event_subscriber');
+
+                if (null === $default) {
+                    $container->setAlias(AuthorizationCodeGrant::class, new Alias("docusign.grant.$name"));
+                    $container->setAlias(AuthorizationCodeEventSubscriber::class, new Alias("docusign.event_subscriber.authorization_code.$name"));
+                }
+            }
 
             $this->createActions($container, $name);
 
@@ -152,6 +188,7 @@ final class DocusignExtension extends Extension
                     '$apiUri' => $value['api_uri'],
                     '$callback' => $value['callback'],
                     '$mode' => $value['mode'],
+                    '$authMode' => $isAuthJwt ? EnvelopeBuilder::AUTH_MODE_JWT : EnvelopeBuilder::AUTH_MODE_CODE,
                     '$name' => $name,
                 ]);
 
@@ -183,21 +220,32 @@ final class DocusignExtension extends Extension
                     ->addTag('controller.service_arguments');
             }
 
-            if (!empty($value['auth_jwt'])) {
+            if ($isAuthJwt) {
                 if (!isset(Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']])) {
-                    throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. '.'Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
+                    throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
                 }
 
                 $container->register("docusign.consent.$name", Consent::class)
                     ->setPublic(true)
                     ->setArguments([
-                        '$responseType' => Consent::RESPONSE_TYPE[$value['auth_jwt']['grant_type']],
+                        '$responseType' => Consent::RESPONSE_TYPE[$auth['grant_type']],
                         '$demo' => $value['demo'],
-                        '$integrationKey' => $value['auth_jwt']['integration_key'],
+                        '$integrationKey' => $auth['integration_key'],
                     ])->addTag('controller.service_arguments');
 
                 if (null === $default) {
                     $container->setAlias(Consent::class, new Alias("docusign.consent.$name"));
+                }
+            } else {
+                $container->register("docusign.authorization_code.$name", AuthorizationCode::class)
+                    ->setPublic(true)
+                    ->setArguments([
+                        '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
+                        '$tokenEncoder' => new Reference("docusign.token_encoder.$name"),
+                    ])->addTag('controller.service_arguments');
+
+                if (null === $default) {
+                    $container->setAlias(AuthorizationCode::class, new Alias("docusign.authorization_code.$name"));
                 }
             }
 
@@ -208,7 +256,6 @@ final class DocusignExtension extends Extension
                 $container->setAlias(EnvelopeBuilderInterface::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(EnvelopeBuilder::class, new Alias("docusign.envelope_builder.$name"));
                 $container->setAlias(SignatureExtractor::class, new Alias("docusign.signature_extractor.$name"));
-                $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(GrantInterface::class, new Alias("docusign.grant.$name"));
                 $container->setAlias(CreateDocument::class, new Alias("docusign.create_document.$name"));
                 $container->setAlias(CreateSignature::class, new Alias("docusign.create_signature.$name"));

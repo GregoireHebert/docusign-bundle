@@ -35,8 +35,10 @@ final class DocumentsController
     }
 
     /**
-     * @Route("/embedded", name="embedded", methods={"GET"}, defaults={"mode"="embedded", "route_name"="docusign_sign_default"})
-     * @Route("/remote", name="remote", methods={"GET"}, defaults={"mode"="remote", "route_name"="docusign_sign_remote"})
+     * @Route("/embedded_auth_code", name="embedded_auth_code", methods={"GET"}, defaults={"mode"="embedded", "auth"="AuthorizationCode", "route_name"="docusign_sign_embedded_auth_code"})
+     * @Route("/remote_auth_code", name="remote_auth_code", methods={"GET"}, defaults={"mode"="remote", "auth"="AuthorizationCode", "route_name"="docusign_sign_remote_auth_code"})
+     * @Route("/embedded", name="embedded", methods={"GET"}, defaults={"mode"="embedded", "auth"="JWT", "route_name"="docusign_sign_default"})
+     * @Route("/remote", name="remote", methods={"GET"}, defaults={"mode"="remote", "auth"="JWT", "route_name"="docusign_sign_remote"})
      */
     public function __invoke(Request $request, Environment $twig): Response
     {
@@ -44,27 +46,30 @@ final class DocumentsController
             'documents' => $this->getDocuments("$this->kernelProjectDir/var/storage"),
             'route_name' => $request->attributes->get('route_name'),
             'mode' => $request->attributes->get('mode'),
+            'auth' => $request->attributes->get('auth'),
         ]));
     }
 
     /**
-     * @Route("/embedded/callback", name="embedded_callback", methods={"GET"})
+     * @Route("/embedded/callback", name="embedded_callback", methods={"GET"}, defaults={"redirect"="embedded"})
+     * @Route("/embedded_auth_code/callback", name="embedded_auth_code_callback", methods={"GET"}, defaults={"redirect"="embedded_auth_code"})
      */
-    public function embeddedCallbackAction(RouterInterface $router, Session $session): RedirectResponse
+    public function embeddedCallbackAction(Request $request, RouterInterface $router, Session $session): RedirectResponse
     {
         $session->getFlashBag()->add('success', 'The document has been successfully signed!');
 
-        return new RedirectResponse($router->generate('embedded'));
+        return new RedirectResponse($router->generate($request->attributes->get('redirect')));
     }
 
     /**
-     * @Route("/remote/callback", name="remote_callback", methods={"GET"})
+     * @Route("/remote/callback", name="remote_callback", methods={"GET"}, defaults={"redirect"="remote"})
+     * @Route("/remote_auth_code/callback", name="remote_auth_code_callback", methods={"GET"}, defaults={"redirect"="remote_auth_code"})
      */
-    public function remoteCallbackAction(RouterInterface $router, Session $session): RedirectResponse
+    public function remoteCallbackAction(Request $request, RouterInterface $router, Session $session): RedirectResponse
     {
         $session->getFlashBag()->add('success', 'The document has been successfully sent to the signer!');
 
-        return new RedirectResponse($router->generate('remote'));
+        return new RedirectResponse($router->generate($request->attributes->get('redirect')));
     }
 
     private function getDocuments($path): array
