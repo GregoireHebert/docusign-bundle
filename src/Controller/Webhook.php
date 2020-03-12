@@ -23,9 +23,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Webhook
 {
-    public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger, TokenEncoderInterface $tokenEncoder): Response
+    private $tokenEncoder;
+
+    public function __construct(TokenEncoderInterface $tokenEncoder)
     {
-        if (!$tokenEncoder->isTokenValid($request->query->all(), $request->query->get('_token'))) {
+        $this->tokenEncoder = $tokenEncoder;
+    }
+
+    public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger): Response
+    {
+        if (!$this->tokenEncoder->isTokenValid($request->query->all(), $request->query->get('_token'))) {
             throw new AccessDeniedHttpException();
         }
 

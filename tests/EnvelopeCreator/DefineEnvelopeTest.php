@@ -52,7 +52,7 @@ class DefineEnvelopeTest extends TestCase
             Argument::which('getStatus', 'sent')
         ))->shouldBeCalled();
 
-        $this->routerProphecyMock->generate('docusign_webhook', ['parameter' => 'value'], Router::ABSOLUTE_URL)->shouldBeCalled();
+        $this->routerProphecyMock->generate('docusign_webhook_default', ['parameter' => 'value'], Router::ABSOLUTE_URL)->shouldBeCalled();
 
         $this->translatorProphecyMock->trans(Argument::type('string'), [], DocusignBundle::TRANSLATION_DOMAIN)->shouldBeCalled()->willReturn(DefineEnvelope::EMAIL_SUBJECT);
 

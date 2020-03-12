@@ -61,11 +61,10 @@ XML
 
         $this->eventDispatcherProphecy->dispatch(Argument::type(CompletedEvent::class))->shouldBeCalled();
 
-        $response = (new Webhook())(
+        $response = (new Webhook($this->tokenEncoderProphecy->reveal()))(
             $this->requestProphecy->reveal(),
             $this->eventDispatcherProphecy->reveal(),
-            $this->loggerProphecy->reveal(),
-            $this->tokenEncoderProphecy->reveal()
+            $this->loggerProphecy->reveal()
         );
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(202, $response->getStatusCode());
@@ -84,11 +83,10 @@ XML
 
         $this->expectException(AccessDeniedHttpException::class);
 
-        (new Webhook())(
+        (new Webhook($this->tokenEncoderProphecy->reveal()))(
             $this->requestProphecy->reveal(),
             $this->eventDispatcherProphecy->reveal(),
-            $this->loggerProphecy->reveal(),
-            $this->tokenEncoderProphecy->reveal()
+            $this->loggerProphecy->reveal()
         );
     }
 }

@@ -25,7 +25,6 @@ use Symfony\Component\Routing\RouterInterface;
 final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAwareInterface
 {
     public const EMAIL_SUBJECT = 'Please sign this document';
-    public const WEBHOOK_ROUTE_NAME = 'docusign_webhook';
 
     use TranslatorAwareTrait;
 
@@ -78,7 +77,7 @@ final class DefineEnvelope implements EnvelopeBuilderCallableInterface, Translat
         $this->envelopeBuilder->addWebhookParameter('_token', $this->tokenEncoder->encode($this->envelopeBuilder->getWebhookParameters()));
 
         $eventNotification = new Model\EventNotification();
-        $eventNotification->setUrl($this->router->generate(self::WEBHOOK_ROUTE_NAME, $this->envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
+        $eventNotification->setUrl($this->router->generate('docusign_webhook_'.$this->envelopeBuilder->getName(), $this->envelopeBuilder->getWebhookParameters(), Router::ABSOLUTE_URL));
         $eventNotification->setLoggingEnabled('true');
         $eventNotification->setRequireAcknowledgment('true');
         $eventNotification->setUseSoapInterface('false');
