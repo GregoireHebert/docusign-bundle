@@ -1,6 +1,8 @@
 services:
   docusign.storage:
     class: \stdClass
+  docusign.authorization_code.fake:
+    class: \stdClass
 
 docusign:
   embedded:
@@ -58,3 +60,47 @@ docusign:
       clickwrap_id: 'ee54b24f-eabf-420d-b628-51edd78669dd'
       user_guid: '8fa60e09-0cb8-40ca-af5d-3e25f62e262b'
     api_uri: 'https://eu.docusign.net/restapi'
+
+  embedded_auth_code:
+    demo: true
+    enable_profiler: true
+    mode: embedded
+    auth_code:
+      integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
+      secret: 'f9b3684f-9373-4736-98af-0d8b3850f036'
+      strategy: docusign.authorization_code.fake
+    account_id: 1234567
+    default_signer_name: 'Grégoire Hébert'
+    default_signer_email: 'gregoire@les-tilleuls.coop'
+    api_uri: 'https://eu.docusign.net/restapi'
+    callback: 'docusign_callback'
+    sign_path: '/foo/sign'
+    signatures_overridable: false
+    signatures:
+      default_document_type:
+        - page: 1
+          x_position: 200
+          y_position: 400
+    storage: 'docusign.storage'
+
+  remote_auth_code:
+    demo: true
+    enable_profiler: true
+    mode: remote
+    auth_code:
+      integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
+      secret: 'f9b3684f-9373-4736-98af-0d8b3850f036'
+      strategy: docusign.authorization_code.fake
+    account_id: 1234567
+    default_signer_name: 'Grégoire Hébert'
+    default_signer_email: 'gregoire@les-tilleuls.coop'
+    api_uri: 'https://eu.docusign.net/restapi'
+    callback: 'docusign_callback'
+    sign_path: '/foo/sign'
+    signatures_overridable: false
+    signatures:
+      default_document_type:
+        - page: 1
+          x_position: 200
+          y_position: 400
+    storage: 'docusign.storage'

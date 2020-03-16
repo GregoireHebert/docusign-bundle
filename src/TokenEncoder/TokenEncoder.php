@@ -19,29 +19,23 @@ namespace DocusignBundle\TokenEncoder;
 final class TokenEncoder implements TokenEncoderInterface
 {
     private $integrationKey;
-    private $userGuid;
 
-    public function __construct(string $integrationKey, string $userGuid)
+    public function __construct(string $integrationKey)
     {
         $this->integrationKey = $integrationKey;
-        $this->userGuid = $userGuid;
     }
 
     public function encode(array $parameters): string
     {
         return password_hash(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
-            'user_guid' => $this->userGuid,
         ]), PASSWORD_DEFAULT);
     }
 
     public function isTokenValid(array $parameters, ?string $token): bool
     {
-        unset($parameters['_token']);
-
         return !empty($token) && password_verify(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
-            'user_guid' => $this->userGuid,
         ]), $token);
     }
 }

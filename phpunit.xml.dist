@@ -13,9 +13,6 @@
         <env name="APP_DEBUG" value="false" />
         <env name="KERNEL_DIR" value="features/" />
         <env name="KERNEL_CLASS" value="Kernel" />
-        <env name="DOCUSIGN_INTEGRATION_KEY" value="c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b" />
-        <env name="DOCUSIGN_USER_GUID" value="4003ab5e-c21f-4738-9469-e7d736e10b90" />
-        <env name="DOCUSIGN_ACCOUNT_ID" value="1234567" />
         <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
         <server name="PANTHER_NO_SANDBOX" value="1" />
     </php>

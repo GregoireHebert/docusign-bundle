@@ -43,7 +43,7 @@ final class DocusignLoader extends Loader
                 continue;
             }
 
-            if (preg_match('/^https?:\/\//', $config['callback'])) {
+            if (preg_match('/^https?:\/\//', $config['callback'] ?? '')) {
                 $routeCollection->add("docusign_callback_$name", (new Route("docusign/callback/$name", [
                     '_controller' => 'FrameworkBundle:Redirect:urlRedirect',
                     'path' => $config['callback'],
@@ -70,6 +70,11 @@ final class DocusignLoader extends Loader
             if (!empty($config['auth_jwt'])) {
                 $routeCollection->add("docusign_consent_$name", (new Route("docusign/consent/$name", [
                     '_controller' => "docusign.consent.$name",
+                    '_docusign_name' => $name,
+                ]))->setMethods('GET'));
+            } elseif (!empty($config['auth_code'])) {
+                $routeCollection->add("docusign_authorization_code_$name", (new Route("docusign/authorization_code/$name", [
+                    '_controller' => "docusign.authorization_code.$name",
                     '_docusign_name' => $name,
                 ]))->setMethods('GET'));
             }

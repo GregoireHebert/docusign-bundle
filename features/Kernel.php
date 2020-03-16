@@ -11,6 +11,7 @@
 
 declare(strict_types=1);
 
+use DocusignBundle\E2e\TestBundle\AuthorizationHandler\SessionAuthorizationHandler;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\FlysystemBundle\FlysystemBundle;
@@ -149,8 +150,30 @@ final class Kernel extends BaseKernel
                 'sign_path' => '/embedded/sign',
                 'callback' => 'embedded_callback',
                 'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
-                'default_signer_name' => 'Grégoire Hébert',
-                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'default_signer_name' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_NAME'],
+                'default_signer_email' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_EMAIL'],
+                'signatures' => [
+                    [
+                        'page' => 1,
+                        'x_position' => 200,
+                        'y_position' => 400,
+                    ],
+                ],
+                'storage' => 'docusign.storage',
+            ],
+            'embedded_auth_code' => [
+                'demo' => true,
+                'mode' => 'embedded',
+                'auth_code' => [
+                    'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
+                    'secret' => $_SERVER['DOCUSIGN_SECRET'],
+                    'strategy' => SessionAuthorizationHandler::class,
+                ],
+                'sign_path' => '/embedded_auth_code/sign',
+                'callback' => 'embedded_auth_code_callback',
+                'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
+                'default_signer_name' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_NAME'],
+                'default_signer_email' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_EMAIL'],
                 'signatures' => [
                     [
                         'page' => 1,
@@ -172,8 +195,30 @@ final class Kernel extends BaseKernel
                 'sign_path' => '/remote/sign',
                 'callback' => 'remote_callback',
                 'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
-                'default_signer_name' => 'Grégoire Hébert',
-                'default_signer_email' => 'gregoire@les-tilleuls.coop',
+                'default_signer_name' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_NAME'],
+                'default_signer_email' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_EMAIL'],
+                'signatures' => [
+                    [
+                        'page' => 1,
+                        'x_position' => 200,
+                        'y_position' => 400,
+                    ],
+                ],
+                'storage' => 'docusign.storage',
+            ],
+            'remote_auth_code' => [
+                'demo' => true,
+                'mode' => 'remote',
+                'auth_code' => [
+                    'integration_key' => $_SERVER['DOCUSIGN_INTEGRATION_KEY'],
+                    'secret' => $_SERVER['DOCUSIGN_SECRET'],
+                    'strategy' => SessionAuthorizationHandler::class,
+                ],
+                'sign_path' => '/remote_auth_code/sign',
+                'callback' => 'remote_auth_code_callback',
+                'account_id' => (int) $_SERVER['DOCUSIGN_ACCOUNT_ID'],
+                'default_signer_name' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_NAME'],
+                'default_signer_email' => $_SERVER['DOCUSIGN_DEFAULT_SIGNER_EMAIL'],
                 'signatures' => [
                     [
                         'page' => 1,

@@ -28,7 +28,7 @@ final class TokenEncoderTest extends TestCase
             'lorem' => 'ipsum',
         ];
 
-        $tokenEncoder = new TokenEncoder('foo', 'bar');
+        $tokenEncoder = new TokenEncoder('foo');
 
         $this->assertTrue($tokenEncoder->isTokenValid($parameters, $tokenEncoder->encode($parameters)));
     }

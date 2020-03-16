@@ -40,7 +40,11 @@ final class Sign
         }
 
         try {
-            $eventDispatcher->dispatch(new PreSignEvent($this->envelopeBuilder, $request));
+            $eventDispatcher->dispatch($preSignEvent = new PreSignEvent($this->envelopeBuilder, $request));
+            if (null !== $response = $preSignEvent->getResponse()) {
+                return $response;
+            }
+
             $this->envelopeBuilder->setFile($path);
 
             return new RedirectResponse($this->envelopeBuilder->createEnvelope(), 307);

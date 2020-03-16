@@ -43,6 +43,8 @@ interface EnvelopeBuilderInterface
 
     public function getMode(): string;
 
+    public function getAuthMode(): string;
+
     public function getEnvelopesApi(): ?EnvelopesApi;
 
     public function reset(): void;

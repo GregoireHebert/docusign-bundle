@@ -26,6 +26,8 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public const MODE_REMOTE = 'remote';
     public const MODE_EMBEDDED = 'embedded';
     public const MODE_CLICKWRAP = 'clickwrap';
+    public const AUTH_MODE_JWT = 'jwt';
+    public const AUTH_MODE_CODE = 'code';
 
     /** @var int */
     private $accountId;
@@ -65,6 +67,8 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     private $webhookParameters = [];
     /** @var string */
     private $mode;
+    /** @var string */
+    private $authMode;
     /** @var int */
     private $signatureNo = 1;
     /** @var EnvelopeCreatorInterface */
@@ -82,6 +86,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         string $apiUri,
         string $callback,
         string $mode,
+        string $authMode,
         string $name
     ) {
         $this->envelopeCreator = $envelopeCreator;
@@ -95,6 +100,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->callback = $callback;
 
         $this->mode = $mode;
+        $this->authMode = $authMode;
         $this->name = $name;
 
         $this->docReference = time();
@@ -205,6 +211,11 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     public function getMode(): string
     {
         return $this->mode;
+    }
+
+    public function getAuthMode(): string
+    {
+        return $this->authMode;
     }
 
     public function reset(): void
