@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="docusign.route_loader" class="DocusignBundle\Routing\DocusignLoader" public="false">
+            <argument type="collection"/> <!-- config -->
+            <tag name="routing.loader"/>
+        </service>
+
+        <service id="docusign.twig.extension.clickwrap" class="DocusignBundle\Twig\Extension\ClickwrapExtension" public="false">
+            <tag name="twig.extension"/>
+        </service>
+
+        <service id="docusign.token_encoder" class="DocusignBundle\TokenEncoder\TokenEncoder" public="false" abstract="true"/>
+
+        <service id="docusign.envelope_creator" class="DocusignBundle\EnvelopeCreator\EnvelopeCreator" public="false" abstract="true">
+            <argument type="service" id="router"/>
+            <argument type="service" id="logger"/>
+            <argument/> <!-- signatureName -->
+            <argument type="tagged_iterator" tag="docusign.envelope_builder.action"/>
+            <tag name="docusign.envelope_creator"/>
+        </service>
+
+        <service id="docusign.signature_extractor" class="DocusignBundle\Utils\SignatureExtractor" public="false" abstract="true">
+            <argument type="service" id="request_stack"/>
+            <argument/> <!-- isOverridable -->
+            <argument type="collection"/> <!-- signatures -->
+        </service>
+    </services>
+</container>

@@ -35,20 +35,19 @@ use DocusignBundle\Exception\InvalidGrantTypeException;
 use DocusignBundle\Grant\AuthorizationCodeGrant;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
-use DocusignBundle\Routing\DocusignLoader;
-use DocusignBundle\TokenEncoder\TokenEncoder;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
-use DocusignBundle\Twig\Extension\ClickwrapExtension;
 use DocusignBundle\Utils\SignatureExtractor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
 use League\FlysystemBundle\FlysystemBundle;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class DocusignExtension extends Extension
@@ -60,6 +59,9 @@ final class DocusignExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
         if (!class_exists(FlysystemBundle::class)) {
             $container
@@ -75,14 +77,9 @@ final class DocusignExtension extends Extension
             ->registerForAutoconfiguration(TranslatorAwareInterface::class)
             ->addTag('docusign.translator.aware');
 
-        $container->register('docusign.route_loader', DocusignLoader::class)
-            ->setArgument('$config', $config)
-            ->setPublic(false)
-            ->addTag('routing.loader');
+        $container->getDefinition('docusign.route_loader')->setArgument('$config', $config);
 
-        $clickwrapExtensionDefinition = $container->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)
-            ->setPublic(false)
-            ->addTag('twig.extension');
+        $clickwrapExtensionDefinition = $container->getDefinition('docusign.twig.extension.clickwrap');
 
         $default = null;
 
@@ -109,17 +106,16 @@ final class DocusignExtension extends Extension
             }
 
             // Token encoder
-            $container->register("docusign.token_encoder.$name", TokenEncoder::class)
-                ->setPublic(false)
+            $container
+                ->setDefinition("docusign.token_encoder.$name", new ChildDefinition('docusign.token_encoder'))
                 ->setArguments([
                     '$integrationKey' => $auth['integration_key'],
                 ]);
 
             // Grant
             if ($isAuthJwt) {
-                $container->register("docusign.grant.$name", JwtGrant::class)
-                    ->setAutowired(true)
-                    ->setPublic(false)
+                $container
+                    ->register("docusign.grant.$name", JwtGrant::class)
                     ->setArguments([
                         '$privateKey' => $auth['private_key'],
                         '$integrationKey' => $auth['integration_key'],
@@ -132,7 +128,8 @@ final class DocusignExtension extends Extension
                     $container->setAlias(JwtGrant::class, new Alias("docusign.grant.$name"));
                 }
             } else {
-                $container->register("docusign.grant.$name", AuthorizationCodeGrant::class)
+                $container
+                    ->register("docusign.grant.$name", AuthorizationCodeGrant::class)
                     ->setAutowired(true)
                     ->setPublic(false)
                     ->setArguments([
@@ -140,7 +137,8 @@ final class DocusignExtension extends Extension
                         '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                     ]);
 
-                $container->register("docusign.event_subscriber.authorization_code.$name", AuthorizationCodeEventSubscriber::class)
+                $container
+                    ->register("docusign.event_subscriber.authorization_code.$name", AuthorizationCodeEventSubscriber::class)
                     ->setAutowired(true)
                     ->setPublic(false)
                     ->setArguments([
@@ -165,19 +163,15 @@ final class DocusignExtension extends Extension
             }
 
             // EnvelopeCreator
-            $container->register("docusign.envelope_creator.$name", EnvelopeCreator::class)
-                ->setAutowired(true)
-                ->setPublic(false)
+            $container
+                ->setDefinition("docusign.envelope_creator.$name", new ChildDefinition('docusign.envelope_creator'))
                 ->setArguments([
-                    '$actions' => new TaggedIteratorArgument('docusign.envelope_builder.action'),
                     '$signatureName' => $name,
-                ])
-                ->addTag('docusign.envelope_creator');
+                ]);
 
             // Envelope builder
-            $container->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
-                ->setAutowired(true)
-                ->setPublic(false)
+            $container
+                ->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
                 ->setArguments([
                     '$storage' => new Reference($value['storage']['storage']),
                     '$envelopeCreator' => new Reference("docusign.envelope_creator.$name"),
@@ -193,17 +187,16 @@ final class DocusignExtension extends Extension
                 ]);
 
             // Signature extractor
-            $container->register("docusign.signature_extractor.$name", SignatureExtractor::class)
-                ->setAutowired(true)
-                ->setPublic(false)
+            $container
+                ->setDefinition("docusign.signature_extractor.$name", new ChildDefinition('docusign.signature_extractor'))
                 ->setArguments([
                     '$isOverridable' => $value['signatures_overridable'],
                     '$signatures' => $value['signatures'],
                 ]);
 
             // Update Sign controller
-            $container->register("docusign.sign.$name", Sign::class)
-                ->setPublic(true)
+            $container
+                ->register("docusign.sign.$name", Sign::class)
                 ->setArguments([
                     '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 ])->addTag('controller.service_arguments');
@@ -225,7 +218,8 @@ final class DocusignExtension extends Extension
                     throw new InvalidGrantTypeException('Grant type '.$value['auth_jwt']['grant_type'].' is not valid. Please select one of the followings: '.implode(', ', array_keys(Consent::RESPONSE_TYPE)));
                 }
 
-                $container->register("docusign.consent.$name", Consent::class)
+                $container
+                    ->register("docusign.consent.$name", Consent::class)
                     ->setPublic(true)
                     ->setArguments([
                         '$responseType' => Consent::RESPONSE_TYPE[$auth['grant_type']],
@@ -317,51 +311,51 @@ final class DocusignExtension extends Extension
     private function createActions(ContainerBuilder $container, string $name): void
     {
         // CreateSignature
-        $container->register("docusign.create_signature.$name", CreateSignature::class)
+        $container
+            ->register("docusign.create_signature.$name", CreateSignature::class)
             ->setAutowired(false)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 '$signatureExtractor' => new Reference("docusign.signature_extractor.$name"),
-            ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => 0]);
+            ])->addTag('docusign.envelope_builder.action', ['priority' => 0]);
 
         // CreateDocument
-        $container->register("docusign.create_document.$name", CreateDocument::class)
+        $container
+            ->register("docusign.create_document.$name", CreateDocument::class)
             ->setAutowired(false)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-            ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => -2]);
+            ])->addTag('docusign.envelope_builder.action', ['priority' => -2]);
 
         // DefineEnvelope
-        $container->register("docusign.define_envelope.$name", DefineEnvelope::class)
+        $container
+            ->register("docusign.define_envelope.$name", DefineEnvelope::class)
             ->setAutowired(true)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 '$tokenEncoder' => new Reference("docusign.token_encoder.$name"),
-            ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => -4]);
+            ])->addTag('docusign.envelope_builder.action', ['priority' => -4]);
 
-        $container->register("docusign.send_envelope.$name", SendEnvelope::class)
+        $container
+            ->register("docusign.send_envelope.$name", SendEnvelope::class)
             ->setAutowired(true)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
                 '$grant' => new Reference("docusign.grant.$name"),
-            ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => -8]);
+            ])->addTag('docusign.envelope_builder.action', ['priority' => -8]);
 
         // GetViewUrl
-        $container->register("docusign.get_view_url.$name", GetViewUrl::class)
+        $container
+            ->register("docusign.get_view_url.$name", GetViewUrl::class)
             ->setAutowired(true)
             ->setPublic(false)
             ->setArguments([
                 '$envelopeBuilder' => new Reference("docusign.envelope_builder.$name"),
-            ])
-            ->addTag('docusign.envelope_builder.action', ['priority' => -16]);
+            ])->addTag('docusign.envelope_builder.action', ['priority' => -16]);
         $container->setAlias("docusign.create_recipient.$name", new Alias("docusign.get_view_url.$name"));
     }
 
