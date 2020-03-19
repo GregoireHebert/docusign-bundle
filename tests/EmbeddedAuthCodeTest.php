@@ -91,7 +91,7 @@ final class EmbeddedAuthCodeTest extends PantherTestCase
         $client->clickLink('dummy.pdf');
         $crawler = $client->waitFor('#action-bar-btn-continue');
 
-        if ($crawler->filter('#disclosureAccepted')->isDisplayed()) {
+        if ($crawler->filter('#disclosureAccepted')->count() && $crawler->filter('#disclosureAccepted')->isDisplayed()) {
             $crawler->filter('label[for=disclosureAccepted]')->click();
         }
 
@@ -100,7 +100,7 @@ final class EmbeddedAuthCodeTest extends PantherTestCase
 
         // Wait for "Comment tooltip" button (optional use-case)
         sleep(1);
-        if ($crawler->filter('#comments-tooltip-btn-ok')->isDisplayed()) {
+        if ($crawler->filter('#comments-tooltip-btn-ok')->count() && $crawler->filter('#comments-tooltip-btn-ok')->isDisplayed()) {
             $crawler->filter('#comments-tooltip-btn-ok')->click();
         }
 
