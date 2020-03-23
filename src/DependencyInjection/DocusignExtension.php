@@ -103,6 +103,10 @@ final class DocusignExtension extends Extension
             $auth = $value['auth_jwt'] ?? $value['auth_code'];
             $isAuthJwt = \array_key_exists('auth_jwt', $value);
 
+            if (empty($value['callback'])) {
+                $value['callback'] = "docusign_callback_$name";
+            }
+
             // Storage (FlySystem compatibility)
             if (!isset($value['storage']['storage'])) {
                 $value['storage']['storage'] = $this->flySystemCompatibility($container, $name, $value['storage']);
