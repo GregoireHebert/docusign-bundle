@@ -24,10 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class ConsentTest extends TestCase
 {
-    /**
-     * @dataProvider getData
-     */
-    public function testItRedirectsToValidUri(string $responseType, string $expected): void
+    public function testItRedirectsToValidUri(): void
     {
         /** @var Request|ObjectProphecy $requestMock */
         $requestMock = $this->prophesize(Request::class);
@@ -35,19 +32,10 @@ final class ConsentTest extends TestCase
 
         $consent = new Consent(
             true,
-            'c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b',
-            $responseType
+            'c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b'
         );
         $response = $consent($requestMock->reveal());
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals($expected, $response->getTargetUrl());
-    }
-
-    public function getData(): array
-    {
-        return [
-            ['code', Consent::DEMO_CONSENT_URI.'?response_type=code&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com'],
-            ['token', Consent::DEMO_CONSENT_URI.'?response_type=token&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com'],
-        ];
+        $this->assertEquals(Consent::DEMO_CONSENT_URI.'?response_type=code&scope=signature%20impersonation&client_id=c3b2d475-2cbd-47f5-a903-9b3aa0fefe5b&redirect_uri=https://www.example.com', $response->getTargetUrl());
     }
 }
