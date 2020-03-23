@@ -13,7 +13,6 @@ docusign:
       private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
       integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
       user_guid: '8fa60e09-0cb8-40ca-af5d-3e25f62e262b'
-      grant_type: authorization_code
     account_id: 1234567
     default_signer_name: 'Grégoire Hébert'
     default_signer_email: 'gregoire@les-tilleuls.coop'
@@ -36,7 +35,6 @@ docusign:
       private_key: '%kernel.project_dir%/var/jwt/docusign.pem'
       integration_key: 'ee54b24f-eabf-420d-b628-51edd78669dd'
       user_guid: '8fa60e09-0cb8-40ca-af5d-3e25f62e262b'
-      grant_type: authorization_code
     account_id: 1234567
     default_signer_name: 'Grégoire Hébert'
     default_signer_email: 'gregoire@les-tilleuls.coop'
