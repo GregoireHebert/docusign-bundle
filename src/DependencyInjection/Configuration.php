@@ -107,7 +107,6 @@ final class Configuration implements ConfigurationInterface
                     ->scalarNode('callback')
                         ->info('Where does DocuSign redirect the user after the document has been signed. Use a route name')
                         ->cannotBeEmpty()
-                        ->defaultValue('docusign_callback')
                     ->end()
                     ->scalarNode('sign_path')
                         ->info('The url of the sign process.')

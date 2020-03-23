@@ -31,7 +31,7 @@ docusign:
 
     api_uri: "https://www.docusign.net/restapi" # DocuSign api uri
 
-    callback: "docusign_callback" # Your route where to redirect the user after signature
+    callback: "docusign_callback_default" # Your route where to redirect the user after signature
 
     # To sign you need to generate a route to call.
     # The route name will be formated `docusign.sign.{signaturename}` for this one it will be `docusign.sign.my_embedded_signature` and will have `my_embedded_signature` as attribute type

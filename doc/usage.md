@@ -31,12 +31,12 @@ If you have a clickwrap signature:
 
 **Embedded signature**
 - You'll get redirected to DocuSign website.
-- DocuSign will redirect you to `docusign_callback` route.
-- DocuSign will asynchronously send the result to `docusign_webhook` route.
+- DocuSign will redirect you to `docusign_callback_default` route.
+- DocuSign will asynchronously send the result to `docusign_webhook_default` route.
 
 **Remote signature**
-- You'll get redirected to `docusign_callback` route.
-- DocuSign will asynchronously send the result to `docusign_webhook` route.
+- You'll get redirected to `docusign_callback_default` route.
+- DocuSign will asynchronously send the result to `docusign_webhook_default` route.
 
 **Clickwrap signature**
 - DocuSign will show an iframe to sign the document by a single click.
