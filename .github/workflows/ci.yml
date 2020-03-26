@@ -11,7 +11,7 @@ env:
 
 jobs:
   tests:
-    name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }}
+    name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }} (Symfony ${{ matrix.symfony }})
     runs-on: ubuntu-latest
     container:
       image: php:${{ matrix.php }}
@@ -24,6 +24,9 @@ jobs:
           - '7.2'
           - '7.3'
           - '7.4'
+        symfony:
+          - '4.4.*'
+          - '5.0.*'
         include:
           - php: '7.4'
             coverage: true
@@ -66,23 +69,28 @@ jobs:
       - name: Install Composer
         run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
 
+      - name: Configure Symfony
+        run: |
+          composer global require symfony/flex
+          composer config extra.symfony.require "${{ matrix.symfony }}"
+
       - name: Update project dependencies
         if: matrix.dependency == ''
-        run: php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi
+        run: php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi --prefer-stable
 
       - name: Update project dependencies lowest
         if: matrix.dependency == 'lowest'
         run: |
           php -d memory_limit=-1 `which composer` remove --dev --no-progress --no-update --ansi league/flysystem-bundle
-          php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi --prefer-lowest
+          php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi --prefer-stable --prefer-lowest
 
       - name: Run phpstan tests
         if: matrix.dependency == ''
-        run: vendor/bin/phpstan analyze
+        run: php -d memory_limit=-1 vendor/bin/phpstan analyze
 
       - name: Run phpstan tests lowest
         if: matrix.dependency == 'lowest'
-        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
+        run: php -d memory_limit=-1 vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
 
       - name: Run php-cs-fixer tests
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
