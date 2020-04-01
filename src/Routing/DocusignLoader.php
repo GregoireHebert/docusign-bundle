@@ -65,7 +65,7 @@ final class DocusignLoader extends Loader
             $routeCollection->add("docusign_webhook_$name", (new Route("docusign/webhook/$name", [
                 '_controller' => "docusign.webhook.$name",
                 '_docusign_name' => $name,
-            ]))->setMethods('POST'));
+            ]))->setMethods('POST')->setSchemes(['https']));
 
             if (!empty($config['auth_jwt'])) {
                 $routeCollection->add("docusign_consent_$name", (new Route("docusign/consent/$name", [

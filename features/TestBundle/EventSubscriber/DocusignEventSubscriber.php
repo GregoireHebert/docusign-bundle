@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace DocusignBundle\E2e\TestBundle\EventSubscriber;
 
 use DocusignBundle\Events\AuthorizationCodeEvent;
+use DocusignBundle\Events\CompletedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -37,6 +38,7 @@ final class DocusignEventSubscriber implements EventSubscriberInterface
     {
         return [
             AuthorizationCodeEvent::class => 'onAuthorizationCode',
+            CompletedEvent::class => 'onDocumentSigned',
         ];
     }
 
@@ -44,5 +46,11 @@ final class DocusignEventSubscriber implements EventSubscriberInterface
     {
         $this->session->getFlashBag()->add('success', 'Authorization has been granted! You can now sign the document.');
         $event->setResponse(new RedirectResponse($this->router->generate($event->getEnvelopeBuilder()->getName())));
+    }
+
+    public function onDocumentSigned(CompletedEvent $event): void
+    {
+        $document = $event->getData()->DocumentPDFs->DocumentPDF[0];
+        file_put_contents('completed.pdf', base64_decode($document->PDFBytes->__toString(), true));
     }
 }

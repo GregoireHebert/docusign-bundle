@@ -74,7 +74,6 @@ final class Kernel extends BaseKernel
         if ($this->isDebug()) {
             $routes->import('@WebProfilerBundle/Resources/config/routing/wdt.xml', '/_wdt');
             $routes->import('@WebProfilerBundle/Resources/config/routing/profiler.xml', '/_profiler');
-            $routes->import('@TwigBundle/Resources/config/routing/errors.xml', '/_error');
         }
 
         $routes->import('.', '/', 'docusign');
@@ -131,6 +130,8 @@ final class Kernel extends BaseKernel
                 ],
             ],
             'access_control' => [
+                ['path' => '^/docusign/webhook/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/docusign/authorization_code/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
                 ['path' => '^/login$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
                 ['path' => '^/$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
                 ['path' => '^/', 'roles' => 'IS_AUTHENTICATED_FULLY'],

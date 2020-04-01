@@ -51,6 +51,20 @@ docusign:
             directory: '%kernel.project_dir%/var/storage/default'
 ```
 
+## Configure your application security
+
+DocuSign app need to call some urls publicly, but don't worry there is an internal security on those routes:
+
+```yml
+# config/packages/security.yml
+
+security:
+    # ...
+    access_control:
+        - { path: ^/docusign/webhook/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/docusign/authorization_code/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+```
+
 ## Testing configuration
 
 When set to true, it uses the demo url for DocuSign api_uri.
