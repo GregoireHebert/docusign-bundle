@@ -24,8 +24,8 @@ final class TokenEncoderTest extends TestCase
     public function testItChecksIfTheTokenIsValid(): void
     {
         $parameters = [
-            'foo' => 'bar',
             'lorem' => 'ipsum',
+            'foo' => 'bar',
         ];
 
         $tokenEncoder = new TokenEncoder('foo');

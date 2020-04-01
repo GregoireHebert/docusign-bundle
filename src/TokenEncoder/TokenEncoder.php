@@ -27,13 +27,17 @@ final class TokenEncoder implements TokenEncoderInterface
 
     public function encode(array $parameters): string
     {
+        sort($parameters);
+
         return password_hash(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
-        ]), PASSWORD_DEFAULT);
+        ]), PASSWORD_BCRYPT);
     }
 
     public function isTokenValid(array $parameters, ?string $token): bool
     {
+        sort($parameters);
+
         return !empty($token) && password_verify(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
         ]), $token);
