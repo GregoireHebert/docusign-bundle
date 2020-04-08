@@ -119,12 +119,26 @@ return [
     'DOCUSIGN_INTEGRATION_KEY' => 'your-personal-integration-key',
     'DOCUSIGN_USER_GUID' => 'your-personal-user-guid',
     'DOCUSIGN_ACCOUNT_ID' => your-personal-account-id,
+    'DOCUSIGN_CLICKWRAP_ID' => 'your-clickwrap-id',
+    'DOCUSIGN_API_ACCOUNT_ID' => 'your-api-account-id',
+    'DOCUSIGN_SECRET' => 'your-secret',
+    'DOCUSIGN_DEFAULT_SIGNER_NAME' => 'your-name',
+    'DOCUSIGN_DEFAULT_SIGNER_EMAIL' => 'your-email',
+    'DOCUSIGN_EMAIL' => 'your-docusign-email',
+    'DOCUSIGN_PASSWORD' => 'your-docusign-password',
     'APP_ENV' => 'test',
     'APP_DEBUG' => true,
 ];
 ```
 
-Then, [generate an RSA key pair](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken)
+Then, you must define the following urls in the `Redirect URIs` section on DocuSign Admin:
+
+https://127.0.0.1:8000
+https://127.0.0.1:8000
+https://127.0.0.1:8000/docusign/authorization_code/embedded_auth_code
+https://127.0.0.1:8000/docusign/authorization_code/remote_auth_code
+
+Finally, [generate an RSA key pair](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken)
 on DocuSign and store the private key on `features/var/jwt/docusign.pem`.
 
 ## Starting the demo project
@@ -145,48 +159,12 @@ To access the list of documents, you'll need to login as `admin:4dm1n` on http:/
 
 ## Running tests
 
-Create the `phpunit.xml` file as following:
+You must add the following urls in the `Redirect URIs` section on DocuSign Admin:
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
-         backupGlobals="true"
-         colors="true"
-         bootstrap="features/bootstrap.php"
->
-    <php>
-        <ini name="error_reporting" value="-1" />
-        <env name="APP_ENV" value="test" />
-        <env name="APP_DEBUG" value="true" />
-        <env name="KERNEL_DIR" value="features/" />
-        <env name="KERNEL_CLASS" value="Kernel" />
-        <env name="DOCUSIGN_INTEGRATION_KEY" value="your-integration-key" />
-        <env name="DOCUSIGN_USER_GUID" value="your-user-guid" />
-        <env name="DOCUSIGN_ACCOUNT_ID" value="your-account-id" />
-        <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
-        <server name="PANTHER_NO_SANDBOX" value="1" />
-    </php>
-
-    <testsuites>
-        <testsuite name="Docusign bundle Test Suite">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>src</directory>
-        </whitelist>
-    </filter>
-
-    <extensions>
-        <extension class="Symfony\Component\Panther\ServerExtension" />
-    </extensions>
-</phpunit>
-```
+http://127.0.0.1:9080
+http://127.0.0.1:9080
+http://127.0.0.1:9080/docusign/authorization_code/embedded_auth_code
+http://127.0.0.1:9080/docusign/authorization_code/remote_auth_code
 
 Then, run the following command to execute e2e tests:
 
