@@ -58,7 +58,7 @@ jobs:
             libzip-dev \
             chromium \
             gnupg
-          docker-php-ext-install zip
+          docker-php-ext-install zip sockets
 
       - name: Install pcov PHP extension
         if: env.COVERAGE == '1'
