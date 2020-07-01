@@ -64,7 +64,8 @@ jobs:
         if: env.COVERAGE == '1'
         run: |
           pecl install pcov-$EXT_PCOV_VERSION
-          docker-php-ext-enable pcov
+          docker-php-ext-install sockets
+          docker-php-ext-enable pcov sockets
 
       - name: Install Composer
         run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
