@@ -30,6 +30,15 @@ return [
 ]
 ```
 
+## Register the routes
+
+```yaml
+# config/routes.yaml or config/routes/docusign.yaml
+docusign:
+    resource: .
+    type: docusign
+```
+
 Next: [Configure DocuSign](configure-docusign.md)
 
 
