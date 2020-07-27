@@ -2,7 +2,7 @@
 
 ## Types of signatures
 
-- **Embedded Signature**: Allow to sign a document from a website or a mobile app by being redirected to DocuSign the sent back to the website or mobileApp
+- **Embedded Signature**: Allow to sign a document from a website or a mobile app by being redirected to DocuSign then sent back to the website or mobileApp
 - **Remote Signature**: Send an Email to ask for a document signature.
 - **Clickwrap Signature**: Allow to sign a document by a single click (for example: "Terms and Conditions").
 
