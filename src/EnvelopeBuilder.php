@@ -230,6 +230,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->apiClient = null;
         $this->envelopesApi = null;
         $this->envelopeId = null;
+        $this->webhookParameters = [];
     }
 
     public function getEnvelopesApi(): ?EnvelopesApi
