@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: 0 2 * * 1-5
   pull_request:
+  push:
+    branches:
+      - v5
 
 env:
   COVERAGE: '0'
