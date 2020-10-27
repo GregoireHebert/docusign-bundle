@@ -51,7 +51,7 @@ jobs:
 
       - name: Enable code coverage
         if: matrix.coverage && matrix.dependency == ''
-        run: echo '::set-env name=COVERAGE::1'
+        run: echo "COVERAGE=1" >> $GITHUB_ENV
 
       - name: Install system packages
         run: |
@@ -157,5 +157,4 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer global require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
-          export PATH="$PATH:$HOME/.composer/vendor/bin"
-          coveralls build/logs/phpunit/clover.xml
+          $HOME/.composer/vendor/bin/coveralls build/logs/phpunit/clover.xml
