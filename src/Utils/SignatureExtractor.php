@@ -55,7 +55,7 @@ class SignatureExtractor
             return $this->defaultSignatures[array_keys($this->defaultSignatures)[0]] ?? null;
         }
 
-        if (1 < $signaturesDefined) {
+        if (2 >= $signaturesDefined) {
             throw new AmbiguousDocumentSelectionException(sprintf('The document type is ambiguous. It should be one of %s', implode(' or ', array_keys($this->defaultSignatures))));
         }
 
@@ -68,6 +68,7 @@ class SignatureExtractor
             return null;
         }
 
+        /** @var array|null $signatures */
         $signatures = $request->query->get('signatures');
 
         if (null === $signatures) {
