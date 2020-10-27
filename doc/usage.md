@@ -14,13 +14,19 @@ In local it would be `http://localhost/docusign/consent/default`.
 If you have only one signature without name:
 
 ```twig
-<a href="{{ path('docusign_sign_default', {'path': 'path/to/document.pdf'}) }}">sign</a>
+<a href="{{ path('docusign_sign_default', {'path': 'path/to/document.pdf'}) }}">sign</a>
 ```
 
 If you have a named signature:
 
 ```twig
-<a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf'}) }}">sign</a>
+<a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf'}) }}">sign</a>
+```
+
+You can also override the default signer name/email:
+
+```twig
+<a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf', 'signerName': 'John DOE', 'signerEmail': 'john.doe@example.com'}) }}">sign</a>
 ```
 
 If you have a clickwrap signature:

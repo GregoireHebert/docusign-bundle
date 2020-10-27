@@ -31,8 +31,9 @@ class EnvelopeBuilderTest extends TestCase
     private $fileSystemProphecyMock;
     private $stopwatchMock;
     private $grantProphecyMock;
-    private $envelopeBuilder;
     private $envelopeCreatorProphecyMock;
+    /** @var EnvelopeBuilder */
+    private $envelopeBuilder;
 
     protected function setUp(): void
     {
@@ -42,10 +43,9 @@ class EnvelopeBuilderTest extends TestCase
         $this->stopwatchMock = $this->prophesize(Stopwatch::class);
         $this->grantProphecyMock = $this->prophesize(GrantInterface::class);
         $this->envelopeCreatorProphecyMock = $this->prophesize(EnvelopeCreatorInterface::class);
-    }
 
-    private function getEnveloppeBuilder(string $mode = 'embedded'): void
-    {
+        $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilderInterface::class))->willReturn('/path/to/redirect');
+
         $this->envelopeBuilder = new EnvelopeBuilder(
             $this->fileSystemProphecyMock->reveal(),
             $this->envelopeCreatorProphecyMock->reveal(),
@@ -55,7 +55,7 @@ class EnvelopeBuilderTest extends TestCase
             true,
             'http://dummy-uri.tld',
             'dummyCallbackRoute',
-            $mode,
+            'embedded',
             EnvelopeBuilder::AUTH_MODE_JWT,
             'default'
         );
@@ -63,10 +63,6 @@ class EnvelopeBuilderTest extends TestCase
 
     public function testItCreatesARemoteSignatureEnvelope(): void
     {
-        $this->envelopeCreatorProphecyMock->createEnvelope(Argument::type(EnvelopeBuilderInterface::class))->willReturn('/path/to/redirect');
-
-        $this->getEnveloppeBuilder();
-
         $this->fileSystemProphecyMock->read('dummyFilePath.pdf')->willReturn('dummyFileContent');
         $this->grantProphecyMock->__invoke()->willReturn('encoded_access_token');
 
@@ -76,5 +72,14 @@ class EnvelopeBuilderTest extends TestCase
             ->createEnvelope();
 
         $this->assertEquals('/path/to/redirect', $redirectPath);
+    }
+
+    public function testItChangesTheDefaultSigner(): void
+    {
+        $this->envelopeBuilder->setSignerName('John DOE');
+        $this->envelopeBuilder->setSignerEmail('john.doe@example.com');
+
+        $this->assertEquals('John DOE', $this->envelopeBuilder->getSignerName());
+        $this->assertEquals('john.doe@example.com', $this->envelopeBuilder->getSignerEmail());
     }
 }

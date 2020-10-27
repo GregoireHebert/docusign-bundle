@@ -50,6 +50,25 @@ class PreSignSubscriber implements EventSubscriberInterface
 }
 ```
 
+The `PreSignEvent` also lets you configure the EnvelopeBuilder to your needs:
+
+```php
+public function preSign(PreSignEvent $preSign)
+{
+    $envelopeBuilder = $preSign->getEnvelopeBuilder();
+
+    // Change the default signer name
+    $envelopeBuilder->setDefaultSignerName('John DOE');
+    // Change the default signer email
+    $envelopeBuilder->setDefaultSignerEmail('john.doe@example.com');
+    // Add a signer
+    $envelopeBuilder->addSigner('Chuck Norris', 'chuck.norris@example.com');
+    // Add a carbon copy
+    $envelopeBuilder->addCarbonCopy('Jane Doe', 'jane.doe@example.com');
+    // ... configure the EnvelopeBuilder to your needs
+}
+```
+
 ## Webhook events
 
 DocuSign calls a Webhook on your project, allowing you to handle the signed document, its status, etc.
