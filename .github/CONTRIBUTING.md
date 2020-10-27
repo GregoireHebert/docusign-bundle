@@ -143,19 +143,21 @@ on DocuSign and store the private key on `features/var/jwt/docusign.pem`.
 
 ## Starting the demo project
 
+You must install the [Symfony binary](https://symfony.com/download), then start the server:
+
 ```shell
-features/console server:start
+symfony serve --document-root=features/public
 ```
 
-Then go to http://localhost:8000.
+Then go to http://127.0.0.1:8000.
 
 ## Debugging
 
-The [WebProfilerBundle](https://symfony.com/web-profiler-bundle) is available at http://localhost:8000/_profiler/.
+The [WebProfilerBundle](https://symfony.com/web-profiler-bundle) is available at http://127.0.0.1:8000/_profiler/.
 
 ## List of documents
 
-To access the list of documents, you'll need to login as `admin:4dm1n` on http://localhost:8000/.
+To access the list of documents, you'll need to login as `admin:4dm1n` on http://127.0.0.1:8000/.
 
 ## Running tests
 

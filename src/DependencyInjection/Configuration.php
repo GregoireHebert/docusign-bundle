@@ -154,11 +154,15 @@ final class Configuration implements ConfigurationInterface
                                 ->values(['authorization_code', 'implicit'])
                                 ->info('Grant type to use: authorization_code or implicit.')
                                 ->cannotBeEmpty()
-                                ->defaultValue(static function () {
-                                    @trigger_error('The "grant_type" configuration key has been deprecated since 5.3.0 and will be removed in 6.0.', E_USER_DEPRECATED);
+                                ->defaultValue('authorization_code')
+                                ->validate()
+                                    ->ifString()
+                                    ->then(static function ($v) {
+                                        @trigger_error('The "grant_type" configuration key has been deprecated since 5.3.0 and will be removed in 6.0.', E_USER_DEPRECATED);
 
-                                    return 'authorization_code';
-                                })
+                                        return $v;
+                                    })
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

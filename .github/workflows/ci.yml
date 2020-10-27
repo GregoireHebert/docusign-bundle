@@ -2,102 +2,104 @@ name: CI
 
 on:
   schedule:
-    - cron: 0 2 * * 1-5
+    # Every sunday at 02:00
+    - cron: 0 2 * * 0
   pull_request:
   push:
     branches:
       - v5
 
-env:
-  COVERAGE: '0'
-  EXT_PCOV_VERSION: '1.0.6'
-
 jobs:
   tests:
     name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }} (Symfony ${{ matrix.symfony }})
     runs-on: ubuntu-latest
-    container:
-      image: php:${{ matrix.php }}
-      options: >-
-        --tmpfs /tmp:exec
     strategy:
-      # https://github.community/t5/GitHub-Actions/GitHub-Actions-Matrix-options-dont-work-as-documented/m-p/29558
       matrix:
         php:
           - '7.2'
           - '7.3'
           - '7.4'
+          - 'rc'
         symfony:
           - '4.4.*'
-          - '5.0.*'
-        include:
-          - php: '7.4'
-            coverage: true
+          - '5.1.*'
         dependency:
           - ''
           - 'lowest'
+        include:
+          - php: '7.4'
+            dependency: ''
+            symfony: '5.1.*'
+            coverage: true
+            bootable: true
+        exclude:
+          - symfony: '4.4.*'
+            dependency: 'lowest'
       fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: "Cache dependencies installed with composer"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: composer:v2, flex
+          coverage: pcov
+          tools: php-cs-fixer
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
         uses: actions/cache@v1
         with:
-          path: ~/.composer/cache
-          key: ${{ matrix.php }}-composer-${{ matrix.dependency }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ matrix.php }}-composer-${{ matrix.dependency }}-
-
-      - name: Enable code coverage
-        if: matrix.coverage && matrix.dependency == ''
-        run: echo "COVERAGE=1" >> $GITHUB_ENV
-
-      - name: Install system packages
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            unzip\
-            libzip-dev \
-            chromium \
-            gnupg
-          docker-php-ext-install zip
-
-      - name: Install pcov PHP extension
-        if: env.COVERAGE == '1'
-        run: |
-          pecl install pcov-$EXT_PCOV_VERSION
-          docker-php-ext-install sockets
-          docker-php-ext-enable pcov sockets
-
-      - name: Install Composer
-        run: curl -sS -o - https://raw.githubusercontent.com/composer/getcomposer.org/ba13e3fc70f1c66250d1ea7ea4911d593aa1dba5/web/installer | php -- --install-dir=/usr/local/bin --filename=composer --quiet
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Configure Symfony
-        run: |
-          composer global require symfony/flex
-          composer config extra.symfony.require "${{ matrix.symfony }}"
+        run: composer config extra.symfony.require "${{ matrix.symfony }}"
 
       - name: Update project dependencies
         if: matrix.dependency == ''
-        run: php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi --prefer-stable
+        run: composer update --no-progress --ansi --prefer-stable ${{ matrix.composer }}
 
       - name: Update project dependencies lowest
         if: matrix.dependency == 'lowest'
+        run: composer update --no-progress --ansi --prefer-lowest --prefer-stable
+
+      - name: Disable deprecations notices for lowest dependencies
+        if: matrix.dependency == 'lowest'
+        run: echo "SYMFONY_DEPRECATIONS_HELPER=weak" >> $GITHUB_ENV
+
+      - name: Bundle is bootable
+        if: matrix.bootable
+        env:
+          SKELETON_VERSION: ${{matrix.symfony}}
         run: |
-          php -d memory_limit=-1 `which composer` remove --dev --no-progress --no-update --ansi league/flysystem-bundle
-          php -d memory_limit=-1 `which composer` update --no-progress --no-suggest --ansi --prefer-stable --prefer-lowest
+          composer create-project "symfony/skeleton:${SKELETON_VERSION}" flex
+          cd flex
+          composer config extra.symfony.allow-contrib true
+          composer req --ignore-platform-reqs gheb/docusign-bundle
+
+      - name: Run php-cs-fixer tests
+        if: matrix.php != 'rc'
+        run: php-cs-fixer fix --diff --dry-run
+
+      - name: Install chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends chromium-browser
 
       - name: Run phpstan tests
         if: matrix.dependency == ''
-        run: php -d memory_limit=-1 vendor/bin/phpstan analyze
+        run: vendor/bin/phpstan analyze
 
       - name: Run phpstan tests lowest
         if: matrix.dependency == 'lowest'
-        run: php -d memory_limit=-1 vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
-
-      - name: Run php-cs-fixer tests
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
 
       - name: Prepare PHPUnit tests
         env:
@@ -107,7 +109,7 @@ jobs:
           openssl aes-256-cbc -d -a -pbkdf2 -salt -in features/var/jwt/docusign.pem.enc -out features/var/jwt/docusign.pem -pass env:DOCUSIGN_RSA_PASSPHRASE
 
       - name: Run PHPUnit tests with coverage
-        if: env.COVERAGE == '1'
+        if: matrix.coverage
         env:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
@@ -119,10 +121,10 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
+        run: vendor/bin/simple-phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
 
       - name: Run PHPUnit tests
-        if: env.COVERAGE == '0'
+        if: matrix.coverage == ''
         env:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
@@ -134,17 +136,16 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/phpunit --colors=always --testdox
+        run: vendor/bin/simple-phpunit --colors=always --testdox
 
       - name: Upload test artifacts
-        if: always()
         uses: actions/upload-artifact@v1
         with:
           name: build-php${{ matrix.php }}
           path: build
 
       - name: Upload coverage results to Codecov
-        if: env.COVERAGE == '1'
+        if: matrix.coverage
         uses: codecov/codecov-action@v1.0.3
         with:
           name: phpunit-php${{ matrix.php }}
@@ -152,9 +153,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage results to Coveralls
-        if: env.COVERAGE == '1'
+        if: matrix.coverage
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          composer global require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
+          composer global require --prefer-dist --no-progress --ansi cedx/coveralls
           $HOME/.composer/vendor/bin/coveralls build/logs/phpunit/clover.xml

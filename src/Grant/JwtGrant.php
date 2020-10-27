@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Grant;
 
+use Lcobucci\Jose\Parsing\Parser;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Token\Builder as TokenBuilder;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -53,14 +55,19 @@ final class JwtGrant implements GrantInterface
 
     public function __invoke(): string
     {
-        $time = time();
-        $token = (new Builder())->issuedBy($this->integrationKey) // iss
+        // Ensure compatibility with lcobucci/jwt v3 and v4
+        $v4 = class_exists(TokenBuilder::class);
+        $time = $v4 ? new \DateTimeImmutable() : time();
+        /** @var Builder $builder */
+        $builder = $v4 ? new TokenBuilder(new Parser()) : new Builder();
+        $token = $builder->issuedBy($this->integrationKey) // iss
             ->relatedTo($this->userGuid) // sub
             ->issuedAt($time) // iat
-            ->expiresAt($time + $this->ttl) // exp
+            ->expiresAt($v4 ? $time->modify("$this->ttl sec") : $time + $this->ttl) // exp
             ->permittedFor(parse_url($this->accountApiUri, PHP_URL_HOST)) // aud
             ->withClaim('scope', 'signature impersonation') // scope
             ->getToken(new Sha256(), new Key("file://$this->privateKey"));
+        $token = method_exists($token, 'toString') ? $token->toString() : (string) $token;
 
         try {
             $response = $this->client->request('POST', $this->accountApiUri, [
