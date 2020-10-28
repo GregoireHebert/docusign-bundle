@@ -70,7 +70,11 @@ interface EnvelopeBuilderInterface
 
     public function getViewUrl(Model\RecipientViewRequest $recipientViewRequest): string;
 
+    public function setSignerName(string $signerName): void;
+
     public function getSignerName(): string;
+
+    public function setSignerEmail(string $signerEmail): void;
 
     public function getSignerEmail(): string;
 

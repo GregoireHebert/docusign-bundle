@@ -39,6 +39,14 @@ final class Sign
             throw new MissingMandatoryParameterHttpException('You must define a `path` query parameter.');
         }
 
+        if (!empty($signerName = $request->query->get('signerName'))) {
+            $this->envelopeBuilder->setSignerName($signerName);
+        }
+
+        if (!empty($signerEmail = $request->query->get('signerEmail'))) {
+            $this->envelopeBuilder->setSignerEmail($signerEmail);
+        }
+
         try {
             $eventDispatcher->dispatch($preSignEvent = new PreSignEvent($this->envelopeBuilder, $request));
             if (null !== $response = $preSignEvent->getResponse()) {

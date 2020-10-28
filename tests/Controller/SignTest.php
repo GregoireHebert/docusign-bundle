@@ -41,6 +41,11 @@ class SignTest extends TestCase
 
         $parameterBagProphecy = $this->prophesize(ParameterBag::class);
         $parameterBagProphecy->get('path')->willReturn('dummyPath');
+        $parameterBagProphecy->get('signerName')->willReturn('John DOE');
+        $parameterBagProphecy->get('signerEmail')->willReturn('john.doe@example.com');
+
+        $envelopeBuilderProphecy->setSignerName('John DOE');
+        $envelopeBuilderProphecy->setSignerEmail('john.doe@example.com');
 
         $requestProphecy = $this->prophesize(Request::class);
         $requestProphecy->query = $parameterBagProphecy->reveal();
@@ -63,6 +68,8 @@ class SignTest extends TestCase
 
         $parameterBagProphecy = $this->prophesize(ParameterBag::class);
         $parameterBagProphecy->get('path')->willReturn(null);
+        $parameterBagProphecy->get('signerName')->shouldNotBeCalled();
+        $parameterBagProphecy->get('signerEmail')->shouldNotBeCalled();
 
         $requestProphecy = $this->prophesize(Request::class);
         $requestProphecy->query = $parameterBagProphecy->reveal();
@@ -86,6 +93,8 @@ class SignTest extends TestCase
 
         $parameterBagProphecy = $this->prophesize(ParameterBag::class);
         $parameterBagProphecy->get('path')->willReturn('dummyPath');
+        $parameterBagProphecy->get('signerName')->willReturn(null);
+        $parameterBagProphecy->get('signerEmail')->willReturn(null);
 
         $requestProphecy = $this->prophesize(Request::class);
         $requestProphecy->query = $parameterBagProphecy->reveal();

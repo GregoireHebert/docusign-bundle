@@ -104,7 +104,7 @@ docusign:
 Since there is an ambiguity, you need to specify now which documentType you want to use:
 
 ```twig
-<a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf', 'documentType': 'variation'}) }}">sign</a>
+<a href="{{ path('docusign_sign_SIGNATURENAME', {'path': 'path/to/document.pdf', 'documentType': 'variation'}) }}">sign</a>
 ```
 
 ## Multiple signature configuration

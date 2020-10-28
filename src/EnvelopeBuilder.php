@@ -299,6 +299,16 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         return $this->signerEmail;
     }
 
+    public function setSignerName(string $signerName): void
+    {
+        $this->signerName = $signerName;
+    }
+
+    public function setSignerEmail(string $signerEmail): void
+    {
+        $this->signerEmail = $signerEmail;
+    }
+
     public function getDocReference(): int
     {
         return $this->docReference;

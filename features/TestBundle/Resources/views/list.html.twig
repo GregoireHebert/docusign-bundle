@@ -5,7 +5,7 @@
 {% block content %}
     <ul>
         {% for name, path in documents %}
-            <li><a href="{{ path(route_name, {'path': path}) }}">{{ name }}</a></li>
+            <li><a href="{{ path(route_name, {'path': path, 'signerName': 'John DOE'}) }}">{{ name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
