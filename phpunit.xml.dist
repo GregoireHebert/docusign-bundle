@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="true"
-         colors="true"
-         bootstrap="features/bootstrap.php"
->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.3/phpunit.xsd" backupGlobals="true" colors="true" bootstrap="features/bootstrap.php">
     <php>
         <ini name="error_reporting" value="-1" />
         <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="false" />
-        <env name="KERNEL_DIR" value="features/" />
-        <env name="KERNEL_CLASS" value="Kernel" />
+        <env name="KERNEL_DIR" value="features/src/" />
+        <env name="KERNEL_CLASS" value="DocusignBundle\E2e\Kernel" />
+        <env name="SYMFONY_PHPUNIT_REMOVE" value="symfony/yaml" />
         <server name="PANTHER_WEB_SERVER_DIR" value="./features/public/" />
         <server name="PANTHER_CHROME_DRIVER_BINARY" value="./tests/config/chromedriver" />
         <server name="PANTHER_NO_SANDBOX" value="1" />

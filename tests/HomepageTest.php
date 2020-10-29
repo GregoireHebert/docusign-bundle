@@ -25,6 +25,6 @@ final class HomepageTest extends PantherTestCase
         $client = static::createPantherClient();
         $client->request('GET', '/');
 
-        $this->assertSame('Welcome to the DocuSign TestBundle', $client->getTitle());
+        $this->assertSame('Welcome to the DocuSign', $client->getTitle());
     }
 }

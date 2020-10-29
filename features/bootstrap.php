@@ -16,7 +16,6 @@ use Symfony\Component\Dotenv\Dotenv;
 date_default_timezone_set('UTC');
 
 require __DIR__.'/../vendor/autoload.php';
-require 'Kernel.php';
 
 // Load cached env vars if the .env.local.php file exists
 // Run "composer dump-env prod" to create it (requires symfony/flex >=1.2)
@@ -27,7 +26,7 @@ if (is_array($env = @include __DIR__.'/.env.local.php')) {
 } else {
     // load all the .env files
     if (method_exists(Dotenv::class, 'loadEnv')) {
-        (new Dotenv(false))->loadEnv(__DIR__.'/.env');
+        (method_exists(Dotenv::class, 'usePutenv') ? (new Dotenv())->usePutenv(false) : new Dotenv())->loadEnv(__DIR__.'/.env');
     } else {
         (new Dotenv())->load(__DIR__.'/.env');
     }

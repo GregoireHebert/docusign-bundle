@@ -5,3 +5,7 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
+
+        # known bug of phpstan
+        - "#Instantiated class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
+        - "#Instantiated class Lcobucci\\\\Jose\\\\Parsing\\\\Parser not found\\.#"

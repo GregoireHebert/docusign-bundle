@@ -7,4 +7,6 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
         # known bug of phpstan
-        - "#Class League\\\\FlysystemBundle\\\\FlysystemBundle not found\\.#"
+        - "#Class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
+        - "#Instantiated class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
+        - "#Instantiated class Lcobucci\\\\Jose\\\\Parsing\\\\Parser not found\\.#"

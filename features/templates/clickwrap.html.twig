@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clickwrap{% endblock %}
+
+{% block content %}
+    {{ renderClickwrap('terms') }}
+{% endblock %}
+
+{% block footer %}
+    <p><a href="{{ path('homepage') }}">&#8592; Back to the homepage</a></p>
+{% endblock %}
