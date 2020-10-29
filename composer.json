@@ -23,7 +23,7 @@
         "email": "gregoire+support-docusign@les-tilleuls.coop"
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2",
         "ext-SimpleXML": "*",
         "docusign/esign-client": "^3.0",
         "lcobucci/jwt": "^3.3.1 || ^4.0-dev",
