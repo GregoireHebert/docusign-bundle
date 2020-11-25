@@ -16,6 +16,7 @@ namespace DocusignBundle\Tests\EnvelopeCreator;
 use DocuSign\eSign\Model\Document;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateDocument;
+use DocusignBundle\Tests\ProphecyTrait;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,8 @@ use Prophecy\Argument;
 
 class CreateDocumentTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $envelopeBuilderProphecyMock;
     private $fileSystemProphecyMock;
 

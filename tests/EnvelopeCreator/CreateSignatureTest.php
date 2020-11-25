@@ -15,11 +15,14 @@ namespace DocusignBundle\Tests\EnvelopeCreator;
 
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\CreateSignature;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 
 class CreateSignatureTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $envelopeBuilderProphecyMock;
     private $signatureExtractorProphecyMock;
 

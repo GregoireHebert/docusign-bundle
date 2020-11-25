@@ -17,6 +17,7 @@ use DocusignBundle\Controller\AuthorizationCode;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\AuthorizationCodeEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -28,6 +29,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizationCodeTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testTheAuthorizationCodeControllerIsValid(): void
     {
         $tokenEncoderProphecy = $this->prophesize(TokenEncoderInterface::class);

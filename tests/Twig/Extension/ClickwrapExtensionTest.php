@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\tests\Twig\Extension;
 
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\Twig\Extension\ClickwrapExtension;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -23,6 +24,8 @@ use Twig\Environment;
  */
 final class ClickwrapExtensionTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $extension;
     private $twigMock;
 

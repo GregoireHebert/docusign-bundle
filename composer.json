@@ -26,7 +26,7 @@
         "php": ">=7.2",
         "ext-SimpleXML": "*",
         "docusign/esign-client": "^3.0",
-        "lcobucci/jwt": "^3.3.1 || ^4.0-dev",
+        "lcobucci/jwt": "^3.3.1 || ^4.0",
         "league/flysystem": "^1.0.8",
         "psr/log": "^1.1",
         "symfony/config": "^4.4 || ^5.0",
@@ -46,6 +46,7 @@
         "doctrine/annotations": "^1.11",
         "league/flysystem-bundle": "^1.2",
         "nyholm/symfony-bundle-test": "dev-master",
+        "phpspec/prophecy": "^1.12",
         "phpstan/phpstan": "^0.12.18",
         "psr/event-dispatcher": "^1.0",
         "symfony/console": "^4.4 || ^5.0",
@@ -54,7 +55,7 @@
         "symfony/dotenv": "^4.4 || ^5.0",
         "symfony/monolog-bundle": "^3.5",
         "symfony/panther": "^0.6.1",
-        "symfony/phpunit-bridge": "^4.4 || ^5.0",
+        "symfony/phpunit-bridge": "^5.1",
         "symfony/polyfill-php72": "^1.9",
         "symfony/process": "^4.4 || ^5.0",
         "symfony/profiler-pack": "^1.0",
@@ -73,8 +74,7 @@
     "autoload-dev": {
         "psr-4": {
             "DocusignBundle\\Tests\\": "tests/",
-            "DocusignBundle\\E2e\\": "features/src/",
-            "PHPUnit\\": "vendor/bin/.phpunit/phpunit/src"
+            "DocusignBundle\\E2e\\": "features/src/"
         }
     },
     "scripts": {

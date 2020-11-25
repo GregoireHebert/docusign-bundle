@@ -17,6 +17,7 @@ use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeBuilderCallableInterface;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreator;
+use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -24,6 +25,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class EnvelopeCreatorTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
     private $loggerProphecyMock;

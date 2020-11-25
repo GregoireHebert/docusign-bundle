@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests\DependencyInjection;
 
 use DocusignBundle\Exception\AmbiguousDocumentSelectionException;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\Utils\SignatureExtractor;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -25,6 +26,8 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 
 class SignatureExtractorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy|RequestStack
      */

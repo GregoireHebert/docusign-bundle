@@ -7,6 +7,5 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
         # known bug of phpstan
-        - "#Class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
-        - "#Instantiated class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
-        - "#Instantiated class Lcobucci\\\\Jose\\\\Parsing\\\\Parser not found\\.#"
+        - "#Call to static method file\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Signer\\\\Key\\\\LocalFileReference\\.#"
+        - "#Call to static method forSymmetricSigner\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Configuration\\.#"
