@@ -26,6 +26,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class EnvelopeBuilderTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $loggerProphecyMock;
     private $routerProphecyMock;
     private $fileSystemProphecyMock;

@@ -27,6 +27,7 @@ use DocusignBundle\Grant\AuthorizationCodeGrant;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
 use DocusignBundle\Routing\DocusignLoader;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\TokenEncoder\TokenEncoder;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use DocusignBundle\Translator\TranslatorAwareInterface;
@@ -46,6 +47,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DocusignExtensionTest extends TestCase
 {
+    use ProphecyTrait;
+
     public const DEFAULT_CONFIG = ['docusign' => [
         'demo' => false,
         'enable_profiler' => false,

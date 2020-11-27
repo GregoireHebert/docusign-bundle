@@ -19,6 +19,7 @@ use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\AuthorizationCodeEvent;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\EventSubscriber\AuthorizationCodeEventSubscriber;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -35,6 +36,8 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 final class AuthorizationCodeEventSubscriberTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy|AuthorizationCodeHandlerInterface
      */

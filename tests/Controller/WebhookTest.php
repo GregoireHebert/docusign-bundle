@@ -15,6 +15,7 @@ namespace DocusignBundle\Tests\Controller;
 
 use DocusignBundle\Controller\Webhook;
 use DocusignBundle\Events\CompletedEvent;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -27,6 +28,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class WebhookTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $requestProphecy;
     private $queryProphecy;
     private $eventDispatcherProphecy;

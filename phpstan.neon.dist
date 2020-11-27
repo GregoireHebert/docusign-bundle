@@ -7,5 +7,8 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
         # known bug of phpstan
-        - "#Instantiated class Lcobucci\\\\JWT\\\\Token\\\\Builder not found\\.#"
-        - "#Instantiated class Lcobucci\\\\Jose\\\\Parsing\\\\Parser not found\\.#"
+        - "#Cannot cast Lcobucci\\\\JWT\\\\Token\\\\Plain to string\\.#"
+        - "#Parameter \\#1 \\$issuedAt of method Lcobucci\\\\JWT\\\\Builder::issuedAt\\(\\) expects DateTimeImmutable, int given\\.#"
+        - "#Parameter \\#1 \\$expiration of method Lcobucci\\\\JWT\\\\Builder::expiresAt\\(\\) expects DateTimeImmutable, int given\\.#"
+        - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Builder\\.#"
+        - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Signer\\\\Key\\.#"

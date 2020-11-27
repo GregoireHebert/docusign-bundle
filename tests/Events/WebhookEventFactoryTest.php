@@ -21,6 +21,7 @@ use DocusignBundle\Events\DeliveredEvent;
 use DocusignBundle\Events\SentEvent;
 use DocusignBundle\Events\WebhookEventFactory;
 use DocusignBundle\Exception\InvalidStatusException;
+use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,6 +30,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class WebhookEventFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider getEvents
      */

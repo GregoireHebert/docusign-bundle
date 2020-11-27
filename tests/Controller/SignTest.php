@@ -17,6 +17,7 @@ use DocusignBundle\Controller\Sign;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
+use DocusignBundle\Tests\ProphecyTrait;
 use League\Flysystem\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -29,6 +30,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SignTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testTheSignControllerRedirectsTheUserToDocusign(): void
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);

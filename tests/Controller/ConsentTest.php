@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests\Controller;
 
 use DocusignBundle\Controller\Consent;
+use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class ConsentTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testItRedirectsToValidUri(): void
     {
         /** @var Request|ObjectProphecy $requestMock */

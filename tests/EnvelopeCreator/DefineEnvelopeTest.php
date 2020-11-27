@@ -17,6 +17,7 @@ use DocuSign\eSign\Model\EnvelopeDefinition;
 use DocusignBundle\DocusignBundle;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\DefineEnvelope;
+use DocusignBundle\Tests\ProphecyTrait;
 use DocusignBundle\TokenEncoder\TokenEncoderInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -26,6 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefineEnvelopeTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
     private $translatorProphecyMock;

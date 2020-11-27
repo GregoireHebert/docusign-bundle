@@ -18,6 +18,7 @@ use DocuSign\eSign\Model\ViewUrl;
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\GetViewUrl;
+use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Routing\Router;
@@ -25,6 +26,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class GetViewUrlTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $envelopeBuilderProphecyMock;
     private $routerProphecyMock;
 

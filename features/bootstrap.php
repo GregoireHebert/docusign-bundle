@@ -15,6 +15,16 @@ use Symfony\Component\Dotenv\Dotenv;
 
 date_default_timezone_set('UTC');
 
+// PHPUnit's autoloader
+if (!file_exists($phpUnitAutoloaderPath = __DIR__.'/../vendor/bin/.phpunit/phpunit/vendor/autoload.php')) {
+    die('PHPUnit is not installed. Please run vendor/bin/simple-phpunit --version to install it');
+}
+
+$phpunitLoader = require $phpUnitAutoloaderPath;
+// Don't register the PHPUnit autoloader before the normal autoloader to prevent weird issues
+$phpunitLoader->unregister();
+$phpunitLoader->register();
+
 require __DIR__.'/../vendor/autoload.php';
 
 // Load cached env vars if the .env.local.php file exists
