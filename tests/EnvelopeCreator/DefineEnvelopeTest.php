@@ -34,7 +34,7 @@ class DefineEnvelopeTest extends TestCase
     private $translatorProphecyMock;
     private $tokenEncoderProphecyMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);

@@ -21,14 +21,14 @@ jobs:
           - '8.0'
         symfony:
           - '4.4.*'
-          - '5.1.*'
+          - '5.2.*'
         dependency:
           - ''
           - '--prefer-lowest'
         include:
           - php: '7.4'
             dependency: ''
-            symfony: '5.1.*'
+            symfony: '5.2.*'
             coverage: true
             bootable: true
           - php: '8.0'
@@ -36,13 +36,13 @@ jobs:
             symfony: '4.4.*'
           - php: '8.0'
             dependency: '--ignore-platform-req=php'
-            symfony: '5.1.*'
+            symfony: '5.2.*'
           - php: '8.0'
             dependency: '--prefer-lowest --ignore-platform-req=php'
             symfony: '4.4.*'
           - php: '8.0'
             dependency: '--prefer-lowest --ignore-platform-req=php'
-            symfony: '5.1.*'
+            symfony: '5.2.*'
         exclude:
           - php: '8.0'
             dependency: ''

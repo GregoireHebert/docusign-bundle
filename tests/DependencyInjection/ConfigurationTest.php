@@ -159,7 +159,7 @@ class ConfigurationTest extends TestCase
     public function testItThrowsAnErrorOnMissingModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The child node "mode" at path "docusign.demo" must be configured.');
+        $this->expectExceptionMessage('The child config "mode" under "docusign.demo" must be configured: Type of signature to use: remote or embedded.');
         $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'demo' => true,
