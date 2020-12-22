@@ -26,7 +26,7 @@ class CreateSignatureTest extends TestCase
     private $envelopeBuilderProphecyMock;
     private $signatureExtractorProphecyMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->signatureExtractorProphecyMock = $this->prophesize(SignatureExtractor::class);
