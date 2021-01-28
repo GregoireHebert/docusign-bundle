@@ -115,6 +115,7 @@ jobs:
         run: |
           mkdir -p build/screenshots build/logs/phpunit
           openssl aes-256-cbc -d -a -pbkdf2 -salt -in features/var/jwt/docusign.pem.enc -out features/var/jwt/docusign.pem -pass env:DOCUSIGN_RSA_PASSPHRASE
+          vendor/bin/bdi detect drivers
 
       - name: Run PHPUnit tests with coverage
         if: matrix.coverage

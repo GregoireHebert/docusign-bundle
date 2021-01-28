@@ -168,6 +168,12 @@ http://127.0.0.1:9080
 http://127.0.0.1:9080/docusign/authorization_code/embedded_auth_code
 http://127.0.0.1:9080/docusign/authorization_code/remote_auth_code
 
+Detect and download the browser drivers automatically:
+
+```shell
+vendor/bin/bdi detect drivers
+```
+
 Then, run the following command to execute e2e tests:
 
 ```shell
