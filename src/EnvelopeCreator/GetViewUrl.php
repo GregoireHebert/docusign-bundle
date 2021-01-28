@@ -19,7 +19,7 @@ use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Utils\CallbackRouteGenerator;
 use Symfony\Component\Routing\RouterInterface;
 
-/*final */class GetViewUrl implements EnvelopeBuilderCallableInterface
+/*final */ class GetViewUrl implements EnvelopeBuilderCallableInterface
 {
     private $router;
     private $envelopeBuilder;

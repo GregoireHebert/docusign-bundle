@@ -24,9 +24,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class DefineEnvelope implements EnvelopeBuilderCallableInterface, TranslatorAwareInterface
 {
-    public const EMAIL_SUBJECT = 'Please sign this document';
-
     use TranslatorAwareTrait;
+    public const EMAIL_SUBJECT = 'Please sign this document';
 
     private $router;
     private $envelopeBuilder;

@@ -158,7 +158,7 @@ final class Configuration implements ConfigurationInterface
                                 ->validate()
                                     ->ifString()
                                     ->then(static function ($v) {
-                                        @trigger_error('The "grant_type" configuration key has been deprecated since 5.3.0 and will be removed in 6.0. Implicit authentication should not be used in this bundle.', E_USER_DEPRECATED);
+                                        @trigger_error('The "grant_type" configuration key has been deprecated since 5.3.0 and will be removed in 6.0. Implicit authentication should not be used in this bundle.', \E_USER_DEPRECATED);
 
                                         return $v;
                                     })

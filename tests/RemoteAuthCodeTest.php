@@ -92,6 +92,6 @@ final class RemoteAuthCodeTest extends PantherTestCase
         $crawler = $client->waitFor('.alert');
 
         $this->assertSame('The document has been successfully sent to the signer!', $crawler->filter('.alert')->text());
-        $this->assertSame('/remote_auth_code', parse_url($crawler->getUri(), PHP_URL_PATH));
+        $this->assertSame('/remote_auth_code', parse_url($crawler->getUri(), \PHP_URL_PATH));
     }
 }

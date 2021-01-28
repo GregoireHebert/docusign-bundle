@@ -31,7 +31,7 @@ final class TokenEncoder implements TokenEncoderInterface
 
         return password_hash(http_build_query($parameters + [
             'integration_key' => $this->integrationKey,
-        ]), PASSWORD_BCRYPT);
+        ]), \PASSWORD_BCRYPT);
     }
 
     public function isTokenValid(array $parameters, ?string $token): bool
