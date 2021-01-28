@@ -88,7 +88,7 @@ final class JwtGrant implements GrantInterface
                 ->relatedTo($this->userGuid) // sub
                 ->issuedAt($time) // iat
                 ->expiresAt($time->modify("$this->ttl sec")) // exp
-                ->permittedFor(parse_url($this->accountApiUri, PHP_URL_HOST)) // aud
+                ->permittedFor(parse_url($this->accountApiUri, \PHP_URL_HOST)) // aud
                 ->withClaim('scope', 'signature impersonation') // scope
                 ->getToken($config->signer(), $config->signingKey())
                 ->toString();
@@ -101,7 +101,7 @@ final class JwtGrant implements GrantInterface
             ->relatedTo($this->userGuid) // sub
             ->issuedAt($time) // iat
             ->expiresAt($time + $this->ttl) // exp
-            ->permittedFor(parse_url($this->accountApiUri, PHP_URL_HOST)) // aud
+            ->permittedFor(parse_url($this->accountApiUri, \PHP_URL_HOST)) // aud
             ->withClaim('scope', 'signature impersonation') // scope
             ->getToken(new Sha256(), new Key("file://$this->privateKey"));
     }

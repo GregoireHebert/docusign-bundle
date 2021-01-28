@@ -43,6 +43,7 @@
         "webmozart/assert": "^1.5"
     },
     "require-dev": {
+        "dbrekelmans/bdi": "^0.3.0",
         "doctrine/annotations": "^1.11",
         "league/flysystem-bundle": "^1.2",
         "nyholm/symfony-bundle-test": "dev-master",

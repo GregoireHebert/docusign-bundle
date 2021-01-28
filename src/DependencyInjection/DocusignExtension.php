@@ -89,7 +89,7 @@ final class DocusignExtension extends Extension
             // Clickwrap mode
             if (EnvelopeBuilder::MODE_CLICKWRAP === $value['mode']) {
                 $clickwrapExtensionDefinition->addMethodCall('addConfig', [$name, $value['demo'], [
-                    'environment' => pathinfo($value['api_uri'], PATHINFO_DIRNAME),
+                    'environment' => pathinfo($value['api_uri'], \PATHINFO_DIRNAME),
                     'accountId' => $value['auth_clickwrap']['api_account_id'],
                     'clientUserId' => $value['auth_clickwrap']['user_guid'],
                     'clickwrapId' => $value['auth_clickwrap']['clickwrap_id'],
