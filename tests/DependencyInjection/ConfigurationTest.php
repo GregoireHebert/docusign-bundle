@@ -19,6 +19,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ConfigurationTest extends TestCase
 {
@@ -159,7 +160,12 @@ class ConfigurationTest extends TestCase
     public function testItThrowsAnErrorOnMissingModeConfig(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The child config "mode" under "docusign.demo" must be configured: Type of signature to use: remote or embedded.');
+        // Error message has changed between Symfony 4.4 and 5.*
+        if (4 === Kernel::MAJOR_VERSION) {
+            $this->expectExceptionMessage('The child node "mode" at path "docusign.demo" must be configured.');
+        } else {
+            $this->expectExceptionMessage('The child config "mode" under "docusign.demo" must be configured: Type of signature to use: remote or embedded.');
+        }
         $this->processor->processConfiguration($this->configuration, [
             'docusign' => [
                 'demo' => true,
