@@ -5,9 +5,7 @@ on:
     # Every sunday at 02:00
     - cron: 0 2 * * 0
   pull_request:
-  push:
-    branches:
-      - v5
+  push: ~
 
 jobs:
   tests:
