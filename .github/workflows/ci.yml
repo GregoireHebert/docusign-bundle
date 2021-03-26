@@ -19,33 +19,22 @@ jobs:
           - '8.0'
         symfony:
           - '4.4.*'
-          - '5.1.*'
+          - '5.2.*'
         dependency:
           - ''
           - '--prefer-lowest'
         include:
+          - deprecations: false
+          - php: '8.0'
+            dependency: ''
+            symfony: '5.2.*'
+            deprecations: true
           - php: '7.4'
             dependency: ''
-            symfony: '5.1.*'
+            symfony: '5.2.*'
             coverage: true
             bootable: true
-          - php: '8.0'
-            dependency: '--ignore-platform-req=php'
-            symfony: '4.4.*'
-          - php: '8.0'
-            dependency: '--ignore-platform-req=php'
-            symfony: '5.1.*'
-          - php: '8.0'
-            dependency: '--prefer-lowest --ignore-platform-req=php'
-            symfony: '4.4.*'
-          - php: '8.0'
-            dependency: '--prefer-lowest --ignore-platform-req=php'
-            symfony: '5.1.*'
-        exclude:
-          - php: '8.0'
-            dependency: ''
-          - php: '8.0'
-            dependency: '--prefer-lowest'
+            deprecations: true
       fail-fast: false
     steps:
       - name: Checkout
@@ -55,9 +44,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: composer:v2, flex
           coverage: pcov
-          tools: php-cs-fixer
+          tools: composer:v2, flex, php-cs-fixer
+
+      - name: Install chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends chromium-browser
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -77,7 +70,7 @@ jobs:
         run: composer update --no-progress --ansi --prefer-stable ${{ matrix.dependency }}
 
       - name: Disable deprecations notices for lowest dependencies
-        if: matrix.dependency != ''
+        if: matrix.deprecations == false
         run: echo "SYMFONY_DEPRECATIONS_HELPER=weak" >> $GITHUB_ENV
 
       - name: Bundle is bootable
@@ -91,20 +84,14 @@ jobs:
           composer req gheb/docusign-bundle
 
       - name: Run php-cs-fixer tests
-        if: matrix.php != '8.0'
         run: php-cs-fixer fix --diff --dry-run
 
-      - name: Install chromium
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends chromium-browser
-
       - name: Run phpstan tests
-        if: matrix.dependency == '' && matrix.php != '7.3' && matrix.php != '8.0'
+        if: matrix.dependency == '' && matrix.php == '7.4'
         run: vendor/bin/phpstan analyze
 
       - name: Run phpstan tests lowest
-        if: matrix.dependency != '' && matrix.php != '8.0'
+        if: matrix.dependency != '' && matrix.php == '7.4'
         run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
 
       - name: Prepare PHPUnit tests

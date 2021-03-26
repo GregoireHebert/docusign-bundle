@@ -117,6 +117,6 @@ final class EmbeddedAuthCodeTest extends PantherTestCase
         $crawler = $client->waitFor('.alert');
 
         $this->assertSame('The document has been successfully signed!', $crawler->filter('.alert')->text());
-        $this->assertSame('/embedded_auth_code', parse_url($crawler->getUri(), PHP_URL_PATH));
+        $this->assertSame('/embedded_auth_code', parse_url($crawler->getUri(), \PHP_URL_PATH));
     }
 }

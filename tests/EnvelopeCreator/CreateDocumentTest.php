@@ -29,7 +29,7 @@ class CreateDocumentTest extends TestCase
     private $envelopeBuilderProphecyMock;
     private $fileSystemProphecyMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->fileSystemProphecyMock = $this->prophesize(FilesystemInterface::class);

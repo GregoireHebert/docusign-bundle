@@ -23,9 +23,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class Callback implements TranslatorAwareInterface
 {
-    public const EVENT_COMPLETE = 'signing_complete';
-
     use TranslatorAwareTrait;
+    public const EVENT_COMPLETE = 'signing_complete';
 
     public function __invoke(Request $request, EventDispatcherInterface $eventDispatcher): Response
     {

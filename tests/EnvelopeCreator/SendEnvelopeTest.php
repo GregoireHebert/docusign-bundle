@@ -34,7 +34,7 @@ class SendEnvelopeTest extends TestCase
     private $envelopesApiProphecyMock;
     private $envelopeSummaryProphecyMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->grantProphecyMock = $this->prophesize(GrantInterface::class);

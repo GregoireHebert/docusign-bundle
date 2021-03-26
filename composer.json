@@ -43,6 +43,7 @@
         "webmozart/assert": "^1.5"
     },
     "require-dev": {
+        "dbrekelmans/bdi": "^0.3.0",
         "doctrine/annotations": "^1.11",
         "league/flysystem-bundle": "^1.2",
         "nyholm/symfony-bundle-test": "dev-master",
@@ -54,7 +55,7 @@
         "symfony/debug": "^4.4 || ^5.0",
         "symfony/dotenv": "^4.4 || ^5.0",
         "symfony/monolog-bundle": "^3.5",
-        "symfony/panther": "^0.6.1",
+        "symfony/panther": "^1.0",
         "symfony/phpunit-bridge": "^5.1",
         "symfony/polyfill-php72": "^1.9",
         "symfony/process": "^4.4 || ^5.0",
@@ -79,10 +80,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "vendor/bin/simple-phpunit --version"
+            "vendor/bin/simple-phpunit --version",
+            "vendor/bin/bdi detect drivers"
         ],
         "post-update-cmd": [
-            "vendor/bin/simple-phpunit --version"
+            "vendor/bin/simple-phpunit --version",
+            "vendor/bin/bdi detect drivers"
         ]
     },
     "config": {

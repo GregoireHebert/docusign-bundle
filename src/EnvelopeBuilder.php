@@ -130,7 +130,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $carbonCopy = new Model\CarbonCopy();
         $carbonCopy->setEmail($email);
         $carbonCopy->setName($name);
-        $carbonCopy->setRecipientId((string) $this->docReference);
+        $carbonCopy->setRecipientId(sha1($email.$name));
 
         $this->carbonCopies[] = $carbonCopy;
 
@@ -176,7 +176,7 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $data = [
             'email' => $email,
             'name' => $name,
-            'recipient_id' => $this->docReference,
+            'recipient_id' => sha1($email.$name),
         ];
 
         if (self::MODE_EMBEDDED === $this->getMode()) {
