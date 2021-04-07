@@ -34,8 +34,9 @@ class TraceableEnvelopeBuilderCallable implements TraceableEnvelopeBuilderCallab
      */
     public function __invoke(array $context = [])
     {
+        $name = sprintf('[DOCUSIGN] Action called "%s"', \get_class($this->inner));
         try {
-            $this->stopwatch->start($name = sprintf('[DOCUSIGN] Action called "%s"', \get_class($this->inner)));
+            $this->stopwatch->start($name);
 
             return ($this->inner)($context);
         } finally {
