@@ -11,11 +11,12 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 HEADER;
 
-$finder = PhpCsFixer\Finder::create()
+$finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
-    ->exclude(['features', 'flex']);
+    ->exclude(['features', 'flex'])
+;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@DoctrineAnnotation' => true,
@@ -59,12 +60,12 @@ return PhpCsFixer\Config::create()
         'no_useless_else' => true,
         'no_useless_return' => true,
         'ordered_imports' => [
-            'importsOrder' => [
+            'imports_order' => [
                 'class',
                 'function',
                 'const',
             ],
-            'sortAlgorithm' => 'alpha',
+            'sort_algorithm' => 'alpha',
         ],
         'php_unit_method_casing' => [
             'case' => 'camel_case',
@@ -80,5 +81,5 @@ return PhpCsFixer\Config::create()
         ],
     ])
     ->setFinder($finder)
-    ->setUsingCache(false)
+    ->setCacheFile('.php-cs-fixer.cache') // forward compatibility with 3.x line
 ;
