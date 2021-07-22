@@ -23,6 +23,7 @@ use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator;
 use DocusignBundle\EventSubscriber\AuthorizationCodeEventSubscriber;
+use DocusignBundle\Filesystem\FilesystemDecorator;
 use DocusignBundle\Grant\AuthorizationCodeGrant;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
@@ -130,7 +131,7 @@ class DocusignExtensionTest extends TestCase
 
     public function testItLoadsDefaultConfig(): void
     {
-        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+        $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 
@@ -207,6 +208,10 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->register('docusign.twig.extension.clickwrap', ClickwrapExtension::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $definitionProphecy->addTag('twig.extension')->shouldBeCalled()->willReturn($definitionProphecy->reveal());
 
+        $containerBuilderProphecy->register('docusign.filesystem.default', FilesystemDecorator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $definitionProphecy->setDecoratedService('dummy.default.storage')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->setArgument('$decorated', Argument::type(Reference::class))->willReturn($definitionProphecy)->shouldBeCalled();
+
         $containerBuilderProphecy->register('docusign.envelope_builder.default', EnvelopeBuilder::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
         $containerBuilderProphecy->setAlias(EnvelopeBuilder::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->register('docusign.signature_extractor.default', SignatureExtractor::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
@@ -233,7 +238,7 @@ class DocusignExtensionTest extends TestCase
 
     public function testItLoadsDemoConfig(): void
     {
-        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+        $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 
@@ -347,6 +352,10 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateRecipient::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\EnvelopeCreator::class, Argument::type(Alias::class))->shouldBeCalled();
 
+        $containerBuilderProphecy->register('docusign.filesystem.default', FilesystemDecorator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $definitionProphecy->setDecoratedService('flysystem.storage.default')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->setArgument('$decorated', Argument::type(Reference::class))->willReturn($definitionProphecy)->shouldBeCalled();
+
         $containerBuilder = $containerBuilderProphecy->reveal();
 
         $this->extension->load(self::DEMO_CONFIG, $containerBuilder);
@@ -354,7 +363,7 @@ class DocusignExtensionTest extends TestCase
 
     public function testItLoadsAuthCodeConfig(): void
     {
-        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+        $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 
@@ -471,6 +480,10 @@ class DocusignExtensionTest extends TestCase
         $containerBuilderProphecy->setAlias(EnvelopeCreator\CreateRecipient::class, Argument::type(Alias::class))->shouldBeCalled();
         $containerBuilderProphecy->setAlias(EnvelopeCreator\EnvelopeCreator::class, Argument::type(Alias::class))->shouldBeCalled();
 
+        $containerBuilderProphecy->register('docusign.filesystem.default', FilesystemDecorator::class)->shouldBeCalled()->willReturn($definitionProphecy->reveal());
+        $definitionProphecy->setDecoratedService('flysystem.storage.default')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->setArgument('$decorated', Argument::type(Reference::class))->willReturn($definitionProphecy)->shouldBeCalled();
+
         $containerBuilder = $containerBuilderProphecy->reveal();
 
         $this->extension->load(self::AUTH_CODE_CONFIG, $containerBuilder);
@@ -478,7 +491,7 @@ class DocusignExtensionTest extends TestCase
 
     public function testItLoadsClickwrapConfig(): void
     {
-        $containerBuilderProphecy = $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
+        $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
 
         $containerBuilderProphecy->hasExtension('http://symfony.com/schema/dic/services')->willReturn(false);
 

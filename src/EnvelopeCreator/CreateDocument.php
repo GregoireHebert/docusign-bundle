@@ -15,7 +15,7 @@ namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeBuilderInterface;
-use League\Flysystem\FileNotFoundException;
+use DocusignBundle\Exception\FileNotFoundException;
 
 final class CreateDocument implements EnvelopeBuilderCallableInterface
 {

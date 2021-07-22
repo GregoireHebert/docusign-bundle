@@ -3,6 +3,11 @@ parameters:
     paths:
         - src
     inferPrivatePropertyTypeFromConstructor: true
+    excludePaths:
+        # bc flysystem
+        - src/Filesystem/FilesystemInterface.php
+        - src/Filesystem/FilesystemDecorator.php
+        - src/Filesystem/AbstractFilesystemDecorator.php
     ignoreErrors:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
@@ -12,3 +17,8 @@ parameters:
         - "#Parameter \\#1 \\$expiration of method Lcobucci\\\\JWT\\\\Builder::expiresAt\\(\\) expects DateTimeImmutable, int given\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Builder\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Signer\\\\Key\\.#"
+
+        # bc flysystem
+        - "#Class League\\\\Flysystem\\\\Adapter\\\\Local not found\\.#"
+        - "#Access to constant DISALLOW_LINKS on an unknown class League\\\\Flysystem\\\\Adapter\\\\Local\\.#"
+        - "#Access to constant SKIP_LINKS on an unknown class League\\\\Flysystem\\\\Adapter\\\\Local\\.#"

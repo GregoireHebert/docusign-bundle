@@ -15,8 +15,8 @@ namespace DocusignBundle\Controller;
 
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSignEvent;
+use DocusignBundle\Exception\FileNotFoundException;
 use DocusignBundle\Exception\MissingMandatoryParameterHttpException;
-use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -17,7 +17,7 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
-use League\Flysystem\FilesystemInterface;
+use DocusignBundle\Filesystem\FilesystemInterface;
 use Webmozart\Assert\Assert;
 
 final class EnvelopeBuilder implements EnvelopeBuilderInterface

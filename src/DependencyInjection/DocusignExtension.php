@@ -31,6 +31,7 @@ use DocusignBundle\EnvelopeCreator\GetViewUrl;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
 use DocusignBundle\EnvelopeCreator\TraceableEnvelopeBuilderCallable;
 use DocusignBundle\EventSubscriber\AuthorizationCodeEventSubscriber;
+use DocusignBundle\Filesystem\FilesystemDecorator;
 use DocusignBundle\Grant\AuthorizationCodeGrant;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Grant\JwtGrant;
@@ -60,7 +61,7 @@ final class DocusignExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (!class_exists(FlysystemBundle::class)) {
+        if (!class_exists(FlysystemBundle::class) && interface_exists(PluginInterface::class)) {
             $container
                 ->registerForAutoconfiguration(PluginInterface::class)
                 ->addTag('flysystem.plugin');
@@ -177,12 +178,19 @@ final class DocusignExtension extends Extension
                 ])
                 ->addTag('docusign.envelope_creator');
 
+            // Filesystem decorator (FlySystem BC)
+            $container->register("docusign.filesystem.$name", FilesystemDecorator::class)
+                ->setDecoratedService($value['storage']['storage'])
+                ->setAutowired(true)
+                ->setPublic(false)
+                ->setArgument('$decorated', new Reference("docusign.filesystem.$name.inner"));
+
             // Envelope builder
             $container->register("docusign.envelope_builder.$name", EnvelopeBuilder::class)
                 ->setAutowired(true)
                 ->setPublic(false)
                 ->setArguments([
-                    '$storage' => new Reference($value['storage']['storage']),
+                    '$storage' => new Reference("docusign.filesystem.$name"),
                     '$envelopeCreator' => new Reference("docusign.envelope_creator.$name"),
                     '$accountId' => $value['account_id'],
                     '$defaultSignerName' => $value['default_signer_name'],
