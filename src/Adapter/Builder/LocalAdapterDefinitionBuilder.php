@@ -58,6 +58,8 @@ class LocalAdapterDefinitionBuilder extends AbstractAdapterDefinitionBuilder
 
     protected function configureDefinition(Definition $definition, array $options): void
     {
+        $definition->setArgument(0, $options['directory']);
+        $definition->setArgument(1, $options['lock']);
         if (class_exists(LocalFilesystemAdapter::class)) {
             $definition->setClass(LocalFilesystemAdapter::class);
             $definition->setArgument(2, $options['skip_links'] ? LocalFilesystemAdapter::SKIP_LINKS : LocalFilesystemAdapter::DISALLOW_LINKS);
@@ -65,8 +67,6 @@ class LocalAdapterDefinitionBuilder extends AbstractAdapterDefinitionBuilder
             $definition->setClass(Local::class);
             $definition->setArgument(2, $options['skip_links'] ? Local::SKIP_LINKS : Local::DISALLOW_LINKS);
         }
-        $definition->setArgument(0, $options['directory']);
-        $definition->setArgument(1, $options['lock']);
         $definition->setArgument(3, $options['permissions']);
     }
 }
