@@ -27,7 +27,7 @@
         "ext-SimpleXML": "*",
         "docusign/esign-client": "^3.0",
         "lcobucci/jwt": "^3.3.1 || ^4.0",
-        "league/flysystem": "^1.0.8 || ^2.0",
+        "league/flysystem": "^1.1 || ^2.1",
         "psr/log": "^1.1",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
@@ -45,7 +45,7 @@
     "require-dev": {
         "dbrekelmans/bdi": "^0.3.0",
         "doctrine/annotations": "^1.11",
-        "league/flysystem-bundle": "^1.2 || ^2.0",
+        "league/flysystem-bundle": "^1.2 || ^2.1",
         "nyholm/symfony-bundle-test": "dev-master",
         "phpspec/prophecy": "^1.12",
         "phpstan/phpstan": "^0.12.66",
