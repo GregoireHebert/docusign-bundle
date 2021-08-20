@@ -15,8 +15,8 @@ namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\ApiException;
 use DocusignBundle\EnvelopeBuilderInterface;
+use DocusignBundle\Exception\FileNotFoundException;
 use DocusignBundle\Exception\UnableToSignException;
-use League\Flysystem\FileNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webmozart\Assert\Assert;

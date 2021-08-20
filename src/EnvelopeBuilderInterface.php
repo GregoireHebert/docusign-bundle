@@ -15,7 +15,7 @@ namespace DocusignBundle;
 
 use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\Model;
-use League\Flysystem\FilesystemInterface;
+use DocusignBundle\Filesystem\FilesystemInterface;
 
 interface EnvelopeBuilderInterface
 {
