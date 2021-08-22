@@ -18,7 +18,6 @@ use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Configuration;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSendEnvelopeEvent;
-use DocusignBundle\Events\PreSignEvent;
 use DocusignBundle\Grant\GrantInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
