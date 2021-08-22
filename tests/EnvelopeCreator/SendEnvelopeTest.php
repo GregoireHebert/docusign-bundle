@@ -18,10 +18,12 @@ use DocuSign\eSign\Model\EnvelopeDefinition;
 use DocuSign\eSign\Model\EnvelopeSummary;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\EnvelopeCreator\SendEnvelope;
+use DocusignBundle\Events\PreSendEnvelopeEvent;
 use DocusignBundle\Grant\GrantInterface;
 use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class SendEnvelopeTest extends TestCase
@@ -33,6 +35,7 @@ class SendEnvelopeTest extends TestCase
     private $routerProphecyMock;
     private $envelopesApiProphecyMock;
     private $envelopeSummaryProphecyMock;
+    private $eventDispatcherProphecyMock;
 
     protected function setUp(): void
     {
@@ -41,6 +44,7 @@ class SendEnvelopeTest extends TestCase
         $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->envelopesApiProphecyMock = $this->prophesize(EnvelopesApi::class);
         $this->envelopeSummaryProphecyMock = $this->prophesize(EnvelopeSummary::class);
+        $this->eventDispatcherProphecyMock = $this->prophesize(EventDispatcherInterface::class);
     }
 
     public function testItCreatesASendEnvelope(): void
@@ -62,7 +66,9 @@ class SendEnvelopeTest extends TestCase
         $this->envelopeBuilderProphecyMock->setEnvelopesApi(Argument::type(EnvelopesApi::class))->shouldBeCalled();
         $this->envelopeBuilderProphecyMock->setEnvelopeId('envelopeId')->shouldBeCalled();
 
-        $sendEnvelope = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->routerProphecyMock->reveal(), 'default');
+        $this->eventDispatcherProphecyMock->dispatch(Argument::Type(PreSendEnvelopeEvent::class))->shouldBeCalled();
+
+        $sendEnvelope = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->routerProphecyMock->reveal(), $this->eventDispatcherProphecyMock->reveal());
         $sendEnvelope(['signature_name' => 'default']);
     }
 }

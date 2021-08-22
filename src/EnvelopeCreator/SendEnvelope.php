@@ -17,7 +17,9 @@ use DocuSign\eSign\Api\EnvelopesApi;
 use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Configuration;
 use DocusignBundle\EnvelopeBuilderInterface;
+use DocusignBundle\Events\PreSendEnvelopeEvent;
 use DocusignBundle\Grant\GrantInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 final class SendEnvelope implements EnvelopeBuilderCallableInterface
@@ -25,12 +27,14 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
     public $grant;
     private $router;
     private $envelopeBuilder;
+    private $eventDispatcher;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, RouterInterface $router)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, RouterInterface $router, EventDispatcherInterface $eventDispatcher)
     {
         $this->grant = $grant;
         $this->router = $router;
         $this->envelopeBuilder = $envelopeBuilder;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -45,6 +49,10 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
         }
 
         $this->envelopeBuilder->setEnvelopesApi($this->setUpConfiguration());
+
+        $this->eventDispatcher->dispatch($preSendEnvelopeEvent = new PreSendEnvelopeEvent($this->envelopeBuilder));
+        $this->envelopeBuilder = $preSendEnvelopeEvent->getEnvelopeBuilder();
+
         $this->envelopeBuilder->setEnvelopeId($this->envelopeBuilder->getEnvelopesApi()->createEnvelope((string) $this->envelopeBuilder->getAccountId(), $this->envelopeBuilder->getEnvelopeDefinition())->getEnvelopeId());
     }
 

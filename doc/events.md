@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use DocusignBundle\EnvelopeBuilder;
 use DocusignBundle\Events\PreSignEvent;
+use DocusignBundle\Events\PreSendEnvelopeEvent;
 use DocusignBundle\Events\DocumentSignatureCompletedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -25,6 +26,7 @@ class PreSignSubscriber implements EventSubscriberInterface
         // return the subscribed events, their methods and priorities
         return [
             PreSignEvent::class => 'preSign',
+            PreSendEnvelopeEvent::class => 'preSendEnvelope',
             DocumentSignatureCompletedEvent::class => 'onDocumentSignatureCompleted'
         ];
     }
@@ -38,6 +40,16 @@ class PreSignSubscriber implements EventSubscriberInterface
         // $envelopeBuilder->addCallbackParameter([]);
         // $envelopeBuilder->setCallbackParameters();
         // ...
+    }
+    
+    public function preSendEnvelope(PreSendEnvelopeEvent $preSendEnvelope)
+    {
+        // Here you can manipulate the EnvelopeBuilder and do some adjustment to the envelope before being sent to DocuSign.
+        $envelopeBuilder = $preSendEnvelope->getEnvelopeBuilder();
+
+        // $envelopeDefinition = $envelopeBuilder->getEnvelopeDefinition([]);
+        // ...
+        // $envelopeBuilder->setEnvelopeDefinition($envelopeDefinition);
     }
 
     public function onDocumentSignatureCompleted(DocumentSignatureCompletedEvent $documentSignatureCompleted)
