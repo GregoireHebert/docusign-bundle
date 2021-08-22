@@ -46,7 +46,7 @@
         "dbrekelmans/bdi": "^0.3.0",
         "doctrine/annotations": "^1.11",
         "league/flysystem-bundle": "^1.2 || ^2.1",
-        "nyholm/symfony-bundle-test": "dev-master",
+        "nyholm/symfony-bundle-test": "^1.8",
         "phpspec/prophecy": "^1.12",
         "phpstan/phpstan": "^0.12.66",
         "psr/event-dispatcher": "^1.0",
