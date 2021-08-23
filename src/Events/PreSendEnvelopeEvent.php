@@ -25,6 +25,11 @@ class PreSendEnvelopeEvent extends Event
         $this->envelopeBuilder = $envelopeBuilder;
     }
 
+    public function setEnvelopeBuilder(EnvelopeBuilderInterface $envelopeBuilder): void
+    {
+        $this->envelopeBuilder = $envelopeBuilder;
+    }
+
     public function getEnvelopeBuilder(): EnvelopeBuilderInterface
     {
         return $this->envelopeBuilder;
