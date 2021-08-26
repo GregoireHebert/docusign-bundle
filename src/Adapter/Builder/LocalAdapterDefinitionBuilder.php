@@ -62,7 +62,10 @@ class LocalAdapterDefinitionBuilder extends AbstractAdapterDefinitionBuilder
         if (class_exists(LocalFilesystemAdapter::class)) {
             $definition->setClass(LocalFilesystemAdapter::class);
             $definition->setArgument(0, $options['directory']);
-            $definition->setArgument(1, PortableVisibilityConverter::fromArray($options['permissions']));
+            $visibilityConverter = new Definition(PortableVisibilityConverter::class);
+            $visibilityConverter->setFactory([PortableVisibilityConverter::class, 'fromArray']);
+            $visibilityConverter->addArgument($options['permissions']);
+            $definition->setArgument(1, $visibilityConverter);
             $definition->setArgument(2, $options['lock']);
             $definition->setArgument(3, $options['skip_links'] ? LocalFilesystemAdapter::SKIP_LINKS : LocalFilesystemAdapter::DISALLOW_LINKS);
         } else {
