@@ -15,6 +15,7 @@ namespace DocusignBundle\Adapter\Builder;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -58,15 +59,21 @@ class LocalAdapterDefinitionBuilder extends AbstractAdapterDefinitionBuilder
 
     protected function configureDefinition(Definition $definition, array $options): void
     {
-        $definition->setArgument(0, $options['directory']);
-        $definition->setArgument(1, $options['lock']);
         if (class_exists(LocalFilesystemAdapter::class)) {
             $definition->setClass(LocalFilesystemAdapter::class);
-            $definition->setArgument(2, $options['skip_links'] ? LocalFilesystemAdapter::SKIP_LINKS : LocalFilesystemAdapter::DISALLOW_LINKS);
+            $definition->setArgument(0, $options['directory']);
+            $visibilityConverter = new Definition(PortableVisibilityConverter::class);
+            $visibilityConverter->setFactory([PortableVisibilityConverter::class, 'fromArray']);
+            $visibilityConverter->addArgument($options['permissions']);
+            $definition->setArgument(1, $visibilityConverter);
+            $definition->setArgument(2, $options['lock']);
+            $definition->setArgument(3, $options['skip_links'] ? LocalFilesystemAdapter::SKIP_LINKS : LocalFilesystemAdapter::DISALLOW_LINKS);
         } else {
             $definition->setClass(Local::class);
+            $definition->setArgument(0, $options['directory']);
+            $definition->setArgument(1, $options['lock']);
             $definition->setArgument(2, $options['skip_links'] ? Local::SKIP_LINKS : Local::DISALLOW_LINKS);
+            $definition->setArgument(3, $options['permissions']);
         }
-        $definition->setArgument(3, $options['permissions']);
     }
 }
