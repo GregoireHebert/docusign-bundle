@@ -14,3 +14,6 @@ parameters:
         # known bug of phpstan
         - "#Call to static method file\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Signer\\\\Key\\\\InMemory\\.#"
         - "#Call to static method forSymmetricSigner\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Configuration\\.#"
+
+        # flysystem compat layer
+        - "#Class League\\\\Flysystem\\\\UnixVisibility\\\\PortableVisibilityConverter not found\\.#"
