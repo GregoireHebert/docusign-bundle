@@ -17,3 +17,4 @@ parameters:
         - "#Parameter \\#1 \\$expiration of method Lcobucci\\\\JWT\\\\Builder::expiresAt\\(\\) expects DateTimeImmutable, int given\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Builder\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Signer\\\\Key\\.#"
+        - "#Class League\\\\Flysystem\\\\UnixVisibility\\\\PortableVisibilityConverter not found\\.#"

@@ -12,5 +12,5 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::useAttributeAsKey\(\)\.#'
 
         # known bug of phpstan
-        - "#Call to static method file\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Signer\\\\Key\\\\LocalFileReference\\.#"
+        - "#Call to static method file\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Signer\\\\Key\\\\InMemory\\.#"
         - "#Call to static method forSymmetricSigner\\(\\) on an unknown class Lcobucci\\\\JWT\\\\Configuration\\.#"
