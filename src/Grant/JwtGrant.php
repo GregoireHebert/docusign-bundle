@@ -16,7 +16,7 @@ namespace DocusignBundle\Grant;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\Signer\Key\LocalFileReference;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token\Builder as TokenBuilder;
 use Symfony\Component\HttpClient\HttpClient;
@@ -80,7 +80,7 @@ final class JwtGrant implements GrantInterface
             $time = new \DateTimeImmutable();
             // Need for force seconds to 0, otherwise DocuSign will consider this token as invalid
             $time = $time->setTime((int) $time->format('H'), (int) $time->format('i'), 0, 0);
-            $config = Configuration::forSymmetricSigner(new Sha256(), LocalFileReference::file("file://$this->privateKey"));
+            $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::file("file://$this->privateKey"));
 
             return $config
                 ->builder()
