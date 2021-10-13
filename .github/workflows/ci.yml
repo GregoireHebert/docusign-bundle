@@ -27,6 +27,10 @@ jobs:
           - php: '7.4'
             dependency: ''
             symfony: '5.3.*'
+            bootable: true
+          - php: '8.0'
+            dependency: ''
+            symfony: '5.3.*'
             coverage: true
             bootable: true
       fail-fast: false
@@ -64,14 +68,14 @@ jobs:
         run: composer update --no-progress --ansi --prefer-stable ${{ matrix.dependency }}
 
       - name: Bundle is bootable
-        if: matrix.bootable
+        if: ${{ matrix.bootable && github.event_name == 'push' }}
         env:
           SKELETON_VERSION: ${{matrix.symfony}}
         run: |
           composer create-project "symfony/skeleton:${SKELETON_VERSION}" flex
           cd flex
           composer config extra.symfony.allow-contrib true
-          composer req gheb/docusign-bundle
+          composer req gheb/docusign-bundle:dev-${GITHUB_REF#refs/heads/}
 
       - name: Run php-cs-fixer tests
         run: php-cs-fixer fix --diff --dry-run
@@ -140,5 +144,5 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          composer global require --prefer-dist --no-progress --ansi cedx/coveralls
-          $HOME/.composer/vendor/bin/coveralls build/logs/phpunit/clover.xml
+          composer global require --prefer-dist --no-progress --ansi php-coveralls/php-coveralls
+          $HOME/.composer/vendor/bin/php-coveralls --coverage_clover=build/logs/phpunit/clover.xml -v
