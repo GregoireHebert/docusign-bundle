@@ -47,6 +47,7 @@ jobs:
             symfony: '5.4.*'
             coverage: true
             bootable: true
+            quality: true
       fail-fast: false
     steps:
       - name: Checkout
@@ -82,9 +83,9 @@ jobs:
         run: composer update --no-progress --ansi --prefer-stable ${{ matrix.dependency }}
 
       - name: Bundle is bootable
-        if: ${{ matrix.bootable && github.event_name == 'push' }}
+        if: matrix.bootable && github.event_name == 'push'
         env:
-          SKELETON_VERSION: ${{matrix.symfony}}
+          SKELETON_VERSION: ${{ matrix.symfony }}
         run: |
           composer create-project "symfony/skeleton:${SKELETON_VERSION}" flex
           cd flex
@@ -92,15 +93,12 @@ jobs:
           composer req gheb/docusign-bundle:dev-${GITHUB_REF#refs/heads/}
 
       - name: Run php-cs-fixer tests
+        if: matrix.quality
         run: php-cs-fixer fix --diff --dry-run
 
       - name: Run phpstan tests
-        if: matrix.dependency == '' && matrix.php == '7.4'
+        if: matrix.quality
         run: vendor/bin/phpstan analyze
-
-      - name: Run phpstan tests lowest
-        if: matrix.dependency != '' && matrix.php == '7.4'
-        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
 
       - name: Prepare PHPUnit tests
         env:
