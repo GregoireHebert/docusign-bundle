@@ -17,20 +17,31 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+          - '8.1'
         symfony:
           - '4.4.*'
-          - '5.3.*'
+          - '5.4.*'
+          - '6.0.*'
         dependency:
           - ''
           - '--prefer-lowest'
+        exclude:
+          - symfony: '6.0.*'
+            php: '7.3'
+          - symfony: '6.0.*'
+            php: '7.4'
+          - symfony: '5.4.*'
+            dependency: '--prefer-lowest'
+          - symfony: '6.0.*'
+            dependency: '--prefer-lowest'
         include:
           - php: '7.4'
             dependency: ''
-            symfony: '5.3.*'
+            symfony: '5.4.*'
             bootable: true
           - php: '8.0'
             dependency: ''
-            symfony: '5.3.*'
+            symfony: '5.4.*'
             coverage: true
             bootable: true
       fail-fast: false
