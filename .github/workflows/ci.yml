@@ -5,7 +5,10 @@ on:
     # Every sunday at 02:00
     - cron: 0 2 * * 0
   pull_request:
-  push: ~
+  push:
+    branches:
+      - main
+      - '[0-9].x'
 
 jobs:
   tests:
