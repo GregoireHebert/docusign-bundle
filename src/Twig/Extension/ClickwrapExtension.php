@@ -33,7 +33,7 @@ final class ClickwrapExtension extends AbstractExtension
         $this->config[$docusignName] = $config;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('renderClickwrap', [$this, 'renderClickwrap'], ['needs_environment' => true, 'is_safe' => ['html']]),

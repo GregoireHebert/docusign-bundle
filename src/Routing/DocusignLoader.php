@@ -25,8 +25,10 @@ final class DocusignLoader extends Loader
 {
     private $config;
 
-    public function __construct(array $config)
+    public function __construct(array $config, string $env = null)
     {
+        parent::__construct($env);
+
         $this->config = $config;
     }
 
@@ -86,7 +88,7 @@ final class DocusignLoader extends Loader
     /**
      * {@inheritdoc}
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, $type = null): bool
     {
         return 'docusign' === $type;
     }
