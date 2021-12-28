@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace DocusignBundle;
 
 use DocuSign\eSign\Api\EnvelopesApi;
-use DocuSign\eSign\ApiClient;
 use DocuSign\eSign\Model;
 use DocusignBundle\EnvelopeCreator\EnvelopeCreatorInterface;
 use DocusignBundle\Filesystem\FilesystemInterface;
@@ -61,8 +60,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
     private $carbonCopies = [];
     /** @var Model\SignHere[]|array */
     private $signatureZones = [];
-    /** @var ApiClient|null */
-    private $apiClient;
     /** @var array */
     private $webhookParameters = [];
     /** @var string */
@@ -227,7 +224,6 @@ final class EnvelopeBuilder implements EnvelopeBuilderInterface
         $this->signers = [];
         $this->carbonCopies = [];
         $this->envelopeDefinition = null;
-        $this->apiClient = null;
         $this->envelopesApi = null;
         $this->envelopeId = null;
         $this->webhookParameters = [];

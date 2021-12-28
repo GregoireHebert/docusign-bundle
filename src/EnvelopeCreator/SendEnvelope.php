@@ -20,19 +20,16 @@ use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSendEnvelopeEvent;
 use DocusignBundle\Grant\GrantInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 final class SendEnvelope implements EnvelopeBuilderCallableInterface
 {
     public $grant;
-    private $router;
     private $envelopeBuilder;
     private $eventDispatcher;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, RouterInterface $router, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, EventDispatcherInterface $eventDispatcher)
     {
         $this->grant = $grant;
-        $this->router = $router;
         $this->envelopeBuilder = $envelopeBuilder;
         $this->eventDispatcher = $eventDispatcher;
     }

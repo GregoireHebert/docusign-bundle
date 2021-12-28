@@ -27,7 +27,7 @@ trait TranslatorAwareTrait
 
     public function getTranslator(): TranslatorInterface
     {
-        if (null === $this->translator ?? null) {
+        if (null === $this->translator) {
             $this->translator = new IdentityTranslator();
             // Force the locale to be 'en' when no translator is provided rather than relying on the Intl default locale
             // This avoids depending on Intl or the stub implementation being available. It also ensures that Docusign
