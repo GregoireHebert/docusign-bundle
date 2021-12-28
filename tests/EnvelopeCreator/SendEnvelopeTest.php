@@ -24,7 +24,6 @@ use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class SendEnvelopeTest extends TestCase
 {
@@ -32,7 +31,6 @@ class SendEnvelopeTest extends TestCase
 
     private $envelopeBuilderProphecyMock;
     private $grantProphecyMock;
-    private $routerProphecyMock;
     private $envelopesApiProphecyMock;
     private $envelopeSummaryProphecyMock;
     private $eventDispatcherProphecyMock;
@@ -41,7 +39,6 @@ class SendEnvelopeTest extends TestCase
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
         $this->grantProphecyMock = $this->prophesize(GrantInterface::class);
-        $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->envelopesApiProphecyMock = $this->prophesize(EnvelopesApi::class);
         $this->envelopeSummaryProphecyMock = $this->prophesize(EnvelopeSummary::class);
         $this->eventDispatcherProphecyMock = $this->prophesize(EventDispatcherInterface::class);
@@ -68,7 +65,7 @@ class SendEnvelopeTest extends TestCase
 
         $this->eventDispatcherProphecyMock->dispatch(Argument::Type(PreSendEnvelopeEvent::class))->shouldBeCalled();
 
-        $sendEnvelope = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->routerProphecyMock->reveal(), $this->eventDispatcherProphecyMock->reveal());
+        $sendEnvelope = new SendEnvelope($this->envelopeBuilderProphecyMock->reveal(), $this->grantProphecyMock->reveal(), $this->eventDispatcherProphecyMock->reveal());
         $sendEnvelope(['signature_name' => 'default']);
     }
 }
