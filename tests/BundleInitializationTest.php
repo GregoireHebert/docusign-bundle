@@ -21,6 +21,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
+ *
+ * @group bootable
  */
 final class BundleInitializationTest extends KernelTestCase
 {

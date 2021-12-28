@@ -134,7 +134,6 @@ return [
 Then, you must define the following urls in the `Redirect URIs` section on DocuSign Admin:
 
 https://127.0.0.1:8000
-https://127.0.0.1:8000
 https://127.0.0.1:8000/docusign/authorization_code/embedded_auth_code
 https://127.0.0.1:8000/docusign/authorization_code/remote_auth_code
 
@@ -163,7 +162,6 @@ To access the list of documents, you'll need to login as `admin:4dm1n` on http:/
 
 You must add the following urls in the `Redirect URIs` section on DocuSign Admin:
 
-http://127.0.0.1:9080
 http://127.0.0.1:9080
 http://127.0.0.1:9080/docusign/authorization_code/embedded_auth_code
 http://127.0.0.1:9080/docusign/authorization_code/remote_auth_code

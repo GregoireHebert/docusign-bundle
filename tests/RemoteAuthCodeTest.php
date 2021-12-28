@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace DocusignBundle\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Panther\PantherTestCase;
 
 /**
@@ -27,7 +26,7 @@ final class RemoteAuthCodeTest extends PantherTestCase
     public static function setUpBeforeClass(): void
     {
         static::bootKernel();
-        $container = method_exists(KernelTestCase::class, 'getContainer') ? self::getContainer() : self::$container;
+        $container = method_exists(self::class, 'getContainer') ? self::getContainer() : self::$container;
         self::$docusignEmail = $container->getParameter('docusign.email');
         self::$docusignPassword = self::$container->getParameter('docusign.password');
     }

@@ -27,7 +27,9 @@ final class DocusignLoader extends Loader
 
     public function __construct(array $config, string $env = null)
     {
-        parent::__construct($env);
+        if (method_exists(parent::class, '__construct')) {
+            parent::__construct($env);
+        }
 
         $this->config = $config;
     }

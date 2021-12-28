@@ -10,6 +10,9 @@ on:
       - main
       - '[0-9].x'
 
+env:
+  SYMFONY_DEPRECATIONS_HELPER: disabled=1
+
 jobs:
   tests:
     name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }} (Symfony ${{ matrix.symfony }})
@@ -45,9 +48,10 @@ jobs:
           - php: '8.0'
             dependency: ''
             symfony: '5.4.*'
-            coverage: true
+            coverage: '--coverage-clover build/logs/phpunit/clover.xml'
             bootable: true
             quality: true
+            deprecations: true
       fail-fast: false
     steps:
       - name: Checkout
@@ -107,23 +111,11 @@ jobs:
           mkdir -p build/screenshots build/logs/phpunit
           openssl aes-256-cbc -d -a -pbkdf2 -salt -in features/var/jwt/docusign.pem.enc -out features/var/jwt/docusign.pem -pass env:DOCUSIGN_RSA_PASSPHRASE
 
-      - name: Run PHPUnit tests with coverage
-        if: matrix.coverage
-        env:
-          DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
-          DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
-          DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
-          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
-          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
-          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
-          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
-          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
-          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
-          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/simple-phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
+      - name: Enable deprecations detector
+        if: matrix.deprecations
+        run: echo "SYMFONY_DEPRECATIONS_HELPER=max[total]=0" >> $GITHUB_ENV
 
       - name: Run PHPUnit tests
-        if: matrix.coverage == ''
         env:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
@@ -135,16 +127,33 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/simple-phpunit --colors=always --testdox
+        run: vendor/bin/simple-phpunit --colors=always --testdox ${{ matrix.coverage }}
 
-      - name: Upload test artifacts
+      - name: Run bootable PHPUnit tests
+        env:
+          DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
+          DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
+          DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
+          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
+          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
+          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
+          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
+          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
+          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
+          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
+        run: |
+          composer require --dev nyholm/symfony-bundle-test:dev-master
+          vendor/bin/simple-phpunit --colors=always --testdox --group bootable
+
+      - name: Upload coverage artifacts
+        if: matrix.coverage != ''
         uses: actions/upload-artifact@v1
         with:
           name: build-php${{ matrix.php }}
           path: build
 
       - name: Upload coverage results to Codecov
-        if: matrix.coverage
+        if: matrix.coverage != ''
         uses: codecov/codecov-action@v1.0.3
         with:
           name: phpunit-php${{ matrix.php }}
@@ -152,7 +161,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage results to Coveralls
-        if: matrix.coverage
+        if: matrix.coverage != ''
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
