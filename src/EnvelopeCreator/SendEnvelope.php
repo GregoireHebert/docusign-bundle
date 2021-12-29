@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Api\EnvelopesApi;
-use DocuSign\eSign\ApiClient;
+use DocuSign\eSign\Client\ApiClient;
+use DocuSign\eSign\Client\ApiException;
 use DocuSign\eSign\Configuration;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSendEnvelopeEvent;
@@ -35,7 +36,7 @@ final class SendEnvelope implements EnvelopeBuilderCallableInterface
     }
 
     /**
-     * @throws \DocuSign\eSign\ApiException
+     * @throws ApiException
      *
      * @return string|void
      */
