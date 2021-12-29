@@ -113,7 +113,7 @@ jobs:
 
       - name: Enable deprecations detector
         if: matrix.deprecations
-        run: echo "SYMFONY_DEPRECATIONS_HELPER=max[total]=0" >> $GITHUB_ENV
+        run: echo "SYMFONY_DEPRECATIONS_HELPER=max[self]=0" >> $GITHUB_ENV
 
       - name: Run PHPUnit tests
         env:
@@ -127,7 +127,7 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/simple-phpunit --colors=always --testdox ${{ matrix.coverage }}
+        run: vendor/bin/simple-phpunit ${{ matrix.coverage }}
 
       - name: Run bootable PHPUnit tests
         env:
@@ -143,7 +143,7 @@ jobs:
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
         run: |
           composer require --dev nyholm/symfony-bundle-test:dev-master
-          vendor/bin/simple-phpunit --colors=always --testdox --group bootable
+          vendor/bin/simple-phpunit --group bootable
 
       - name: Upload coverage artifacts
         if: matrix.coverage != ''

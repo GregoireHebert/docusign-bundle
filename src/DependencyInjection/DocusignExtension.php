@@ -377,35 +377,30 @@ final class DocusignExtension extends Extension
             ->setAutowired(true)
             ->setDecoratedService("docusign.create_document.$name")
             ->addArgument(new Reference("docusign.decorated_create_document.$name.inner"))
-            ->setPublic(false)
-        ;
+            ->setPublic(false);
 
         $container->register("docusign.decorated_create_signature.$name", TraceableEnvelopeBuilderCallable::class)
             ->setAutowired(true)
             ->setDecoratedService("docusign.create_signature.$name")
             ->addArgument(new Reference("docusign.decorated_create_signature.$name.inner"))
-            ->setPublic(false)
-        ;
+            ->setPublic(false);
 
         $container->register("docusign.decorated_define_envelope.$name", TraceableEnvelopeBuilderCallable::class)
             ->setAutowired(true)
             ->setDecoratedService("docusign.define_envelope.$name")
             ->addArgument(new Reference("docusign.decorated_define_envelope.$name.inner"))
-            ->setPublic(false)
-        ;
+            ->setPublic(false);
 
         $container->register("docusign.decorated_send_envelope.$name", TraceableEnvelopeBuilderCallable::class)
             ->setAutowired(true)
             ->setDecoratedService("docusign.send_envelope.$name")
             ->addArgument(new Reference("docusign.decorated_send_envelope.$name.inner"))
-            ->setPublic(false)
-        ;
+            ->setPublic(false);
 
         $container->register("docusign.decorated_create_recipient.$name", TraceableEnvelopeBuilderCallable::class)
             ->setAutowired(true)
             ->setDecoratedService("docusign.get_view_url.$name")
             ->addArgument(new Reference("docusign.decorated_create_recipient.$name.inner"))
-            ->setPublic(false)
-        ;
+            ->setPublic(false);
     }
 }
