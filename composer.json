@@ -96,10 +96,5 @@
             "symfony/runtime": true
         }
     },
-    "minimum-stability": "stable",
-    "extra": {
-        "symfony": {
-            "require": "5.4.*"
-        }
-    }
+    "minimum-stability": "stable"
 }

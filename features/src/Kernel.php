@@ -26,11 +26,13 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel as HttpKernel;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -96,9 +98,6 @@ final class Kernel extends BaseKernel
         $c->loadFromExtension('framework', [
             'secret' => 'DocusignBundle',
             'test' => true,
-            'session' => [
-                'storage_id' => 'session.storage.mock_file',
-            ],
             'router' => [
                 'utf8' => true,
             ],
@@ -109,9 +108,6 @@ final class Kernel extends BaseKernel
         ]);
 
         $c->loadFromExtension('security', [
-            'encoders' => [
-                User::class => 'plaintext',
-            ],
             'providers' => [
                 'in_memory' => [
                     'memory' => [
@@ -139,15 +135,7 @@ final class Kernel extends BaseKernel
                         'path' => 'logout',
                         'target' => 'homepage',
                     ],
-                    'anonymous' => null,
                 ],
-            ],
-            'access_control' => [
-                ['path' => '^/docusign/webhook/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
-                ['path' => '^/docusign/authorization_code/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
-                ['path' => '^/login$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
-                ['path' => '^/$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
-                ['path' => '^/', 'roles' => 'IS_AUTHENTICATED_FULLY'],
             ],
         ]);
 
@@ -293,5 +281,57 @@ final class Kernel extends BaseKernel
                 ],
             ]);
         }
+
+        if (6 === (int) HttpKernel::VERSION) {
+            $c->loadFromExtension('framework', [
+                'session' => [
+                    'enabled' => true,
+                    'storage_factory_id' => 'session.storage.factory.mock_file',
+                ],
+            ]);
+
+            $c->loadFromExtension('security', [
+                'enable_authenticator_manager' => true,
+                'password_hashers' => [
+                    InMemoryUser::class => [
+                        'algorithm' => 'plaintext',
+                    ],
+                ],
+                'access_control' => [
+                    ['path' => '^/docusign/webhook/', 'roles' => 'PUBLIC_ACCESS'],
+                    ['path' => '^/docusign/authorization_code/', 'roles' => 'PUBLIC_ACCESS'],
+                    ['path' => '^/login$', 'roles' => 'PUBLIC_ACCESS'],
+                    ['path' => '^/$', 'roles' => 'PUBLIC_ACCESS'],
+                    ['path' => '^/', 'roles' => 'IS_AUTHENTICATED_FULLY'],
+                ],
+            ]);
+
+            return;
+        }
+
+        $c->loadFromExtension('framework', [
+            'session' => [
+                'enabled' => true,
+                'storage_id' => 'session.storage.mock_file',
+            ],
+        ]);
+
+        $c->loadFromExtension('security', [
+            'encoders' => [
+                User::class => 'plaintext',
+            ],
+            'firewalls' => [
+                'test' => [
+                    'anonymous' => true,
+                ],
+            ],
+            'access_control' => [
+                ['path' => '^/docusign/webhook/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/docusign/authorization_code/', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/login$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/$', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
+                ['path' => '^/', 'roles' => 'IS_AUTHENTICATED_FULLY'],
+            ],
+        ]);
     }
 }

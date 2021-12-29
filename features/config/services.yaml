@@ -10,12 +10,10 @@ services:
         public: false
         bind:
             $kernelProjectDir: '%kernel.project_dir%'
-    
-    Symfony\Component\HttpFoundation\Session\Session: '@session'
-    
+
     DocusignBundle\E2e\:
         resource: '../src/*'
-    
+
     DocusignBundle\E2e\Controller\:
         resource: '../src/Controller/*'
         tags: [ 'controller.service_arguments' ]

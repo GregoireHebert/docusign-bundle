@@ -145,15 +145,15 @@ class DocusignExtensionTest extends TestCase
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
-        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->shouldBeCalled();
-        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
         $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         if (!class_exists(FlysystemBundle::class)) {
             $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-            $childDefinitionProphecyMock->addTag('flysystem.plugin')->shouldBeCalled();
+            $childDefinitionProphecyMock->addTag('flysystem.plugin')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
         }
 
         $definitionProphecy = $this->prophesize(Definition::class);
@@ -162,13 +162,13 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setPublic(false)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_creator')->shouldBeCalled();
-        $definitionProphecy->addTag('controller.service_arguments')->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_creator')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('controller.service_arguments')->willReturn($definitionProphecy)->shouldBeCalled();
 
         /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */
         $loaderDefinitionProphecy = $this->prophesize(Definition::class);
@@ -252,19 +252,19 @@ class DocusignExtensionTest extends TestCase
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
-        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->shouldBeCalled();
-        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
         $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         if (!class_exists(FlysystemBundle::class)) {
             $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-            $childDefinitionProphecyMock->addTag('flysystem.plugin')->shouldBeCalled();
+            $childDefinitionProphecyMock->addTag('flysystem.plugin')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
         }
 
         $aliasDefinition = $this->prophesize(Alias::class);
-        $aliasDefinition->setPublic(false)->shouldBeCalled();
+        $aliasDefinition->setPublic(false)->willReturn($aliasDefinition)->shouldBeCalled();
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
@@ -273,13 +273,13 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->addArgument(Argument::type(Reference::class))->shouldBeCalled()->willReturn($definitionProphecy);
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_creator')->shouldBeCalled();
-        $definitionProphecy->addTag('controller.service_arguments')->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_creator')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('controller.service_arguments')->willReturn($definitionProphecy)->shouldBeCalled();
 
         $definitionProphecy->setDecoratedService('docusign.create_document.default')->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setDecoratedService('docusign.create_signature.default')->shouldBeCalled()->willReturn($definitionProphecy);
@@ -377,19 +377,19 @@ class DocusignExtensionTest extends TestCase
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
-        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->shouldBeCalled();
-        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
         $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         if (!class_exists(FlysystemBundle::class)) {
             $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-            $childDefinitionProphecyMock->addTag('flysystem.plugin')->shouldBeCalled();
+            $childDefinitionProphecyMock->addTag('flysystem.plugin')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
         }
 
         $aliasDefinition = $this->prophesize(Alias::class);
-        $aliasDefinition->setPublic(false)->shouldBeCalled();
+        $aliasDefinition->setPublic(false)->willReturn($aliasDefinition)->shouldBeCalled();
 
         $definitionProphecy = $this->prophesize(Definition::class);
         $definitionProphecy->setAutowired(true)->shouldBeCalled()->willReturn($definitionProphecy);
@@ -398,13 +398,13 @@ class DocusignExtensionTest extends TestCase
         $definitionProphecy->setPublic(true)->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setArguments(Argument::type('array'))->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->addArgument(Argument::type(Reference::class))->shouldBeCalled()->willReturn($definitionProphecy);
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->shouldBeCalled();
-        $definitionProphecy->addTag('docusign.envelope_creator')->shouldBeCalled();
-        $definitionProphecy->addTag('controller.service_arguments')->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => 0])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -2])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -4])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -8])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_builder.action', ['priority' => -16])->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('docusign.envelope_creator')->willReturn($definitionProphecy)->shouldBeCalled();
+        $definitionProphecy->addTag('controller.service_arguments')->willReturn($definitionProphecy)->shouldBeCalled();
 
         $definitionProphecy->setDecoratedService('docusign.create_document.default')->shouldBeCalled()->willReturn($definitionProphecy);
         $definitionProphecy->setDecoratedService('docusign.create_signature.default')->shouldBeCalled()->willReturn($definitionProphecy);
@@ -505,15 +505,15 @@ class DocusignExtensionTest extends TestCase
         }
 
         $childDefinitionProphecyMock = $this->prophesize(ChildDefinition::class);
-        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->shouldBeCalled();
-        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.envelope_builder.action')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
+        $childDefinitionProphecyMock->addTag('docusign.translator.aware')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
 
         $containerBuilderProphecy->registerForAutoconfiguration(EnvelopeCreator\EnvelopeBuilderCallableInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
         $containerBuilderProphecy->registerForAutoconfiguration(TranslatorAwareInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
 
         if (!class_exists(FlysystemBundle::class)) {
             $containerBuilderProphecy->registerForAutoconfiguration(PluginInterface::class)->shouldBeCalled()->willReturn($childDefinitionProphecyMock->reveal());
-            $childDefinitionProphecyMock->addTag('flysystem.plugin')->shouldBeCalled();
+            $childDefinitionProphecyMock->addTag('flysystem.plugin')->willReturn($childDefinitionProphecyMock)->shouldBeCalled();
         }
 
         /** @var ObjectProphecy|Definition $loaderDefinitionProphecy */

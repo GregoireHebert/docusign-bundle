@@ -28,7 +28,7 @@ final class RemoteAuthCodeTest extends PantherTestCase
         static::bootKernel();
         $container = method_exists(self::class, 'getContainer') ? self::getContainer() : self::$container;
         self::$docusignEmail = $container->getParameter('docusign.email');
-        self::$docusignPassword = self::$container->getParameter('docusign.password');
+        self::$docusignPassword = $container->getParameter('docusign.password');
     }
 
     protected function tearDown(): void

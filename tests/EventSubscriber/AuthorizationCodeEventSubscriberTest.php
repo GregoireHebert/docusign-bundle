@@ -86,6 +86,10 @@ final class AuthorizationCodeEventSubscriberTest extends TestCase
         $eventProphecy->getEnvelopeBuilder()->willReturn($envelopeBuilderProphecy)->shouldBeCalled();
         $envelopeBuilderProphecy->getAuthMode()->willReturn(EnvelopeBuilder::AUTH_MODE_CODE)->shouldBeCalled();
         $envelopeBuilderProphecy->getName()->willReturn('default')->shouldBeCalled();
+        $this->routerProphecy
+            ->generate('docusign_authorization_code_default', [], RouterInterface::ABSOLUTE_URL)
+            ->willReturn('https://www.example.com/docusign/default')
+            ->shouldBeCalled();
 
         $this->tokenEncoderProphecy->encode([])->willReturn('token')->shouldBeCalled();
         $eventProphecy->setResponse(Argument::type(RedirectResponse::class))->shouldBeCalled();

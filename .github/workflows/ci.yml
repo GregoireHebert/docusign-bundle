@@ -45,9 +45,9 @@ jobs:
             dependency: ''
             symfony: '5.4.*'
             bootable: true
-          - php: '8.0'
+          - php: '8.1'
             dependency: ''
-            symfony: '5.4.*'
+            symfony: '6.0.*'
             coverage: '--coverage-clover build/logs/phpunit/clover.xml'
             bootable: true
             quality: true
