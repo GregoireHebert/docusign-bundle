@@ -26,8 +26,9 @@ final class EmbeddedAuthCodeTest extends PantherTestCase
     public static function setUpBeforeClass(): void
     {
         static::bootKernel();
-        self::$docusignEmail = self::$container->getParameter('docusign.email');
-        self::$docusignPassword = self::$container->getParameter('docusign.password');
+        $container = method_exists(self::class, 'getContainer') ? self::getContainer() : self::$container;
+        self::$docusignEmail = $container->getParameter('docusign.email');
+        self::$docusignPassword = $container->getParameter('docusign.password');
     }
 
     protected function tearDown(): void

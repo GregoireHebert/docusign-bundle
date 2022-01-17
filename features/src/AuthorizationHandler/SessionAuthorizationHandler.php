@@ -14,18 +14,19 @@ declare(strict_types=1);
 namespace DocusignBundle\E2e\AuthorizationHandler;
 
 use DocusignBundle\AuthorizationCodeHandler\AuthorizationCodeHandlerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * @author Vincent Chalamon <vincent@les-tilleuls.coop>
  */
 final class SessionAuthorizationHandler implements AuthorizationCodeHandlerInterface
 {
-    private $session;
+    private $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -33,7 +34,7 @@ final class SessionAuthorizationHandler implements AuthorizationCodeHandlerInter
      */
     public function read(array $context = []): ?string
     {
-        return $this->session->get('docusign', [])[$context['signature_name'] ?? 'default'] ?? null;
+        return $this->getSession()->get('docusign', [])[$context['signature_name'] ?? 'default'] ?? null;
     }
 
     /**
@@ -41,8 +42,13 @@ final class SessionAuthorizationHandler implements AuthorizationCodeHandlerInter
      */
     public function write(string $code, array $context = []): void
     {
-        $docusign = $this->session->get('docusign', []);
+        $docusign = $this->getSession()->get('docusign', []);
         $docusign[$context['signature_name'] ?? 'default'] = $code;
-        $this->session->set('docusign', $docusign);
+        $this->getSession()->set('docusign', $docusign);
+    }
+
+    private function getSession(): Session
+    {
+        return $this->requestStack->getCurrentRequest()->getSession();
     }
 }

@@ -13,29 +13,25 @@ declare(strict_types=1);
 
 namespace DocusignBundle\EnvelopeCreator;
 
-use DocuSign\eSign\ApiException;
+use DocuSign\eSign\Client\ApiException;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Exception\FileNotFoundException;
 use DocusignBundle\Exception\UnableToSignException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Webmozart\Assert\Assert;
 
 final class EnvelopeCreator implements EnvelopeCreatorInterface
 {
-    private $router;
     private $logger;
     /** @var EnvelopeBuilderCallableInterface[]|iterable */
     private $actions;
     private $signatureName;
 
     public function __construct(
-        RouterInterface $router,
         LoggerInterface $logger,
         string $signatureName,
         iterable $actions
     ) {
-        $this->router = $router;
         $this->logger = $logger;
         $this->actions = $actions;
         $this->signatureName = $signatureName;

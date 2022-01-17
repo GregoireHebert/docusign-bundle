@@ -1,4 +1,4 @@
 services:
-  test.docusign.token_encoder.default:
-    parent: docusign.token_encoder.default
-    public: true
+    test.docusign.token_encoder.default:
+        parent: docusign.token_encoder.default
+        public: true

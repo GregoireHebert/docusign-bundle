@@ -14,26 +14,39 @@ declare(strict_types=1);
 namespace DocusignBundle\Tests;
 
 use DocusignBundle\DocusignBundle;
-use Nyholm\BundleTest\BaseBundleTestCase;
+use Nyholm\BundleTest\TestKernel;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
+ *
+ * @group bootable
  */
-final class BundleInitializationTest extends BaseBundleTestCase
+final class BundleInitializationTest extends KernelTestCase
 {
-    protected function getBundleClass(): string
+    protected static function getKernelClass(): string
     {
-        return DocusignBundle::class;
+        return TestKernel::class;
+    }
+
+    protected static function createKernel(array $options = []): KernelInterface
+    {
+        /** @var TestKernel $kernel */
+        $kernel = parent::createKernel($options);
+        $kernel->addTestBundle(DocusignBundle::class);
+        $kernel->handleOptions($options);
+
+        return $kernel;
     }
 
     public function testTheBundleIsBootable(): void
     {
-        $kernel = $this->createKernel();
-        $kernel->addConfigFile(__DIR__.'/config/docusign.yml');
-        $this->bootKernel();
-
-        $container = $this->getContainer();
+        $kernel = self::bootKernel(['config' => static function (TestKernel $kernel): void {
+            $kernel->addTestConfig(__DIR__.'/config/docusign.yml');
+        }]);
+        $container = $kernel->getContainer();
 
         $this->assertFalse($container->has('docusign.grant.embedded'));
         $this->assertFalse($container->has('docusign.signature_extractor.embedded'));
@@ -47,9 +60,9 @@ final class BundleInitializationTest extends BaseBundleTestCase
     {
         $this->expectException(InvalidConfigurationException::class);
 
-        $kernel = $this->createKernel();
-        $kernel->addConfigFile($configFile);
-        $this->bootKernel();
+        self::bootKernel(['config' => static function (TestKernel $kernel) use ($configFile): void {
+            $kernel->addTestConfig($configFile);
+        }]);
     }
 
     public function getInvalidConfigurationFiles(): array

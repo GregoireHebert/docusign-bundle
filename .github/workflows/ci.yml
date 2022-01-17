@@ -5,7 +5,10 @@ on:
     # Every sunday at 02:00
     - cron: 0 2 * * 0
   pull_request:
-  push: ~
+  push:
+    branches:
+      - main
+      - '[0-9].x'
 
 jobs:
   tests:
@@ -17,22 +20,34 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+          - '8.1'
         symfony:
           - '4.4.*'
-          - '5.3.*'
+          - '5.4.*'
+          - '6.0.*'
         dependency:
           - ''
           - '--prefer-lowest'
+        exclude:
+          - symfony: '6.0.*'
+            php: '7.3'
+          - symfony: '6.0.*'
+            php: '7.4'
+          - symfony: '5.4.*'
+            dependency: '--prefer-lowest'
+          - symfony: '6.0.*'
+            dependency: '--prefer-lowest'
         include:
           - php: '7.4'
             dependency: ''
-            symfony: '5.3.*'
+            symfony: '5.4.*'
             bootable: true
-          - php: '8.0'
+          - php: '8.1'
             dependency: ''
-            symfony: '5.3.*'
-            coverage: true
+            symfony: '6.0.*'
+            coverage: '--coverage-clover build/logs/phpunit/clover.xml'
             bootable: true
+            quality: true
       fail-fast: false
     steps:
       - name: Checkout
@@ -68,9 +83,9 @@ jobs:
         run: composer update --no-progress --ansi --prefer-stable ${{ matrix.dependency }}
 
       - name: Bundle is bootable
-        if: ${{ matrix.bootable && github.event_name == 'push' }}
+        if: matrix.bootable && github.event_name == 'push'
         env:
-          SKELETON_VERSION: ${{matrix.symfony}}
+          SKELETON_VERSION: ${{ matrix.symfony }}
         run: |
           composer create-project "symfony/skeleton:${SKELETON_VERSION}" flex
           cd flex
@@ -78,15 +93,12 @@ jobs:
           composer req gheb/docusign-bundle:dev-${GITHUB_REF#refs/heads/}
 
       - name: Run php-cs-fixer tests
+        if: matrix.quality
         run: php-cs-fixer fix --diff --dry-run
 
       - name: Run phpstan tests
-        if: matrix.dependency == '' && matrix.php == '7.4'
+        if: matrix.quality
         run: vendor/bin/phpstan analyze
-
-      - name: Run phpstan tests lowest
-        if: matrix.dependency != '' && matrix.php == '7.4'
-        run: vendor/bin/phpstan analyze -c phpstan.neon.lowest.dist
 
       - name: Prepare PHPUnit tests
         env:
@@ -95,23 +107,7 @@ jobs:
           mkdir -p build/screenshots build/logs/phpunit
           openssl aes-256-cbc -d -a -pbkdf2 -salt -in features/var/jwt/docusign.pem.enc -out features/var/jwt/docusign.pem -pass env:DOCUSIGN_RSA_PASSPHRASE
 
-      - name: Run PHPUnit tests with coverage
-        if: matrix.coverage
-        env:
-          DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
-          DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
-          DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
-          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
-          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
-          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
-          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
-          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
-          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
-          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/simple-phpunit --coverage-clover build/logs/phpunit/clover.xml --colors=always --testdox
-
       - name: Run PHPUnit tests
-        if: matrix.coverage == ''
         env:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
           DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
@@ -123,16 +119,33 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: vendor/bin/simple-phpunit --colors=always --testdox
+        run: vendor/bin/simple-phpunit ${{ matrix.coverage }}
 
-      - name: Upload test artifacts
+      - name: Run bootable PHPUnit tests
+        env:
+          DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
+          DOCUSIGN_USER_GUID: ${{ secrets.DOCUSIGN_USER_GUID }}
+          DOCUSIGN_ACCOUNT_ID: ${{ secrets.DOCUSIGN_ACCOUNT_ID }}
+          DOCUSIGN_CLICKWRAP_ID: ${{ secrets.DOCUSIGN_CLICKWRAP_ID }}
+          DOCUSIGN_API_ACCOUNT_ID: ${{ secrets.DOCUSIGN_API_ACCOUNT_ID }}
+          DOCUSIGN_SECRET: ${{ secrets.DOCUSIGN_SECRET }}
+          DOCUSIGN_DEFAULT_SIGNER_NAME: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_NAME }}
+          DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
+          DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
+          DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
+        run: |
+          composer require --dev nyholm/symfony-bundle-test:dev-master
+          vendor/bin/simple-phpunit --group bootable
+
+      - name: Upload coverage artifacts
+        if: matrix.coverage != ''
         uses: actions/upload-artifact@v1
         with:
           name: build-php${{ matrix.php }}
           path: build
 
       - name: Upload coverage results to Codecov
-        if: matrix.coverage
+        if: matrix.coverage != ''
         uses: codecov/codecov-action@v1.0.3
         with:
           name: phpunit-php${{ matrix.php }}
@@ -140,7 +153,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage results to Coveralls
-        if: matrix.coverage
+        if: matrix.coverage != ''
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

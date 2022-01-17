@@ -21,14 +21,12 @@ use DocusignBundle\Tests\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class EnvelopeCreatorTest extends TestCase
 {
     use ProphecyTrait;
 
     private $envelopeBuilderProphecyMock;
-    private $routerProphecyMock;
     private $loggerProphecyMock;
     private $createDocumentProphecyMock;
     private $createRecipientProphecyMock;
@@ -38,7 +36,6 @@ class EnvelopeCreatorTest extends TestCase
     protected function setUp(): void
     {
         $this->envelopeBuilderProphecyMock = $this->prophesize(EnvelopeBuilderInterface::class);
-        $this->routerProphecyMock = $this->prophesize(RouterInterface::class);
         $this->loggerProphecyMock = $this->prophesize(LoggerInterface::class);
         $this->createDocumentProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
         $this->createRecipientProphecyMock = $this->prophesize(EnvelopeBuilderCallableInterface::class);
@@ -49,7 +46,6 @@ class EnvelopeCreatorTest extends TestCase
     public function testItThrowsAnErrorOnMissingFilePath(): void
     {
         $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             'default',
             [
@@ -72,7 +68,6 @@ class EnvelopeCreatorTest extends TestCase
         $this->envelopeBuilderProphecyMock->reset()->shouldBeCalled();
 
         $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             'default',
             [
@@ -101,7 +96,6 @@ class EnvelopeCreatorTest extends TestCase
         $this->createRecipientProphecyMock->__invoke(Argument::type('array'))->shouldNotBeCalled();
 
         $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             'default',
             [
@@ -131,7 +125,6 @@ class EnvelopeCreatorTest extends TestCase
         $this->createRecipientProphecyMock->__invoke(Argument::type('array'))->shouldBeCalled()->willReturn('http://docusign.com/url/to/redirect');
 
         $envelopeCreator = new EnvelopeCreator(
-            $this->routerProphecyMock->reveal(),
             $this->loggerProphecyMock->reveal(),
             'default',
             [

@@ -14,31 +14,29 @@ declare(strict_types=1);
 namespace DocusignBundle\EnvelopeCreator;
 
 use DocuSign\eSign\Api\EnvelopesApi;
-use DocuSign\eSign\ApiClient;
+use DocuSign\eSign\Client\ApiClient;
+use DocuSign\eSign\Client\ApiException;
 use DocuSign\eSign\Configuration;
 use DocusignBundle\EnvelopeBuilderInterface;
 use DocusignBundle\Events\PreSendEnvelopeEvent;
 use DocusignBundle\Grant\GrantInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 final class SendEnvelope implements EnvelopeBuilderCallableInterface
 {
     public $grant;
-    private $router;
     private $envelopeBuilder;
     private $eventDispatcher;
 
-    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, RouterInterface $router, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EnvelopeBuilderInterface $envelopeBuilder, GrantInterface $grant, EventDispatcherInterface $eventDispatcher)
     {
         $this->grant = $grant;
-        $this->router = $router;
         $this->envelopeBuilder = $envelopeBuilder;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
-     * @throws \DocuSign\eSign\ApiException
+     * @throws ApiException
      *
      * @return string|void
      */

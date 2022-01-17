@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace DocusignBundle\EnvelopeCreator;
 
-use DocuSign\eSign\ApiException;
+use DocuSign\eSign\Client\ApiException;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class TraceableEnvelopeBuilderCallable implements TraceableEnvelopeBuilderCallableInterface

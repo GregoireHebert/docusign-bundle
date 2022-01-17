@@ -17,7 +17,7 @@ date_default_timezone_set('UTC');
 
 // PHPUnit's autoloader
 if (!file_exists($phpUnitAutoloaderPath = __DIR__.'/../vendor/bin/.phpunit/phpunit/vendor/autoload.php')) {
-    die('PHPUnit is not installed. Please run vendor/bin/simple-phpunit --version to install it');
+    exit('PHPUnit is not installed. Please run vendor/bin/simple-phpunit --version to install it');
 }
 
 $phpunitLoader = require $phpUnitAutoloaderPath;
@@ -45,4 +45,4 @@ if (is_array($env = @include __DIR__.'/.env.local.php')) {
 $_SERVER += $_ENV;
 $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = ($_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? null) ?: 'dev';
 $_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? 'prod' !== $_SERVER['APP_ENV'];
-$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int) $_SERVER['APP_DEBUG'] || filter_var($_SERVER['APP_DEBUG'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
+$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int) $_SERVER['APP_DEBUG'] || filter_var($_SERVER['APP_DEBUG'], \FILTER_VALIDATE_BOOLEAN) ? '1' : '0';

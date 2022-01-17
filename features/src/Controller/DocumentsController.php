@@ -17,7 +17,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
@@ -54,9 +53,9 @@ final class DocumentsController
      * @Route("/embedded/callback", name="embedded_callback", methods={"GET"}, defaults={"redirect"="embedded"})
      * @Route("/embedded_auth_code/callback", name="embedded_auth_code_callback", methods={"GET"}, defaults={"redirect"="embedded_auth_code"})
      */
-    public function embeddedCallbackAction(Request $request, RouterInterface $router, Session $session): RedirectResponse
+    public function embeddedCallbackAction(Request $request, RouterInterface $router): RedirectResponse
     {
-        $session->getFlashBag()->add('success', 'The document has been successfully signed!');
+        $request->getSession()->getFlashBag()->add('success', 'The document has been successfully signed!');
 
         return new RedirectResponse($router->generate($request->attributes->get('redirect')));
     }
@@ -65,9 +64,9 @@ final class DocumentsController
      * @Route("/remote/callback", name="remote_callback", methods={"GET"}, defaults={"redirect"="remote"})
      * @Route("/remote_auth_code/callback", name="remote_auth_code_callback", methods={"GET"}, defaults={"redirect"="remote_auth_code"})
      */
-    public function remoteCallbackAction(Request $request, RouterInterface $router, Session $session): RedirectResponse
+    public function remoteCallbackAction(Request $request, RouterInterface $router): RedirectResponse
     {
-        $session->getFlashBag()->add('success', 'The document has been successfully sent to the signer!');
+        $request->getSession()->getFlashBag()->add('success', 'The document has been successfully sent to the signer!');
 
         return new RedirectResponse($router->generate($request->attributes->get('redirect')));
     }

@@ -17,7 +17,6 @@ use DocusignBundle\Events\AuthorizationCodeEvent;
 use DocusignBundle\Events\CompletedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -26,12 +25,10 @@ use Symfony\Component\Routing\RouterInterface;
 final class DocusignEventSubscriber implements EventSubscriberInterface
 {
     private $router;
-    private $session;
 
-    public function __construct(RouterInterface $router, Session $session)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
-        $this->session = $session;
     }
 
     public static function getSubscribedEvents(): array
@@ -44,7 +41,7 @@ final class DocusignEventSubscriber implements EventSubscriberInterface
 
     public function onAuthorizationCode(AuthorizationCodeEvent $event): void
     {
-        $this->session->getFlashBag()->add('success', 'Authorization has been granted! You can now sign the document.');
+        $event->getRequest()->getSession()->getFlashBag()->add('success', 'Authorization has been granted! You can now sign the document.');
         $event->setResponse(new RedirectResponse($this->router->generate($event->getEnvelopeBuilder()->getName())));
     }
 

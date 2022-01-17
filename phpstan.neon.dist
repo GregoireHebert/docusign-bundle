@@ -13,7 +13,7 @@ parameters:
 
         # known bug of phpstan
         - "#Cannot cast Lcobucci\\\\JWT\\\\Token\\\\Plain to string\\.#"
-        - "#Parameter \\#1 \\$issuedAt of method Lcobucci\\\\JWT\\\\Builder::issuedAt\\(\\) expects DateTimeImmutable, int given\\.#"
+        - "#Parameter \\#1 \\$issuedAt of method Lcobucci\\\\JWT\\\\Builder::issuedAt\\(\\) expects DateTimeImmutable, int<1, max> given\\.#"
         - "#Parameter \\#1 \\$expiration of method Lcobucci\\\\JWT\\\\Builder::expiresAt\\(\\) expects DateTimeImmutable, int given\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Builder\\.#"
         - "#Cannot instantiate interface Lcobucci\\\\JWT\\\\Signer\\\\Key\\.#"
