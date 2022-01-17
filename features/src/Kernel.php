@@ -282,7 +282,7 @@ final class Kernel extends BaseKernel
             ]);
         }
 
-        if (6 === (int) HttpKernel::VERSION) {
+        if (6 === HttpKernel::MAJOR_VERSION) {
             $c->loadFromExtension('framework', [
                 'session' => [
                     'enabled' => true,
