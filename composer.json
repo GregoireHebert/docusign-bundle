@@ -28,7 +28,7 @@
         "docusign/esign-client": "^5.0 || ^6.0",
         "lcobucci/jwt": "^3.3.1 || ^4.0",
         "league/flysystem": "^1.1 || ^2.3",
-        "psr/log": "^1.1 || ^2.0 || ^3.0",
+        "psr/log": "^1.1 || ^2.0",
         "symfony/config": "^4.4 || ^5.0 || ^6.0",
         "symfony/dependency-injection": "^4.4 || ^5.0 || ^6.0",
         "symfony/event-dispatcher-contracts": "^1.0 || ^2.0 || ^3.0",
