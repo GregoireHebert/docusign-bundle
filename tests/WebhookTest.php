@@ -30,10 +30,10 @@ final class WebhookTest extends WebTestCase
         $client->request('POST', '/docusign/webhook/default?'.http_build_query($parameters + [
             '_token' => $client->getContainer()->get('test.docusign.token_encoder.default')->encode($parameters),
         ]
-            ), [], [], [
-                'CONTENT_TYPE' => 'text/xml; charset=utf-8',
-                'HTTPS' => true,
-            ], file_get_contents(__DIR__.'/xml/completed.xml'));
+        ), [], [], [
+            'CONTENT_TYPE' => 'text/xml; charset=utf-8',
+            'HTTPS' => true,
+        ], file_get_contents(__DIR__.'/xml/completed.xml'));
 
         $this->assertEquals(202, $client->getResponse()->getStatusCode());
         $this->assertFileExists('completed.pdf');
