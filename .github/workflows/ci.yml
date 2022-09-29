@@ -12,42 +12,33 @@ on:
 
 jobs:
   tests:
-    name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }} (Symfony ${{ matrix.symfony }})
+    name: Tests PHP ${{ matrix.php }} (Symfony ${{ matrix.symfony }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php:
-          - '7.3'
           - '7.4'
           - '8.0'
           - '8.1'
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.0.*'
-        dependency:
-          - ''
-          - '--prefer-lowest'
-        exclude:
-          - symfony: '6.0.*'
-            php: '7.3'
-          - symfony: '6.0.*'
-            php: '7.4'
-          - symfony: '5.4.*'
-            dependency: '--prefer-lowest'
-          - symfony: '6.0.*'
-            dependency: '--prefer-lowest'
+          - '6.1.*'
         include:
           - php: '7.4'
-            dependency: ''
             symfony: '5.4.*'
             bootable: true
           - php: '8.1'
-            dependency: ''
-            symfony: '6.0.*'
+            symfony: '6.1.*'
             coverage: '--coverage-clover build/logs/phpunit/clover.xml'
             bootable: true
             quality: true
+        exclude:
+          # Symfony 6.1 requires PHP 8.1
+          - php: '7.4'
+            symfony: '6.1.*'
+          - php: '8.0'
+            symfony: '6.1.*'
       fail-fast: false
     steps:
       - name: Checkout
@@ -80,7 +71,7 @@ jobs:
         run: composer config extra.symfony.require "${{ matrix.symfony }}"
 
       - name: Update project dependencies
-        run: composer update --no-progress --ansi --prefer-stable ${{ matrix.dependency }}
+        run: composer update --no-progress --ansi --prefer-stable
 
       - name: Bundle is bootable
         if: matrix.bootable && github.event_name == 'push'
@@ -121,6 +112,13 @@ jobs:
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
         run: vendor/bin/simple-phpunit ${{ matrix.coverage }}
 
+      - name: Upload coverage artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: panther-screenshots-${{ matrix.php }}
+          path: screenshots
+
       - name: Run bootable PHPUnit tests
         env:
           DOCUSIGN_INTEGRATION_KEY: ${{ secrets.DOCUSIGN_INTEGRATION_KEY }}
@@ -133,13 +131,11 @@ jobs:
           DOCUSIGN_DEFAULT_SIGNER_EMAIL: ${{ secrets.DOCUSIGN_DEFAULT_SIGNER_EMAIL }}
           DOCUSIGN_EMAIL: ${{ secrets.DOCUSIGN_EMAIL }}
           DOCUSIGN_PASSWORD: ${{ secrets.DOCUSIGN_PASSWORD }}
-        run: |
-          composer require --dev nyholm/symfony-bundle-test:dev-master
-          vendor/bin/simple-phpunit --group bootable
+        run: vendor/bin/simple-phpunit --group bootable
 
       - name: Upload coverage artifacts
         if: matrix.coverage != ''
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: build-php${{ matrix.php }}
           path: build

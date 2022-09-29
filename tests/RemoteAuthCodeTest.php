@@ -17,6 +17,8 @@ use Symfony\Component\Panther\PantherTestCase;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
+ *
+ * @group functional
  */
 final class RemoteAuthCodeTest extends PantherTestCase
 {

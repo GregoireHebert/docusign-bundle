@@ -12,7 +12,7 @@
 declare(strict_types=1);
 
 use DocusignBundle\E2e\Kernel;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/bootstrap.php';
