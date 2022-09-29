@@ -72,7 +72,7 @@ final class EmbeddedTest extends PantherTestCase
             $crawler->filter('label[for=disclosureAccepted]')->click();
         }
 
-        $crawler->filter('#action-bar-btn-continue')->click();
+        $client->executeScript("$('#action-bar-btn-continue').click()");
         $crawler = $client->waitFor('.page-tabs .signature-tab > button');
 
         // Wait for "Comment tooltip" button (optional use-case)
