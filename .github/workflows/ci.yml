@@ -10,6 +10,10 @@ on:
       - main
       - '[0-9].x'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: Tests PHP ${{ matrix.php }} (Symfony ${{ matrix.symfony }})
@@ -17,28 +21,23 @@ jobs:
     strategy:
       matrix:
         php:
-          - '7.4'
           - '8.0'
           - '8.1'
+          - '8.2'
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.1.*'
+          - '6.3.*'
         include:
-          - php: '7.4'
-            symfony: '5.4.*'
-            bootable: true
-          - php: '8.1'
-            symfony: '6.1.*'
+          - php: '8.2'
+            symfony: '6.3.*'
             coverage: '--coverage-clover build/logs/phpunit/clover.xml'
             bootable: true
             quality: true
         exclude:
-          # Symfony 6.1 requires PHP 8.1
-          - php: '7.4'
-            symfony: '6.1.*'
+          # Symfony 6.3 requires PHP 8.1
           - php: '8.0'
-            symfony: '6.1.*'
+            symfony: '6.3.*'
       fail-fast: false
     steps:
       - name: Checkout
@@ -54,6 +53,7 @@ jobs:
       - name: Install chromium
         run: |
           sudo apt-get update
+          sudo apt-get --fix-broken install
           sudo apt-get install -y --no-install-recommends chromium-browser
 
       - name: Get Composer Cache Directory
