@@ -113,7 +113,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: panther-screenshots-${{ matrix.php }}
           path: screenshots
@@ -134,7 +134,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: matrix.coverage != ''
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-php${{ matrix.php }}
           path: build
