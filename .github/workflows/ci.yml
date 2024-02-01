@@ -141,7 +141,7 @@ jobs:
 
       - name: Upload coverage results to Codecov
         if: matrix.coverage != ''
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           name: phpunit-php${{ matrix.php }}
           flags: phpunit
